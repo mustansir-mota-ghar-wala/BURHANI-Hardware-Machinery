@@ -179,3 +179,11 @@ def your_orders(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
     context = {'orders': orders}
     return render(request, 'your_order.html', context)
+
+# TEMPORARY: Emergency Superuser Creation
+def create_admin_emergency(request):
+    from django.contrib.auth.models import User
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
+        return render(request, 'home.html', {'message': 'Admin created! User: admin, Pass: admin123'})
+    return render(request, 'home.html', {'message': 'Admin already exists!'})
