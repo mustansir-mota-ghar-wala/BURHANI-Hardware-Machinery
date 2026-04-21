@@ -1,0 +1,305 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burhani Hardware | Secure Checkout</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gg-header: #0a110f;
+            --gg-bg: #f8f9fa;
+            --gg-accent: #e67e22;
+            --gg-text: #1a1a1a;
+            --gg-yellow: #ffc107;
+            --gg-glass: rgba(255, 255, 255, 0.9);
+            --gg-border: rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background-color: var(--gg-bg);
+            color: var(--gg-text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+
+        h1, h2, h3, .heading-font {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            color: var(--gg-header);
+        }
+
+        header {
+            background-color: var(--gg-header);
+            color: white;
+            padding: 1.2rem 0;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 2000; /* Fixed: Increased z-index */
+        }
+
+        .logo-circle {
+            background-color: var(--gg-yellow);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gg-header);
+            margin-right: 15px;
+            transform: rotate(-3deg);
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+        }
+
+        .checkout-card {
+            background: white;
+            border-radius: 32px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--gg-border);
+        }
+
+        .form-label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 0.8rem;
+        }
+
+        .form-control {
+            border-radius: 14px;
+            padding: 1rem 1.2rem;
+            border: 2px solid #eee;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--gg-accent);
+            box-shadow: 0 0 0 5px rgba(230, 126, 34, 0.1);
+        }
+
+        .order-summary-box {
+            background: #fdfdfd;
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid #f0f0f0;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.2rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .btn-place-order {
+            background-color: var(--gg-header);
+            color: white;
+            width: 100%;
+            border-radius: 16px;
+            padding: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: none;
+            transition: 0.4s;
+            margin-top: 2rem;
+        }
+
+        .btn-place-order:hover {
+            background-color: var(--gg-accent);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(230, 126, 34, 0.3);
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .payment-option {
+            border: 2px solid #eee;
+            border-radius: 16px;
+            padding: 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 700;
+        }
+
+        .payment-option.active {
+            border-color: var(--gg-accent);
+            background: rgba(230, 126, 34, 0.05);
+            color: var(--gg-accent);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--gg-header);
+            color: white;
+            padding: 5rem 0 2rem;
+            margin-top: 5rem;
+        }
+        .footer-title { font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 2rem; font-size: 1rem; color: var(--gg-yellow); }
+        .footer-links { list-style: none; padding: 0; }
+        .footer-links li { margin-bottom: 1rem; }
+        .footer-links a { color: rgba(255, 255, 255, 0.6); text-decoration: none; transition: 0.3s; font-weight: 500; }
+        .footer-links a:hover { color: white; padding-left: 5px; }
+        .copyright { border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: 4rem; padding-top: 2rem; text-align: center; color: rgba(255, 255, 255, 0.4); font-size: 0.9rem; }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container d-flex align-items-center justify-content-between">
+            <a href="{% url 'home' %}" class="d-flex align-items-center text-decoration-none">
+                <div class="logo-circle">
+                    <i class="bi bi-tools fs-5"></i>
+                </div>
+                <span class="heading-font fs-4 text-white" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
+            </a>
+            <div class="d-flex align-items-center gap-4">
+                <a href="{% url 'cart' %}" class="text-white text-decoration-none fs-6 fw-bold"><i class="bi bi-arrow-left me-2"></i>RETURN TO CART</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container my-5 pt-4"> <!-- Fixed: Added pt-4 -->
+        <h1 class="mb-5">Complete Your Order</h1>
+
+        <div class="row g-5">
+            <div class="col-lg-7">
+                <div class="checkout-card">
+                    <h3 class="mb-4">1. Shipping Details</h3>
+                    <form id="checkoutForm" method="POST" action="{% url 'order' %}">
+                        {% csrf_token %}
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                <input type="text" name="first_name" class="form-control" placeholder="John" value="{% firstof user.first_name user.username %}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" name="last_name" class="form-control" placeholder="Doe" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Shipping Address</label>
+                                <textarea name="address" class="form-control" rows="3" placeholder="Street, City, Pincode" required></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" name="phone" class="form-control" placeholder="+91 XXXXX XXXXX" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-control" value="{{ user.username }}@gmail.com" readonly>
+                            </div>
+                        </div>
+                    </form>
+
+                    <h3 class="mt-5 mb-4">2. Payment Method</h3>
+                    <div class="payment-methods">
+                        <div class="payment-option active" onclick="selectPayment(this)">
+                            <i class="bi bi-cash-stack d-block fs-3 mb-2"></i>
+                            <span>Cash on Delivery</span>
+                        </div>
+                        <div class="payment-option" onclick="selectPayment(this)">
+                            <i class="bi bi-credit-card d-block fs-3 mb-2"></i>
+                            <span>Online Payment</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="checkout-card sticky-top" style="top: 9rem;"> <!-- Fixed: Increased top offset to 9rem -->
+                    <h3 class="mb-4">Order Summary</h3>
+                    <div class="order-summary-box mb-4">
+                        {% for item in cart %}
+                        <div class="summary-item">
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-1">{{ item.product.name }}</h6>
+                                <span class="text-muted small">Qty: {{ item.product_quantity }}</span>
+                            </div>
+                            <div class="fw-bold">₹{{ item.product_total }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="px-2">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Subtotal</span>
+                            <span class="fw-bold">₹{{ grand_total|add:"-50" }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Shipping Fee</span>
+                            <span class="fw-bold">₹50</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-4">
+                            <span class="fs-4 fw-bold">Total Bill</span>
+                            <span class="fs-4 fw-bold text-accent">₹{{ grand_total }}</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" form="checkoutForm" class="btn-place-order">Confirm & Place Order</button>
+                    
+                    <p class="text-center text-muted small mt-4">
+                        <i class="bi bi-shield-check me-1"></i> Your transaction is secured with 256-bit SSL encryption.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row g-4 text-center text-lg-start">
+                <div class="col-lg-6">
+                    <div class="d-flex align-items-center justify-content-center justify-content-lg-start mb-4">
+                        <div class="logo-circle">
+                            <i class="bi bi-tools fs-5"></i>
+                        </div>
+                        <span class="heading-font fs-4 text-white" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
+                    </div>
+                    <p class="text-white-50">Premium tools and industrial machinery. Quality service since 2004.</p>
+                </div>
+                <div class="col-lg-6 text-lg-end">
+                    <p class="small text-white-50">SSL Certified Secure Checkout</p>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2026 Burhani Hardware and Machinery. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function selectPayment(el) {
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
+            el.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>
