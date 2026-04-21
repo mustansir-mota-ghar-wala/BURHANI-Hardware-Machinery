@@ -1,0 +1,555 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burhani Hardware | {{ selected_category.name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --gg-header: #0a110f;
+            --gg-bg: #f8f9fa;
+            --gg-accent: #e67e22;
+            --gg-card: #ffffff;
+            --gg-text: #1a1a1a;
+            --gg-white: #ffffff;
+            --gg-yellow: #ffc107;
+            --gg-glass: rgba(255, 255, 255, 0.95);
+            --gg-border: rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background-color: var(--gg-bg);
+            color: var(--gg-text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        .heading-font {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            color: var(--gg-header);
+        }
+
+        /* Header */
+        header {
+            background-color: var(--gg-header);
+            color: var(--gg-white);
+            padding: 1.2rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-right: 2rem;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--gg-yellow);
+        }
+
+        .logo-circle {
+            background-color: var(--gg-yellow);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gg-header);
+            margin-right: 15px;
+            transform: rotate(-3deg);
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+            transition: 0.3s;
+        }
+
+        /* Messages */
+        .message-container {
+            position: fixed;
+            top: 5rem;
+            right: 2rem;
+            z-index: 1050;
+            max-width: 350px;
+        }
+
+        .alert {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            border-radius: 30px;
+            padding: 2.5rem 0.8rem;
+            border: 1px solid var(--gg-border);
+            position: sticky;
+            top: 7rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.04);
+            max-height: calc(100vh - 10rem);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--gg-accent) transparent;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--gg-accent);
+            border-radius: 10px;
+        }
+
+        .cat-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .cat-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.2rem;
+            color: #444;
+            text-decoration: none !important;
+            border-radius: 18px;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            border: 1px solid transparent;
+            line-height: 1.3;
+        }
+
+        .cat-thumb {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-right: 15px;
+            background: #f0f0f0;
+            flex-shrink: 0;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .cat-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cat-link i {
+            transition: transform 0.3s ease;
+            color: #bbb;
+        }
+
+        .cat-link:hover {
+            background: #fcfcfc;
+            color: var(--gg-accent);
+            border-color: #f0f0f0;
+            padding-left: 1.5rem;
+        }
+
+        .cat-link:hover i {
+            color: var(--gg-accent);
+            transform: translateX(3px);
+        }
+
+        .cat-link.active {
+            background: var(--gg-header);
+            color: var(--gg-yellow) !important;
+            box-shadow: 0 10px 25px rgba(10, 17, 15, 0.15);
+            transform: scale(1.02);
+        }
+
+        .cat-link.active i {
+            color: var(--gg-yellow);
+        }
+        /* Custom Breadcrumb */
+        .custom-breadcrumb {
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .custom-breadcrumb a {
+            color: #777;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .custom-breadcrumb a:hover {
+            color: var(--gg-accent);
+        }
+
+        .custom-breadcrumb span {
+            color: #999;
+        }
+
+        .custom-breadcrumb .active {
+            color: #555;
+            font-weight: 500;
+        }
+
+        /* Product Cards */
+        .prod-card {
+            background: white;
+            border-radius: 26px;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border: 1px solid var(--gg-border);
+            height: 360px;
+            /* Fixed height for consistent half/half split */
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .prod-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.12);
+        }
+
+        .prod-img {
+            height: 50%;
+            /* Exact half */
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            background: #f8f9fa;
+        }
+
+        .prod-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Full bleed image */
+            transition: transform 0.8s ease;
+        }
+
+        .prod-card:hover .prod-img img {
+            transform: scale(1.1);
+        }
+
+        .prod-info {
+            height: 50%;
+            /* Exact half */
+            padding: 0.8rem 1rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: white;
+        }
+
+        .prod-info h4 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--gg-header);
+        }
+
+        .prod-price {
+            font-weight: 900;
+            font-size: 1.3rem;
+            color: var(--gg-accent);
+            margin-bottom: 1rem;
+        }
+
+        .btn-add {
+            background-color: var(--gg-header);
+            color: white;
+            width: 100%;
+            border-radius: 12px;
+            padding: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .btn-add:hover {
+            background-color: var(--gg-accent);
+            transform: translateY(-2px);
+        }
+
+        /* Footer Styles Same as Home */
+        footer {
+            background: var(--gg-header);
+            color: white;
+            padding: 5rem 0 2rem;
+            margin-top: 5rem;
+        }
+
+        .footer-title {
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            color: var(--gg-yellow);
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .social-icons a {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .social-icons a:hover {
+            background: var(--gg-yellow);
+            color: var(--gg-header);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 4rem;
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container d-flex align-items-center justify-content-between">
+            <a href="{% url 'home' %}" class="d-flex align-items-center text-decoration-none">
+                <div class="logo-circle">
+                    <i class="bi bi-tools fs-5"></i>
+                </div>
+                <span class="heading-font fs-4 text-white" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
+            </a>
+
+            <div class="d-none d-lg-flex nav-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'home' %}#categories" class="active">Shop Tools</a>
+                <a href="{% url 'your_orders' %}">My Orders</a>
+                <a href="{% url 'home' %}#about">About Us</a>
+            </div>
+
+            <div class="d-flex align-items-center gap-4">
+                <div class="d-flex gap-3 fs-5 align-items-center">
+                    {% if user.is_authenticated %}
+                    <span class="fs-6 fw-bold text-white-50 d-none d-md-inline">Hi, {% firstof user.first_name user.username %}</span>
+                    <a href="{% url 'logout' %}" class="text-white text-decoration-none fs-6 fw-bold">LOGOUT</a>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="text-white text-decoration-none fs-6 fw-bold">LOGIN</a>
+                    {% endif %}
+                    <a href="{% url 'cart' %}" class="text-white">
+                        <i class="bi bi-cart3 position-relative">
+                            {% if cart_count > 0 %}
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                style="font-size: 0.5rem;">{{ cart_count }}</span>
+                            {% endif %}
+                        </i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {% if messages %}
+    <div class="message-container">
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show"
+            role="alert">
+            <i
+                class="bi {% if message.tags == 'error' %}bi-exclamation-octagon{% else %}bi-check-circle{% endif %} me-2"></i>
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="container mt-3 mb-5">
+        <div class="row g-5">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar">
+                    <h5 class="fw-bold mb-4 text-uppercase small letter-spacing-2">Categories</h5>
+                    <div class="cat-list">
+                        {% for cat in categories %}
+                        <a href="{% url 'product' cat.id %}"
+                            class="cat-link {% if cat.id == selected_category.id %}active{% endif %}">
+                            <div class="cat-thumb">
+                                {% if cat.image %}
+                                <img src="{{ cat.image.url }}" alt="{{ cat.name }}">
+                                {% else %}
+                                <img src="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=100&auto=format&fit=crop"
+                                    alt="Tool">
+                                {% endif %}
+                            </div>
+                            <span class="flex-grow-1">{{ cat.name }}</span>
+                            <i class="bi bi-chevron-right small opacity-50"></i>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="d-flex justify-content-between align-items-end mb-3">
+                    <div>
+                        <div class="custom-breadcrumb mb-2">
+                            <a href="{% url 'home' %}">Home</a>
+                            <span class="mx-2">/</span>
+                            <span class="active">{{ selected_category.name }}</span>
+                        </div>
+                        <h1 class="mb-0">{{ selected_category.name }}</h1>
+                    </div>
+                    <span class="text-muted small fw-bold">Showing {{ products|length }} Products</span>
+                </div>
+
+                <div class="row g-4">
+                    {% for p in products %}
+                    <div class="col-sm-6 col-md-3 col-lg-3">
+                        <div class="prod-card">
+                            <div class="prod-img">
+                                {% if p.image %}
+                                <img src="{{ p.image.url }}" alt="{{ p.name }}">
+                                {% else %}
+                                <img src="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=800&auto=format&fit=crop"
+                                    alt="Power Tool">
+                                {% endif %}
+                            </div>
+                            <div class="prod-info">
+                                <h4>{{ p.name }}</h4>
+                                <div class="prod-price">₹{{ p.price }}</div>
+                                <a href="{% url 'add_to_cart' p.id %}" class="w-100"><button class="btn-add">Add to
+                                        Cart</button></a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-center py-5">
+                        <i class="bi bi-box-seam fs-1 text-muted mb-3 d-block"></i>
+                        <h3 class="fw-bold">No tools in this category yet</h3>
+                        <p class="text-muted">We're working on bringing more premium equipment to this section.</p>
+                        <a href="{% url 'home' %}" class="btn-terracotta text-decoration-none mt-3">Back to Home</a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="logo-circle">
+                            <i class="bi bi-tools fs-5"></i>
+                        </div>
+                        <span class="heading-font fs-4 text-white" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
+                    </div>
+                    <p class="text-white-50 mb-4">Your one-stop shop for premium hardware, industrial machinery, and
+                        professional tools. Quality service since 2004.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                        <a href="#"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 offset-lg-1">
+                    <h5 class="footer-title">Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="#categories">Shop Tools</a></li>
+                        <li><a href="{% url 'your_orders' %}">My Orders</a></li>
+                        <li><a href="{% url 'cart' %}">Shopping Cart</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2">
+                    <h5 class="footer-title">Categories</h5>
+                    <ul class="footer-links">
+                        {% for cat in categories|slice:":4" %}
+                        <li><a href="{% url 'product' cat.id %}">{{ cat.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="footer-title">Contact Info</h5>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="bi bi-geo-alt me-2"></i> 123 Hardware Lane, Industrial Hub, IN</a>
+                        </li>
+                        <li><a href="#"><i class="bi bi-telephone me-2"></i> +91 98765 43210</a></li>
+                        <li><a href="#"><i class="bi bi-envelope me-2"></i> support@burhani.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2026 Burhani Hardware and Machinery. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,261 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burhani Hardware | Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gg-header: #0a110f;
+            --gg-bg: #f8f9fa;
+            --gg-accent: #e67e22;
+            --gg-text: #1a1a1a;
+            --gg-yellow: #ffc107;
+            --gg-glass: rgba(255, 255, 255, 0.9);
+            --gg-border: rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), 
+                        url("{% static 'images/light_hardware_bg.png' %}") center/cover fixed;
+            color: var(--gg-text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--gg-header);
+            color: white;
+            padding: 1.2rem 0;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo-circle {
+            background-color: var(--gg-yellow);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gg-header);
+            margin-right: 15px;
+            transform: rotate(-3deg);
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+        }
+
+        .auth-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 1.5rem;
+        }
+
+        .auth-card {
+            background: var(--gg-glass);
+            backdrop-filter: blur(30px);
+            border-radius: 32px;
+            padding: 3.5rem;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: cardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes cardEntrance {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .auth-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--gg-header);
+        }
+
+        .form-label {
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border-radius: 14px;
+            padding: 1rem 1.2rem;
+            border: 2px solid #eee;
+            font-size: 1rem;
+            transition: 0.3s;
+            background: white;
+        }
+
+        .form-control:focus {
+            border-color: var(--gg-accent);
+            box-shadow: 0 0 0 5px rgba(230, 126, 34, 0.1);
+        }
+
+        .input-group-text {
+            border-radius: 14px 0 0 14px;
+            border: 2px solid #eee;
+            border-right: none;
+            background: #f8f9fa;
+        }
+
+        .form-control {
+            border-radius: 0 14px 14px 0;
+        }
+
+        .btn-auth {
+            background: var(--gg-header);
+            color: white;
+            width: 100%;
+            border-radius: 14px;
+            padding: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: none;
+            margin-top: 1.5rem;
+            transition: 0.4s;
+        }
+
+        .btn-auth:hover {
+            background: var(--gg-accent);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(230, 126, 34, 0.3);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.95rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .auth-footer a {
+            color: var(--gg-accent);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--gg-header);
+            color: white;
+            padding: 5rem 0 2rem;
+        }
+        .footer-title { font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 2rem; font-size: 1rem; color: var(--gg-yellow); }
+        .footer-links { list-style: none; padding: 0; }
+        .footer-links li { margin-bottom: 1rem; }
+        .footer-links a { color: rgba(255, 255, 255, 0.6); text-decoration: none; transition: 0.3s; font-weight: 500; }
+        .footer-links a:hover { color: white; padding-left: 5px; }
+        .copyright { border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: 4rem; padding-top: 2rem; text-align: center; color: rgba(255, 255, 255, 0.4); font-size: 0.9rem; }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container d-flex align-items-center justify-content-between">
+            <a href="{% url 'home' %}" class="d-flex align-items-center text-decoration-none">
+                <div class="logo-circle">
+                    <i class="bi bi-tools fs-5"></i>
+                </div>
+                <span class="heading-font fs-4 text-white" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
+            </a>
+            <a href="{% url 'home' %}" class="text-white text-decoration-none fs-6 fw-bold">BACK TO HOME</a>
+        </div>
+    </header>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2>Create Account</h2>
+            <p class="text-muted mb-5">Join our professional community today.</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-info border-0 rounded-4 shadow-sm mb-4">
+                    <i class="bi bi-info-circle me-2"></i> {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                        <input type="text" name="first_name" class="form-control" placeholder="John Doe" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input type="text" name="username" class="form-control" placeholder="choose_username" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-key"></i></span>
+                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-auth">Register Now</button>
+            </form>
+
+            <div class="auth-footer">
+                Already have an account? <a href="{% url 'login' %}">Login Now</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row g-4 text-center text-lg-start">
+                <div class="col-lg-6">
+                    <div class="d-flex align-items-center justify-content-center justify-content-lg-start mb-4">
+                        <div class="logo-circle">
+                            <i class="bi bi-tools fs-5"></i>
+                        </div>
+                        <span class="heading-font fs-4 text-white" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
+                    </div>
+                    <p class="text-white-50">Premium tools and industrial machinery. Quality service since 2004.</p>
+                </div>
+                <div class="col-lg-6 text-lg-end">
+                    <h5 class="footer-title">Secure Portal</h5>
+                    <p class="small text-white-50">Your data is protected by industry-standard encryption.</p>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2026 Burhani Hardware and Machinery. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
