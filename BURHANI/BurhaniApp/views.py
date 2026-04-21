@@ -183,7 +183,10 @@ def your_orders(request):
 # TEMPORARY: Emergency Superuser Creation
 def create_admin_emergency(request):
     from django.contrib.auth.models import User
+    from django.contrib import messages
     if not User.objects.filter(username='admin').exists():
         User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
-        return render(request, 'home.html', {'message': 'Admin created! User: admin, Pass: admin123'})
-    return render(request, 'home.html', {'message': 'Admin already exists!'})
+        messages.success(request, 'Admin created! User: admin, Pass: admin123')
+    else:
+        messages.info(request, 'Admin already exists!')
+    return redirect('home')
