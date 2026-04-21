@@ -6,7 +6,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from BurhaniApp.views import (
     home, product, register, Login, Logout, cart, add_to_cart, 
     remove_from_cart, decrease_product, checkout, place_order, 
-    your_orders, create_admin_emergency
+    your_orders
 )
 
 urlpatterns = [
@@ -23,7 +23,6 @@ urlpatterns = [
     path('decrease_item/<int:id>',decrease_product,name='decrease_product'),
     path('order/', place_order, name='order'),
     path('your-orders/', your_orders, name='your_orders'),
-    path('create-admin-secret/', create_admin_emergency),
 ]
 
 if settings.DEBUG:
