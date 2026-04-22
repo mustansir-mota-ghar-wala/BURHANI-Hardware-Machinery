@@ -59,6 +59,9 @@ def home(request):
         )
         categories = categories.filter(name__icontains=query)
 
+    if not query:
+        products = products.order_by('-id')[:12]
+
     context = {
         'categories': categories, 
         'products': products,

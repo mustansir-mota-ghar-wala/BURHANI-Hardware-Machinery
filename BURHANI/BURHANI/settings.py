@@ -32,22 +32,24 @@ ALLOWED_HOSTS = ['burhani-hardware-machinery.onrender.com', '127.0.0.1', 'localh
 # Application definition
 
 INSTALLED_APPS = [
+    'cloudinary_storage',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-]
-
-EXTERNALL_APPS = [
-    'BurhaniApp',
     'cloudinary',
-    'cloudinary_storage',
+    'BurhaniApp',
 ]
-
-INSTALLED_APPS = INSTALLED_APPS + EXTERNALL_APPS
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 
 CLOUDINARY_STORAGE = {
@@ -138,6 +140,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
