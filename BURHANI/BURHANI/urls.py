@@ -6,7 +6,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from BurhaniApp.views import (
     home, product, register, Login, Logout, cart, add_to_cart, 
     remove_from_cart, decrease_product, checkout, place_order, 
-    your_orders
+    your_orders, payment_callback
 )
 
 urlpatterns = [
@@ -23,6 +23,7 @@ urlpatterns = [
     path('decrease_item/<int:id>',decrease_product,name='decrease_product'),
     path('order/', place_order, name='order'),
     path('your-orders/', your_orders, name='your_orders'),
+    path('payment-callback/', payment_callback, name='payment_callback'),
 ]
 
 if settings.DEBUG:
