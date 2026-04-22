@@ -42,9 +42,19 @@ INSTALLED_APPS = [
 
 EXTERNALL_APPS = [
     'BurhaniApp',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 INSTALLED_APPS = INSTALLED_APPS + EXTERNALL_APPS
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dvzt8pnwz',
+    'API_KEY': '847466454541682',
+    'API_SECRET': '9qL4S28vAcc6ZNYPbxhsRHeT-_k',
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
