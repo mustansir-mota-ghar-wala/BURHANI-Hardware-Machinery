@@ -16,8 +16,8 @@ def upload_folder(folder_path, prefix="media"):
     for file_path in folder.rglob("*"):
         if file_path.is_file():
             relative_path = file_path.relative_to(folder.parent)
-            public_id = str(relative_path).replace("\\", "/")
-            # Remove extension for public_id if you want, but cloudinary-storage often keeps it
+            # Cloudinary usually expects the public_id WITHOUT the extension
+            public_id = str(relative_path.with_suffix('')).replace("\\", "/")
             print(f"Uploading {file_path} as {public_id}...")
             cloudinary.uploader.upload(
                 str(file_path),
