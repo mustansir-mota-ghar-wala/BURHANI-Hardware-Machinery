@@ -220,11 +220,31 @@ graph LR
 | is_machinery | Boolean | Default False | Flag for machinery type. |
 
 ### 3.6 Sample Input and Output Screens
-- **Home Page:** Displays featured categories and the 12 most recent products.
-- **Product Detail:** Shows full description and "Add to Cart" option.
-- **Cart Page:** Lists items with quantity adjustment and total calculation.
-- **Checkout:** Form for address input and selection of payment method.
-- **Orders Page:** A history of all past transactions with status updates.
+
+**1. Home Page**
+Displays featured categories and the latest hardware products.
+![Home Page](file:///C:/Users/musta/.gemini/antigravity/brain/02b77c20-cf4c-44c2-867d-62d7e7be840a/home_page_1776926489331.png)
+
+**2. Login & Registration**
+Secure access for registered users.
+![Login Page](file:///C:/Users/musta/.gemini/antigravity/brain/02b77c20-cf4c-44c2-867d-62d7e7be840a/login_page_1776926762577.png)
+![Registration Page](file:///C:/Users/musta/.gemini/antigravity/brain/02b77c20-cf4c-44c2-867d-62d7e7be840a/register_page_1776926777795.png)
+
+**3. Product Listing**
+Category-based filtering (e.g., Welding Machines).
+![Product Listing](file:///C:/Users/musta/.gemini/antigravity/brain/02b77c20-cf4c-44c2-867d-62d7e7be840a/product_listing_page_1776926550292.png)
+
+**4. Shopping Cart**
+Management of selected items and total calculation.
+![Cart Page](file:///C:/Users/musta/.gemini/antigravity/brain/02b77c20-cf4c-44c2-867d-62d7e7be840a/cart_page_1776926636143.png)
+
+**5. Checkout**
+Selection of payment method and address entry.
+![Checkout Page](file:///C:/Users/musta/.gemini/antigravity/brain/02b77c20-cf4c-44c2-867d-62d7e7be840a/checkout_page_1776926682922.png)
+
+**6. Your Orders**
+History of past successful transactions.
+![Your Orders](file:///C:/Users/musta/.gemini/antigravity/brain/02b77c20-cf4c-44c2-867d-62d7e7be840a/your_orders_page_1776926695528.png)
 
 ---
 
