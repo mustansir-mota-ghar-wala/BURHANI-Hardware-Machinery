@@ -173,26 +173,26 @@ classDiagram
 
 ### 3.3 Use Case Diagrams
 ```mermaid
-useCaseDiagram
-    actor Customer
-    actor Admin
-    
-    package "BURHANI E-Commerce" {
-        usecase "Register/Login" as UC1
-        usecase "Browse Products" as UC2
-        usecase "Manage Cart" as UC3
-        usecase "Checkout (Online/COD)" as UC4
-        usecase "View Order History" as UC5
-        usecase "Manage Products/Categories" as UC6
-        usecase "Monitor Orders" as UC7
-    }
-    
+graph LR
+    Customer((Customer))
+    Admin((Admin))
+
+    subgraph "BURHANI E-Commerce System"
+        UC1(Register/Login)
+        UC2(Browse Products)
+        UC3(Manage Cart)
+        UC4(Checkout - Online/COD)
+        UC5(View Order History)
+        UC6(Manage Products/Categories)
+        UC7(Monitor Orders)
+    end
+
     Customer --> UC1
     Customer --> UC2
     Customer --> UC3
     Customer --> UC4
     Customer --> UC5
-    
+
     Admin --> UC1
     Admin --> UC6
     Admin --> UC7
