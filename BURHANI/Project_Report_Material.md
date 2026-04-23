@@ -75,8 +75,8 @@ erDiagram
     USER ||--o{ ORDER : "places"
     CATEGORY ||--o{ PRODUCT : "contains"
     PRODUCT ||--o{ CART : "is added to"
-    ORDER ||--o{ ORDER_ITEM : "contains"
-    PRODUCT ||--o{ ORDER_ITEM : "is ordered in"
+    ORDER ||--o{ OrderItem : "contains"
+    PRODUCT ||--o{ OrderItem : "is ordered in"
     
     USER {
         int id PK
@@ -86,7 +86,7 @@ erDiagram
     CATEGORY {
         int id PK
         string name
-        image image
+        string image
     }
     PRODUCT {
         int id PK
@@ -94,9 +94,9 @@ erDiagram
         string name
         string description
         int price
-        bool is_spare_part
-        bool is_machinery
-        bool is_power_tools
+        boolean is_spare_part
+        boolean is_machinery
+        boolean is_power_tools
     }
     CART {
         int id PK
@@ -108,12 +108,12 @@ erDiagram
     ORDER {
         int id PK
         int user_id FK
-        text address
+        string address
         int bill
         string payment_status
         string razorpay_order_id
     }
-    ORDER_ITEM {
+    OrderItem {
         int id PK
         int order_id FK
         int product_id FK
@@ -127,14 +127,14 @@ erDiagram
 classDiagram
     class Category {
         +String name
-        +Image image
+        +String image
         +__str__()
     }
     class Product {
         +Category category
         +String name
         +String description
-        +Image image
+        +String image
         +Integer price
         +Boolean is_spare_part
         +Boolean is_machinery
@@ -149,26 +149,26 @@ classDiagram
     }
     class Order {
         +User user
-        +Text address
+        +String address
         +Integer bill
         +String payment_status
         +String razorpay_order_id
         +DateTime created_at
         +__str__()
     }
-    class Order_Item {
+    class OrderItem {
         +Order order
         +Product product
         +Integer product_quantity
         +Integer product_total
         +__str__()
     }
-    Product --|> Category : belongs to
-    Cart --|> Product : contains
-    Cart --|> User : owned by
-    Order --|> User : placed by
-    Order_Item --|> Order : part of
-    Order_Item --|> Product : references
+    Product --> Category : "belongs to"
+    Cart --> Product : "contains"
+    Cart --> User : "owned by"
+    Order --> User : "placed by"
+    OrderItem --> Order : "part of"
+    OrderItem --> Product : "references"
 ```
 
 ### 3.3 Use Case Diagrams
@@ -178,13 +178,13 @@ graph LR
     Admin((Admin))
 
     subgraph "BURHANI E-Commerce System"
-        UC1(Register/Login)
-        UC2(Browse Products)
-        UC3(Manage Cart)
-        UC4(Checkout - Online/COD)
-        UC5(View Order History)
-        UC6(Manage Products/Categories)
-        UC7(Monitor Orders)
+        UC1("Register/Login")
+        UC2("Browse Products")
+        UC3("Manage Cart")
+        UC4("Checkout - Online/COD")
+        UC5("View Order History")
+        UC6("Manage Products/Categories")
+        UC7("Monitor Orders")
     end
 
     Customer --> UC1
