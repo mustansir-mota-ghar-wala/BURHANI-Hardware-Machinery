@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -8,6 +8,7 @@ from BurhaniApp.views import (
     remove_from_cart, decrease_product, checkout, place_order, 
     your_orders, payment_callback
 )
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,6 +25,8 @@ urlpatterns = [
     path('order/', place_order, name='order'),
     path('your-orders/', your_orders, name='your_orders'),
     path('payment-callback/', payment_callback, name='payment_callback'),
+
+    path('accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:
