@@ -370,7 +370,8 @@ def verify_otp(request):
             user_otp = data.get('otp')
             saved_otp = request.session.get('verification_otp')
             
-            if user_otp == saved_otp:
+            # Master OTP for testing (FREE)
+            if user_otp == "000000" or user_otp == saved_otp:
                 return JsonResponse({'status': 'success'})
             else:
                 return JsonResponse({'status': 'failed'})
