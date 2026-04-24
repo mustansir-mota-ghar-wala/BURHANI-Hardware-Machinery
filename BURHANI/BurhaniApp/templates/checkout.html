@@ -228,8 +228,19 @@
 
                             <div class="col-md-6">
                                 <label class="form-label">Phone Number</label>
-                                <input type="tel" name="phone" class="form-control" placeholder="+91 XXXXX XXXXX"
-                                    required>
+                                <div class="input-group">
+                                    <input type="tel" id="phone_number" name="phone" class="form-control" placeholder="+91 XXXXX XXXXX"
+                                        required>
+                                    <button class="btn btn-dark" type="button" id="send-otp-btn">Send OTP</button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6" id="otp-section" style="display: none;">
+                                <label class="form-label text-primary fw-bold">Verification Code</label>
+                                <div class="input-group">
+                                    <input type="text" id="otp_input" class="form-control border-primary" placeholder="Enter 6-digit OTP">
+                                    <button class="btn btn-primary" type="button" id="verify-otp-btn">Verify</button>
+                                </div>
                             </div>
 
                             <div class="col-md-6">
@@ -289,8 +300,8 @@
                         </div>
                     </div>
 
-                    <button type="submit" form="checkoutForm" class="btn-place-order">
-                        Confirm & Place Order
+                    <button type="submit" id="place-order-btn" form="checkoutForm" class="btn-place-order" disabled>
+                        Verify Phone to Place Order
                     </button>
 
                     <p class="text-center text-muted small mt-4">
@@ -391,6 +402,55 @@
                     rzp1.open();
                 } else {
                     checkoutForm.submit();
+                }
+            });
+        });
+
+        // OTP Logic
+        document.getElementById('send-otp-btn').addEventListener('click', function() {
+            const phone = document.getElementById('phone_number').value;
+            if (!phone) { alert("Please enter phone number"); return; }
+            
+            const btn = this;
+            btn.disabled = true;
+            btn.innerText = 'Sending...';
+
+            fetch('/send-otp/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 'phone': phone })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById('otp-section').style.display = 'block';
+                    btn.innerText = 'Resend OTP';
+                    btn.disabled = false;
+                    alert("OTP Sent! Check your terminal for the code.");
+                }
+            });
+        });
+
+        document.getElementById('verify-otp-btn').addEventListener('click', function() {
+            const otp = document.getElementById('otp_input').value;
+            if (!otp) { alert("Enter OTP"); return; }
+
+            fetch('/verify-otp/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 'otp': otp })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById('otp-section').innerHTML = '<div class="alert alert-success py-2 mt-1 mb-0"><i class="bi bi-check-circle-fill"></i> Phone Verified!</div>';
+                    document.getElementById('phone_number').readOnly = true;
+                    document.getElementById('send-otp-btn').remove();
+                    document.getElementById('place-order-btn').disabled = false;
+                    document.getElementById('place-order-btn').innerText = 'Confirm & Place Order';
+                    document.getElementById('place-order-btn').style.backgroundColor = '#28a745';
+                } else {
+                    alert("Invalid OTP! Please try again.");
                 }
             });
         });

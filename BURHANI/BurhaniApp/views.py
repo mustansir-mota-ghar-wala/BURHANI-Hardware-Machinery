@@ -9,6 +9,10 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Category, Product, Cart, Order, Order_Item
 import razorpay
 import time
+import requests
+import random
+import json
+from django.http import JsonResponse
 
 
 def register(request):
@@ -334,3 +338,41 @@ def your_orders(request):
 
     context = {'orders': orders}
     return render(request, 'your_order.html', context)
+
+
+def send_otp(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            phone = data.get('phone', '')
+            phone = ''.join(filter(str.isdigit, phone))
+            if len(phone) > 10: phone = phone[-10:]
+            
+            otp = str(random.randint(100000, 999999))
+            request.session['verification_otp'] = otp
+            
+            print(f"\n[OTP DEBUG] Sending OTP {otp} to {phone}\n")
+
+            url = "https://www.fast2sms.com/dev/bulkV2"
+            payload = f"variables_values={otp}&route=otp&numbers={phone}"
+            headers = {'authorization': 'IpOzsWcVGLm8Cy5Rxa7bKi10TrASYnU3qeJN9Egodl6MjtQH2PY0owZnDaAqm1P7eRCFukUxWgbQ85jT'}
+            response = requests.get(url, params=payload, headers=headers)
+            
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+
+
+def verify_otp(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user_otp = data.get('otp')
+            saved_otp = request.session.get('verification_otp')
+            
+            if user_otp == saved_otp:
+                return JsonResponse({'status': 'success'})
+            else:
+                return JsonResponse({'status': 'failed'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
