@@ -1,4 +1,5 @@
 {% load static %}
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,7 +17,7 @@
             --gg-accent: #e67e22;
             --gg-text: #1a1a1a;
             --gg-yellow: #ffc107;
-            --gg-glass: rgba(255, 255, 255, 0.9);
+            --gg-glass: rgba(255, 255, 255, 0.95);
             --gg-border: rgba(0, 0, 0, 0.08);
         }
 
@@ -33,119 +34,141 @@
 
         header {
             background-color: var(--gg-header);
-            color: white;
-            padding: 1.2rem 0;
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
         }
 
         .logo-circle {
             background-color: var(--gg-yellow);
-            width: 45px;
-            height: 45px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
             color: var(--gg-header);
-            margin-right: 15px;
-            transform: rotate(-3deg);
-            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+            margin-right: 12px;
+            box-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
         }
 
         .auth-container {
             flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 4rem 1.5rem;
+            display: flex; align-items: center; justify-content: center;
+            padding: 3rem 1rem;
         }
 
         .auth-card {
             background: var(--gg-glass);
-            backdrop-filter: blur(30px);
-            border-radius: 32px;
-            padding: 3.5rem;
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
             width: 100%;
-            max-width: 500px;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            animation: cardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes cardEntrance {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            border: 1px solid white;
         }
 
         .auth-card h2 {
             font-family: 'Playfair Display', serif;
-            font-weight: 900;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+            font-weight: 800;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
             color: var(--gg-header);
         }
 
         .form-label {
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #666;
-            margin-bottom: 0.5rem;
+            color: #777;
+            margin-bottom: 0.6rem;
         }
 
-        .form-control {
-            border-radius: 14px;
-            padding: 1rem 1.2rem;
-            border: 2px solid #eee;
-            font-size: 1rem;
+        .input-group {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1.5px solid #eee;
             transition: 0.3s;
-            background: white;
         }
 
-        .form-control:focus {
+        .input-group:focus-within {
             border-color: var(--gg-accent);
-            box-shadow: 0 0 0 5px rgba(230, 126, 34, 0.1);
+            box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.1);
         }
 
         .input-group-text {
-            border-radius: 14px 0 0 14px;
-            border: 2px solid #eee;
-            border-right: none;
-            background: #f8f9fa;
+            background: #fdfdfd;
+            border: none;
+            color: #999;
+            padding: 0 1.2rem;
         }
 
         .form-control {
-            border-radius: 0 14px 14px 0;
+            border: none;
+            padding: 0.8rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 500;
         }
+
+        .form-control:focus { box-shadow: none; }
 
         .btn-auth {
             background: var(--gg-header);
             color: white;
             width: 100%;
-            border-radius: 14px;
-            padding: 1.2rem;
-            font-weight: 800;
+            border-radius: 12px;
+            padding: 0.9rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             border: none;
-            margin-top: 1.5rem;
-            transition: 0.4s;
+            margin-top: 1rem;
+            transition: 0.3s;
         }
 
         .btn-auth:hover {
             background: var(--gg-accent);
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(230, 126, 34, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.2);
+        }
+
+        .divider {
+            display: flex; align-items: center;
+            margin: 1.2rem 0;
+            color: #bbb;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .divider::after, .divider::before {
+            content: ""; flex: 1; height: 1px; background: #eee;
+        }
+        .divider span { padding: 0 1rem; }
+
+        .btn-google {
+            background: white;
+            color: #444;
+            width: 100%;
+            border-radius: 12px;
+            padding: 0.75rem;
+            font-weight: 600;
+            border: 1.5px solid #eee;
+            display: flex; align-items: center; justify-content: center;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .btn-google:hover {
+            background: #fcfcfc;
+            border-color: #ddd;
+            color: #111;
         }
 
         .auth-footer {
             text-align: center;
-            margin-top: 2rem;
-            font-size: 0.95rem;
-            color: #666;
-            font-weight: 500;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #777;
         }
 
         .auth-footer a {
@@ -154,18 +177,32 @@
             text-decoration: none;
         }
 
-        /* Footer */
         footer {
             background: var(--gg-header);
             color: white;
-            padding: 5rem 0 2rem;
+            padding: 4rem 0 2rem;
+            margin-top: auto;
         }
-        .footer-title { font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 2rem; font-size: 1rem; color: var(--gg-yellow); }
+
+        .footer-title {
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--gg-yellow);
+        }
+
         .footer-links { list-style: none; padding: 0; }
-        .footer-links li { margin-bottom: 1rem; }
-        .footer-links a { color: rgba(255, 255, 255, 0.6); text-decoration: none; transition: 0.3s; font-weight: 500; }
-        .footer-links a:hover { color: white; padding-left: 5px; }
-        .copyright { border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: 4rem; padding-top: 2rem; text-align: center; color: rgba(255, 255, 255, 0.4); font-size: 0.9rem; }
+        .footer-links li { margin-bottom: 0.8rem; }
+        .footer-links a { color: rgba(255, 255, 255, 0.5); text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
+        .footer-links a:hover { color: white; }
+
+        .copyright {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 3rem; padding-top: 2rem;
+            text-align: center; color: rgba(255, 255, 255, 0.3); font-size: 0.8rem;
+        }
     </style>
 </head>
 
@@ -175,26 +212,37 @@
         <div class="container d-flex align-items-center justify-content-between">
             <a href="{% url 'home' %}" class="d-flex align-items-center text-decoration-none">
                 <div class="logo-circle">
-                    <i class="bi bi-tools fs-5"></i>
+                    <i class="bi bi-tools"></i>
                 </div>
-                <span class="heading-font fs-4 text-white" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
+                <span class="fs-5 text-white fw-bold" style="letter-spacing: 0.5px; font-family: 'Playfair Display';">BURHANI HARDWARE</span>
             </a>
-            <a href="{% url 'home' %}" class="text-white text-decoration-none fs-6 fw-bold">BACK TO HOME</a>
+            <a href="{% url 'home' %}" class="text-white-50 text-decoration-none small fw-bold">BACK TO HOME</a>
         </div>
     </header>
 
     <div class="auth-container">
         <div class="auth-card">
             <h2>Create Account</h2>
-            <p class="text-muted mb-5">Join our professional community today.</p>
+            <p class="text-muted small mb-4">Join our professional community today.</p>
 
             {% if messages %}
                 {% for message in messages %}
-                <div class="alert alert-info border-0 rounded-4 shadow-sm mb-4">
+                <div class="alert alert-info border-0 rounded-4 py-2 px-3 small mb-4">
                     <i class="bi bi-info-circle me-2"></i> {{ message }}
                 </div>
                 {% endfor %}
             {% endif %}
+
+            <div class="mb-4">
+                <a href="{% provider_login_url 'google' %}" class="btn-google">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="me-2" width="18">
+                    Register with Google
+                </a>
+
+                <div class="divider">
+                    <span>Or fill in your details</span>
+                </div>
+            </div>
 
             <form method="POST">
                 {% csrf_token %}
@@ -231,22 +279,19 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer>
         <div class="container">
-            <div class="row g-4 text-center text-lg-start">
+            <div class="row g-4">
                 <div class="col-lg-6">
-                    <div class="d-flex align-items-center justify-content-center justify-content-lg-start mb-4">
-                        <div class="logo-circle">
-                            <i class="bi bi-tools fs-5"></i>
-                        </div>
-                        <span class="heading-font fs-4 text-white" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
-                    </div>
-                    <p class="text-white-50">Premium tools and industrial machinery. Quality service since 2004.</p>
+                    <h5 class="footer-title">BURHANI HARDWARE</h5>
+                    <p class="small text-white-50">Premium tools and industrial machinery. Quality service since 2004.</p>
                 </div>
                 <div class="col-lg-6 text-lg-end">
-                    <h5 class="footer-title">Secure Portal</h5>
-                    <p class="small text-white-50">Your data is protected by industry-standard encryption.</p>
+                    <h5 class="footer-title">Need Help?</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Support Center</a></li>
+                        <li><a href="#">Contact Sales</a></li>
+                    </ul>
                 </div>
             </div>
             <div class="copyright">
