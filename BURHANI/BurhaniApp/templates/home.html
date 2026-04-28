@@ -550,7 +550,8 @@
                 </p>
 
                 <form action="{% url 'home' %}" method="GET" class="hero-search">
-                    <input type="text" name="q" placeholder="Search for tools, machinery, spare parts..." value="{{ query|default:'' }}">
+                    <input type="text" name="q" placeholder="Search for tools, machinery, spare parts..."
+                        value="{{ query|default:'' }}">
                     <button type="submit" class="btn-terracotta">Search</button>
                 </form>
 
@@ -564,7 +565,8 @@
         <div class="d-flex justify-content-between align-items-end mb-4">
             <div>
                 <h1 class="heading-font display-4 mb-2">Search Results</h1>
-                <p class="text-muted lead">Showing results for "<span class="text-accent fw-bold">{{ query }}</span>"</p>
+                <p class="text-muted lead">Showing results for "<span class="text-accent fw-bold">{{ query }}</span>"
+                </p>
             </div>
             <a href="{% url 'home' %}" class="btn btn-outline-dark rounded-pill px-4">Clear Search</a>
         </div>

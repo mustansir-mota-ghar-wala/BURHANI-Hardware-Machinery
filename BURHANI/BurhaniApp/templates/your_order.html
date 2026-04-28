@@ -8,7 +8,9 @@
     <title>My Orders | Burhani Hardware</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --gg-header: #0a110f;
@@ -27,7 +29,10 @@
             margin: 0;
         }
 
-        h1, h2, h3, .heading-font {
+        h1,
+        h2,
+        h3,
+        .heading-font {
             font-family: 'Playfair Display', serif;
             font-weight: 900;
             color: var(--gg-header);
@@ -82,9 +87,20 @@
             letter-spacing: 1px;
         }
 
-        .status-paid { background: #e8f5e9; color: #2e7d32; }
-        .status-pending { background: #fff8e1; color: #f57f17; }
-        .status-failed { background: #ffebee; color: #c62828; }
+        .status-paid {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background: #fff8e1;
+            color: #f57f17;
+        }
+
+        .status-failed {
+            background: #ffebee;
+            color: #c62828;
+        }
 
         .order-header {
             display: flex;
@@ -141,6 +157,61 @@
             color: rgba(255, 255, 255, 0.4);
             font-size: 0.9rem;
         }
+
+        .track-stepper {
+            display: flex;
+            justify-content: space-between;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .track-stepper::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #eee;
+            z-index: 1;
+        }
+
+        .track-step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .track-icon {
+            width: 35px;
+            height: 35px;
+            background: #eee;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            margin-bottom: 5px;
+            transition: 0.3s;
+        }
+
+        .track-step.active .track-icon {
+            background: var(--gg-accent);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.2);
+        }
+
+        .track-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #999;
+            transition: 0.3s;
+        }
+
+        .track-step.active .track-label {
+            color: var(--gg-header);
+        }
     </style>
 </head>
 
@@ -172,75 +243,102 @@
         </div>
 
         {% if orders %}
-            {% for order in orders %}
-            <div class="order-card">
-                <div class="order-header">
-                    <div>
-                        <span class="text-muted small">Order Date:</span>
-                        <div class="fw-bold">{{ order.created_at|date:"M d, Y" }}</div>
+        {% for order in orders %}
+        <div class="order-card">
+            <div class="order-header">
+                <div>
+                    <span class="text-muted small">Order Date:</span>
+                    <div class="fw-bold">{{ order.created_at|date:"M d, Y" }}</div>
+                </div>
+                <div>
+                    <span class="text-muted small">Order ID:</span>
+                    <div class="fw-bold text-uppercase">#{{ order.id|stringformat:"05d" }}</div>
+                </div>
+                <div>
+                    <span class="text-muted small">Total Bill:</span>
+                    <div class="fw-bold text-accent fs-5">₹{{ order.bill }}</div>
+                </div>
+                <div>
+                    <span
+                        class="status-badge {% if order.payment_status == 'Paid' %}status-paid{% elif order.payment_status == 'Pending' %}status-pending{% else %}status-failed{% endif %}">
+                        {{ order.payment_status }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="order-body">
+                <div class="track-stepper px-md-4 mb-4">
+                    <!-- Step 1 -->
+                    <div class="track-step active">
+                        <div class="track-icon"><i class="bi bi-cart-check"></i></div>
+                        <div class="track-label">Placed</div>
                     </div>
-                    <div>
-                        <span class="text-muted small">Order ID:</span>
-                        <div class="fw-bold text-uppercase">#{{ order.id|stringformat:"05d" }}</div>
+                    <!-- Step 2 -->
+                    <div
+                        class="track-step {% if order.delivery_status in 'Processing,Shipped,Out for Delivery,Delivered' %}active{% endif %}">
+                        <div class="track-icon"><i class="bi bi-box-seam"></i></div>
+                        <div class="track-label">Processing</div>
                     </div>
-                    <div>
-                        <span class="text-muted small">Total Bill:</span>
-                        <div class="fw-bold text-accent fs-5">₹{{ order.bill }}</div>
+                    <!-- Step 3 -->
+                    <div
+                        class="track-step {% if order.delivery_status in 'Shipped,Out for Delivery,Delivered' %}active{% endif %}">
+                        <div class="track-icon"><i class="bi bi-truck"></i></div>
+                        <div class="track-label">Shipped</div>
                     </div>
-                    <div>
-                        <span class="status-badge {% if order.payment_status == 'Paid' %}status-paid{% elif order.payment_status == 'Pending' %}status-pending{% else %}status-failed{% endif %}">
-                            {{ order.payment_status }}
-                        </span>
+                    <!-- Step 4 -->
+                    <div class="track-step {% if order.delivery_status == 'Delivered' %}active{% endif %}">
+                        <div class="track-icon"><i class="bi bi-house-check"></i></div>
+                        <div class="track-label">Delivered</div>
                     </div>
                 </div>
 
-                <div class="order-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <h6 class="text-muted small text-uppercase fw-bold mb-3">Items Purchased</h6>
-                            {% for item in order.order_item_set.all %}
-                            <div class="order-item-row">
-                                {% if item.product.image %}
-                                    <img src="{{ item.product.image.url }}" class="product-thumb" alt="{{ item.product.name }}">
-                                {% else %}
-                                    <div class="product-thumb d-flex align-items-center justify-content-center bg-light">
-                                        <i class="bi bi-box-seam text-muted"></i>
-                                    </div>
-                                {% endif %}
-                                <div class="flex-grow-1">
-                                    <div class="fw-bold">{{ item.product.name }}</div>
-                                    <span class="text-muted small">Quantity: {{ item.product_quantity }} × ₹{{ item.product.price }}</span>
-                                </div>
-                                <div class="text-end fw-bold">
-                                    ₹{{ item.product_total }}
-                                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <h6 class="text-muted small text-uppercase fw-bold mb-3">Items Purchased</h6>
+                        {% for item in order.order_item_set.all %}
+                        <div class="order-item-row">
+                            {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" class="product-thumb" alt="{{ item.product.name }}">
+                            {% else %}
+                            <div class="product-thumb d-flex align-items-center justify-content-center bg-light">
+                                <i class="bi bi-box-seam text-muted"></i>
                             </div>
-                            {% endfor %}
+                            {% endif %}
+                            <div class="flex-grow-1">
+                                <div class="fw-bold">{{ item.product.name }}</div>
+                                <span class="text-muted small">Quantity: {{ item.product_quantity }} × ₹{{
+                                    item.product.price }}</span>
+                            </div>
+                            <div class="text-end fw-bold">
+                                ₹{{ item.product_total }}
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="bg-light p-4 rounded-4 h-100">
-                                <h6 class="text-muted small text-uppercase fw-bold mb-3">Shipping Address</h6>
-                                <p class="mb-0 small" style="line-height: 1.6;">{{ order.address }}</p>
-                                
-                                {% if order.razorpay_order_id %}
-                                <div class="mt-4 pt-4 border-top">
-                                    <h6 class="text-muted small text-uppercase fw-bold mb-2">Payment Info</h6>
-                                    <p class="mb-0 small text-muted">Ref: {{ order.razorpay_order_id }}</p>
-                                </div>
-                                {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-4">
+                        <div class="bg-light p-4 rounded-4 h-100">
+                            <h6 class="text-muted small text-uppercase fw-bold mb-3">Shipping Address</h6>
+                            <p class="mb-0 small" style="line-height: 1.6;">{{ order.address }}</p>
+
+                            {% if order.razorpay_order_id %}
+                            <div class="mt-4 pt-4 border-top">
+                                <h6 class="text-muted small text-uppercase fw-bold mb-2">Payment Info</h6>
+                                <p class="mb-0 small text-muted">Ref: {{ order.razorpay_order_id }}</p>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
-            {% endfor %}
+        </div>
+        {% endfor %}
         {% else %}
-            <div class="empty-state">
-                <div class="empty-icon"><i class="bi bi-bag-x"></i></div>
-                <h3>No Orders Found</h3>
-                <p class="text-muted mb-4">You haven't placed any orders yet. Start shopping to see your history here!</p>
-                <a href="{% url 'home' %}" class="btn btn-dark px-4 py-2 rounded-pill">Shop Now</a>
-            </div>
+        <div class="empty-state">
+            <div class="empty-icon"><i class="bi bi-bag-x"></i></div>
+            <h3>No Orders Found</h3>
+            <p class="text-muted mb-4">You haven't placed any orders yet. Start shopping to see your history here!</p>
+            <a href="{% url 'home' %}" class="btn btn-dark px-4 py-2 rounded-pill">Shop Now</a>
+        </div>
         {% endif %}
     </div>
 

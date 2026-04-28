@@ -27,10 +27,18 @@ class Cart(models.Model):
     product_total = models.IntegerField()
 
 class Order(models.Model):
+    ORDER_STATUS_CHOICES = (
+        ('Placed', 'Order Placed'),
+        ('Processing', 'Processing'),
+        ('Shipped', 'Shipped'),
+        ('Out for Delivery', 'Out for Delivery'),
+        ('Delivered', 'Delivered'),
+    )
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     address = models.TextField()
     bill = models.IntegerField()
     payment_status = models.CharField(max_length=20, default='Pending')
+    delivery_status = models.CharField(max_length=50, choices=ORDER_STATUS_CHOICES, default='Placed')
     razorpay_order_id = models.CharField(max_length=100, null=True, blank=True)
     razorpay_payment_id = models.CharField(max_length=100, null=True, blank=True)
     razorpay_signature = models.CharField(max_length=200, null=True, blank=True)

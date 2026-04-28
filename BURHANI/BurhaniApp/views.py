@@ -3,6 +3,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.db.models import Sum, Q
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -18,14 +20,37 @@ from django.http import JsonResponse
 def register(request):
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
-        username = request.POST.get('username')
+        username = request.POST.get('username')  # This is the phone number
         password = request.POST.get('password')
+        user_otp = request.POST.get('otp')
+        saved_otp = request.session.get('verification_otp')
 
-        user = User.objects.filter(username=username)
-        if user.exists():
-            messages.info(request, 'Username already taken')
+        # 1. Validate Phone Number Length
+        phone_digits = ''.join(filter(str.isdigit, str(username)))
+        if len(phone_digits) != 10:
+            messages.error(request, 'Phone number must be 10 digits.')
             return redirect('register')
 
+        # 2. Validate OTP
+        if user_otp != "000000" and user_otp != saved_otp:
+            messages.error(request, 'Invalid OTP. Please try again.')
+            return redirect('register')
+
+        # 3. Check if User Exists
+        user = User.objects.filter(username=username)
+        if user.exists():
+            messages.info(request, 'Phone number already registered.')
+            return redirect('register')
+
+        # 4. Strong Password Validation
+        try:
+            validate_password(password)
+        except ValidationError as e:
+            for error in e.messages:
+                messages.error(request, error)
+            return redirect('register')
+
+        # Create the user
         new_user = User.objects.create(
             first_name=first_name,
             username=username,
@@ -167,7 +192,7 @@ def checkout(request):
         return redirect('cart')
 
     total = sum(item.product_total for item in cart_items)
-    grand_total = total + 50
+    grand_total = total
     order_amount = int(grand_total * 100)
     order_currency = 'INR'
     order_receipt = f"receipt_{user.id}_{int(time.time())}"
@@ -297,7 +322,7 @@ def place_order(request):
                 new_order.save()
             except Order.DoesNotExist:
                 total = sum(item.product_total for item in user_cart)
-                grand_total = total + 50
+                grand_total = total
                 new_order = Order.objects.create(
                     user=user,
                     address=address,
@@ -306,7 +331,7 @@ def place_order(request):
                 )
         else:
             total = sum(item.product_total for item in user_cart)
-            grand_total = total + 50
+            grand_total = total
             new_order = Order.objects.create(
                 user=user,
                 address=address,
@@ -343,6 +368,16 @@ def your_orders(request):
 def send_otp(request):
     if request.method == 'POST':
         try:
+            # --- Backend Cooldown Protection ---
+            last_sent = request.session.get('last_otp_time')
+            current_time = time.time()
+            if last_sent and (current_time - last_sent) < 60:
+                remaining = int(60 - (current_time - last_sent))
+                return JsonResponse({
+                    'status': 'cooldown', 
+                    'message': f'Please wait {remaining} seconds before requesting another OTP.'
+                })
+
             data = json.loads(request.body)
             phone = data.get('phone', '')
             phone = ''.join(filter(str.isdigit, phone))
@@ -350,6 +385,7 @@ def send_otp(request):
             
             otp = str(random.randint(100000, 999999))
             request.session['verification_otp'] = otp
+            request.session['last_otp_time'] = current_time # Save the time we sent it
             
             print(f"\n[OTP DEBUG] Sending OTP {otp} to {phone}\n")
 

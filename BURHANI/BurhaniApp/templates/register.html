@@ -9,7 +9,9 @@
     <title>Burhani Hardware | Register</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --gg-header: #0a110f;
@@ -22,8 +24,8 @@
         }
 
         body {
-            background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), 
-                        url("{% static 'images/light_hardware_bg.png' %}") center/cover fixed;
+            background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
+            url("{% static 'images/light_hardware_bg.png' %}") center/cover fixed;
             color: var(--gg-text);
             font-family: 'Inter', sans-serif;
             margin: 0;
@@ -35,14 +37,17 @@
         header {
             background-color: var(--gg-header);
             padding: 1rem 0;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
         }
 
         .logo-circle {
             background-color: var(--gg-yellow);
-            width: 40px; height: 40px;
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: var(--gg-header);
             margin-right: 12px;
             box-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
@@ -50,26 +55,28 @@
 
         .auth-container {
             flex-grow: 1;
-            display: flex; align-items: center; justify-content: center;
-            padding: 3rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
         }
 
         .auth-card {
             background: var(--gg-glass);
             backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 2rem;
+            border-radius: 20px;
+            padding: 1.2rem 1.5rem;
             width: 100%;
             max-width: 400px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
             border: 1px solid white;
         }
 
         .auth-card h2 {
             font-family: 'Playfair Display', serif;
             font-weight: 800;
-            font-size: 2.2rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+            margin-bottom: 0.2rem;
             color: var(--gg-header);
         }
 
@@ -103,12 +110,14 @@
 
         .form-control {
             border: none;
-            padding: 0.8rem 1rem;
-            font-size: 0.95rem;
+            padding: 0.5rem 0.8rem;
+            font-size: 0.9rem;
             font-weight: 500;
         }
 
-        .form-control:focus { box-shadow: none; }
+        .form-control:focus {
+            box-shadow: none;
+        }
 
         .btn-auth {
             background: var(--gg-header);
@@ -131,31 +140,42 @@
         }
 
         .divider {
-            display: flex; align-items: center;
-            margin: 1.2rem 0;
+            display: flex;
+            align-items: center;
+            margin: 0.8rem 0;
             color: #bbb;
             font-size: 0.7rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .divider::after, .divider::before {
-            content: ""; flex: 1; height: 1px; background: #eee;
+
+        .divider::after,
+        .divider::before {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #eee;
         }
-        .divider span { padding: 0 1rem; }
+
+        .divider span {
+            padding: 0 1rem;
+        }
 
         .btn-google {
             background: white;
             color: #444;
             width: 100%;
             border-radius: 12px;
-            padding: 0.75rem;
+            padding: 0.5rem;
             font-weight: 600;
             border: 1.5px solid #eee;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-decoration: none;
             transition: 0.3s;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .btn-google:hover {
@@ -193,15 +213,33 @@
             color: var(--gg-yellow);
         }
 
-        .footer-links { list-style: none; padding: 0; }
-        .footer-links li { margin-bottom: 0.8rem; }
-        .footer-links a { color: rgba(255, 255, 255, 0.5); text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
-        .footer-links a:hover { color: white; }
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
 
         .copyright {
             border-top: 1px solid rgba(255, 255, 255, 0.05);
-            margin-top: 3rem; padding-top: 2rem;
-            text-align: center; color: rgba(255, 255, 255, 0.3); font-size: 0.8rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.8rem;
         }
     </style>
 </head>
@@ -214,7 +252,8 @@
                 <div class="logo-circle">
                     <i class="bi bi-tools"></i>
                 </div>
-                <span class="fs-5 text-white fw-bold" style="letter-spacing: 0.5px; font-family: 'Playfair Display';">BURHANI HARDWARE</span>
+                <span class="fs-5 text-white fw-bold"
+                    style="letter-spacing: 0.5px; font-family: 'Playfair Display';">BURHANI HARDWARE</span>
             </a>
             <a href="{% url 'home' %}" class="text-white-50 text-decoration-none small fw-bold">BACK TO HOME</a>
         </div>
@@ -223,19 +262,20 @@
     <div class="auth-container">
         <div class="auth-card">
             <h2>Create Account</h2>
-            <p class="text-muted small mb-4">Join our professional community today.</p>
+            <p class="text-muted small mb-2">Join our professional community today.</p>
 
             {% if messages %}
-                {% for message in messages %}
-                <div class="alert alert-info border-0 rounded-4 py-2 px-3 small mb-4">
-                    <i class="bi bi-info-circle me-2"></i> {{ message }}
-                </div>
-                {% endfor %}
+            {% for message in messages %}
+            <div class="alert alert-info border-0 rounded-3 py-1 px-2 small mb-2">
+                <i class="bi bi-info-circle me-2"></i> {{ message }}
+            </div>
+            {% endfor %}
             {% endif %}
 
-            <div class="mb-4">
+            <div class="mb-2">
                 <a href="{% provider_login_url 'google' %}" class="btn-google">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="me-2" width="18">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"
+                        class="me-2" width="18">
                     Register with Google
                 </a>
 
@@ -246,31 +286,43 @@
 
             <form method="POST">
                 {% csrf_token %}
-                <div class="mb-3">
-                    <label class="form-label">Full Name</label>
+                <div class="mb-2">
+                    <label class="form-label" style="margin-bottom: 0.2rem;">Full Name</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-card-text"></i></span>
                         <input type="text" name="first_name" class="form-control" placeholder="John Doe" required>
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Username</label>
+                <div class="mb-2">
+                    <label class="form-label" style="margin-bottom: 0.2rem;">Phone Number</label>
                     <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-person"></i></span>
-                        <input type="text" name="username" class="form-control" placeholder="choose_username" required>
+                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                        <input type="tel" id="phone_number" name="username" class="form-control"
+                            placeholder="+91 XXXXX XXXXX" required>
+                        <button class="btn" style="background-color: var(--gg-header); color: white; font-weight: 600; padding: 0 1rem;" type="button" id="send-otp-btn">Send OTP</button>
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <label class="form-label">Password</label>
+                <div class="mb-2" id="otp-section" style="display: none;">
+                    <label class="form-label fw-bold" style="color: var(--gg-accent) !important; margin-bottom: 0.2rem;">Verification Code</label>
+                    <div class="input-group" style="border-color: var(--gg-accent); box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.1);">
+                        <span class="input-group-text" style="background: transparent;"><i class="bi bi-shield-check" style="color: var(--gg-accent);"></i></span>
+                        <input type="text" id="otp_input" name="otp" class="form-control"
+                            placeholder="Enter 6-digit OTP">
+                        <button class="btn" style="background-color: var(--gg-accent); color: white; font-weight: 600; padding: 0 1rem;" type="button" id="verify-otp-btn">Verify</button>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" style="margin-bottom: 0.2rem;">Create Password</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-key"></i></span>
                         <input type="password" name="password" class="form-control" placeholder="••••••••" required>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-auth">Register Now</button>
+                <button type="submit" id="register-btn" class="btn-auth" style="margin-top: 0;" disabled>Verify Phone to Register</button>
             </form>
 
             <div class="auth-footer">
@@ -284,7 +336,8 @@
             <div class="row g-4">
                 <div class="col-lg-6">
                     <h5 class="footer-title">BURHANI HARDWARE</h5>
-                    <p class="small text-white-50">Premium tools and industrial machinery. Quality service since 2004.</p>
+                    <p class="small text-white-50">Premium tools and industrial machinery. Quality service since 2004.
+                    </p>
                 </div>
                 <div class="col-lg-6 text-lg-end">
                     <h5 class="footer-title">Need Help?</h5>
@@ -301,6 +354,84 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // OTP Logic for Registration
+        let countdownInterval;
+
+        document.getElementById('send-otp-btn').addEventListener('click', function () {
+            const phone = document.getElementById('phone_number').value;
+            if (!phone) { alert("Please enter phone number"); return; }
+            if (phone.replace(/\D/g, '').length < 10) { alert("Please enter a valid 10-digit phone number"); return; }
+
+            const btn = this;
+            btn.disabled = true;
+            btn.innerText = 'Sending...';
+
+            fetch('/send-otp/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 'phone': phone })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        document.getElementById('otp-section').style.display = 'block';
+                        alert("OTP Sent! Please check your phone.");
+                        
+                        // Start 60-second cooldown
+                        let timeLeft = 60;
+                        btn.disabled = true;
+                        
+                        clearInterval(countdownInterval);
+                        countdownInterval = setInterval(() => {
+                            btn.innerText = `Resend in ${timeLeft}s`;
+                            timeLeft--;
+                            
+                            if (timeLeft < 0) {
+                                clearInterval(countdownInterval);
+                                btn.innerText = 'Resend OTP';
+                                btn.disabled = false;
+                            }
+                        }, 1000);
+
+                    } else if (data.status === 'cooldown') {
+                        alert(data.message);
+                        btn.innerText = 'Send OTP';
+                        btn.disabled = false;
+                    } else {
+                        alert("Failed to send OTP. Try again.");
+                        btn.innerText = 'Send OTP';
+                        btn.disabled = false;
+                    }
+                });
+        });
+
+        document.getElementById('verify-otp-btn').addEventListener('click', function () {
+            const otp = document.getElementById('otp_input').value;
+            if (!otp) { alert("Enter OTP"); return; }
+
+            fetch('/verify-otp/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 'otp': otp })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        document.getElementById('otp-section').innerHTML = '<div class="alert alert-success py-2 mt-1 mb-0"><i class="bi bi-check-circle-fill"></i> Phone Verified!</div><input type="hidden" name="otp" value="' + otp + '">';
+                        document.getElementById('phone_number').readOnly = true;
+                        document.getElementById('send-otp-btn').remove();
+
+                        const registerBtn = document.getElementById('register-btn');
+                        registerBtn.disabled = false;
+                        registerBtn.innerText = 'Register Now';
+                        registerBtn.style.backgroundColor = 'var(--gg-header)';
+                    } else {
+                        alert("Invalid OTP! Please try again.");
+                    }
+                });
+        });
+    </script>
 </body>
 
 </html>

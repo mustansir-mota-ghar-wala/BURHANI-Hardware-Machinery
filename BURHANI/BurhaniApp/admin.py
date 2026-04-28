@@ -5,4 +5,8 @@ from .models import Category, Product, Cart, Order
 admin.site.register(Category)
 admin.site.register(Product)
 admin.site.register(Cart)
-admin.site.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'bill', 'payment_status', 'delivery_status', 'created_at')
+    list_editable = ('delivery_status',)
+
+admin.site.register(Order, OrderAdmin)
