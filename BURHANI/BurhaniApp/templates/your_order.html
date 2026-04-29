@@ -1,7 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,14 +20,12 @@
             --gg-glass: rgba(255, 255, 255, 0.9);
             --gg-border: rgba(0, 0, 0, 0.08);
         }
-
         body {
             background-color: var(--gg-bg);
             color: var(--gg-text);
             font-family: 'Inter', sans-serif;
             margin: 0;
         }
-
         h1,
         h2,
         h3,
@@ -37,7 +34,6 @@
             font-weight: 900;
             color: var(--gg-header);
         }
-
         header {
             background-color: var(--gg-header);
             color: white;
@@ -48,7 +44,6 @@
             top: 0;
             z-index: 2000;
         }
-
         .logo-circle {
             background-color: var(--gg-yellow);
             width: 45px;
@@ -62,7 +57,6 @@
             transform: rotate(-3deg);
             box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
         }
-
         .order-card {
             background: white;
             border-radius: 24px;
@@ -72,12 +66,10 @@
             border: 1px solid var(--gg-border);
             transition: 0.3s;
         }
-
         .order-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
         }
-
         .status-badge {
             padding: 0.5rem 1rem;
             border-radius: 50px;
@@ -86,22 +78,18 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
         .status-paid {
             background: #e8f5e9;
             color: #2e7d32;
         }
-
         .status-pending {
             background: #fff8e1;
             color: #f57f17;
         }
-
         .status-failed {
             background: #ffebee;
             color: #c62828;
         }
-
         .order-header {
             display: flex;
             justify-content: space-between;
@@ -110,7 +98,6 @@
             padding-bottom: 1.5rem;
             margin-bottom: 1.5rem;
         }
-
         .order-item-row {
             display: flex;
             align-items: center;
@@ -118,11 +105,9 @@
             padding: 1rem 0;
             border-bottom: 1px solid #f9f9f9;
         }
-
         .order-item-row:last-child {
             border-bottom: none;
         }
-
         .product-thumb {
             width: 60px;
             height: 60px;
@@ -130,25 +115,21 @@
             border-radius: 12px;
             object-fit: cover;
         }
-
         .empty-state {
             text-align: center;
             padding: 5rem 2rem;
         }
-
         .empty-icon {
             font-size: 4rem;
             color: #ddd;
             margin-bottom: 1.5rem;
         }
-
         footer {
             background: var(--gg-header);
             color: white;
             padding: 5rem 0 2rem;
             margin-top: 5rem;
         }
-
         .copyright {
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             margin-top: 4rem;
@@ -157,14 +138,12 @@
             color: rgba(255, 255, 255, 0.4);
             font-size: 0.9rem;
         }
-
         .track-stepper {
             display: flex;
             justify-content: space-between;
             margin: 1.5rem 0;
             position: relative;
         }
-
         .track-stepper::before {
             content: '';
             position: absolute;
@@ -175,14 +154,12 @@
             background: #eee;
             z-index: 1;
         }
-
         .track-step {
             position: relative;
             z-index: 2;
             text-align: center;
             flex: 1;
         }
-
         .track-icon {
             width: 35px;
             height: 35px;
@@ -195,42 +172,86 @@
             margin-bottom: 5px;
             transition: 0.3s;
         }
-
         .track-step.active .track-icon {
             background: var(--gg-accent);
             color: white;
             box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.2);
         }
-
         .track-label {
             font-size: 0.75rem;
             font-weight: 600;
             color: #999;
             transition: 0.3s;
         }
-
         .track-step.active .track-label {
             color: var(--gg-header);
         }
+        @media (max-width: 767.98px) {
+            .track-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
+            }
+            .track-label {
+                font-size: 0.65rem;
+            }
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .order-item-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            .order-item-row .text-end {
+                text-align: left !important;
+                margin-top: 0.5rem;
+            }
+        }
     </style>
 </head>
-
 <body>
-
     <header>
         <div class="container d-flex align-items-center justify-content-between">
             <a href="{% url 'home' %}" class="d-flex align-items-center text-decoration-none">
                 <div class="logo-circle">
                     <i class="bi bi-tools fs-5"></i>
                 </div>
-                <span class="heading-font fs-4 text-white" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
+                <span class="heading-font fs-4 text-white d-none d-sm-inline" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
+                <span class="heading-font fs-4 text-white d-inline d-sm-none" style="letter-spacing: 1px;">BURHANI</span>
             </a>
-            <div class="d-flex align-items-center gap-4">
-                <a href="{% url 'home' %}" class="text-white text-decoration-none fs-6 fw-bold">CONTINUE SHOPPING</a>
+            <div class="d-flex align-items-center gap-3">
+                <a href="{% url 'home' %}" class="text-white text-decoration-none fs-6 fw-bold d-none d-md-inline">CONTINUE SHOPPING</a>
+                <button class="btn btn-link text-white d-md-none fs-4 p-0 ms-2" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+                    <i class="bi bi-list"></i>
+                </button>
             </div>
         </div>
     </header>
 
+    <!-- Mobile Offcanvas Menu -->
+    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="mobileMenu">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h5 class="offcanvas-title heading-font">Menu</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="d-flex flex-column gap-3 fs-5">
+                <a href="{% url 'home' %}" class="text-white text-decoration-none">Home</a>
+                <a href="{% url 'home' %}" class="text-white text-decoration-none">Continue Shopping</a>
+                <a href="{% url 'cart' %}" class="text-white text-decoration-none">Shopping Cart</a>
+                <hr class="border-secondary">
+                {% if user.is_authenticated %}
+                    <span class="text-white-50 fs-6">Hi, {% firstof user.first_name user.username %}</span>
+                    <a href="{% url 'logout' %}" class="text-danger text-decoration-none fw-bold">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-warning text-decoration-none fw-bold">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
     <div class="container my-5 pt-4">
         <div class="d-flex justify-content-between align-items-end mb-5">
             <div>
@@ -241,7 +262,6 @@
                 <span class="badge bg-dark rounded-pill px-3 py-2">{{ orders.count }} Total Orders</span>
             </div>
         </div>
-
         {% if orders %}
         {% for order in orders %}
         <div class="order-card">
@@ -265,33 +285,27 @@
                     </span>
                 </div>
             </div>
-
             <div class="order-body">
                 <div class="track-stepper px-md-4 mb-4">
-                    <!-- Step 1 -->
                     <div class="track-step active">
                         <div class="track-icon"><i class="bi bi-cart-check"></i></div>
                         <div class="track-label">Placed</div>
                     </div>
-                    <!-- Step 2 -->
                     <div
                         class="track-step {% if order.delivery_status in 'Processing,Shipped,Out for Delivery,Delivered' %}active{% endif %}">
                         <div class="track-icon"><i class="bi bi-box-seam"></i></div>
                         <div class="track-label">Processing</div>
                     </div>
-                    <!-- Step 3 -->
                     <div
                         class="track-step {% if order.delivery_status in 'Shipped,Out for Delivery,Delivered' %}active{% endif %}">
                         <div class="track-icon"><i class="bi bi-truck"></i></div>
                         <div class="track-label">Shipped</div>
                     </div>
-                    <!-- Step 4 -->
                     <div class="track-step {% if order.delivery_status == 'Delivered' %}active{% endif %}">
                         <div class="track-icon"><i class="bi bi-house-check"></i></div>
                         <div class="track-label">Delivered</div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-8">
                         <h6 class="text-muted small text-uppercase fw-bold mb-3">Items Purchased</h6>
@@ -319,7 +333,6 @@
                         <div class="bg-light p-4 rounded-4 h-100">
                             <h6 class="text-muted small text-uppercase fw-bold mb-3">Shipping Address</h6>
                             <p class="mb-0 small" style="line-height: 1.6;">{{ order.address }}</p>
-
                             {% if order.razorpay_order_id %}
                             <div class="mt-4 pt-4 border-top">
                                 <h6 class="text-muted small text-uppercase fw-bold mb-2">Payment Info</h6>
@@ -341,8 +354,6 @@
         </div>
         {% endif %}
     </div>
-
-    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="copyright">
@@ -350,8 +361,6 @@
             </div>
         </div>
     </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

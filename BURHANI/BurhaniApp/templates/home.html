@@ -1,7 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +22,6 @@
             --gg-glass: rgba(255, 255, 255, 0.9);
             --gg-border: rgba(0, 0, 0, 0.08);
         }
-
         body {
             background-color: var(--gg-bg);
             color: var(--gg-text);
@@ -31,7 +29,6 @@
             margin: 0;
             overflow-x: hidden;
         }
-
         h1,
         h2,
         h3,
@@ -40,8 +37,6 @@
             font-weight: 900;
             color: var(--gg-header);
         }
-
-        /* Top Header */
         header {
             background-color: var(--gg-header);
             color: var(--gg-white);
@@ -52,7 +47,6 @@
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-
         .nav-links a {
             color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
@@ -63,12 +57,10 @@
             margin-right: 2rem;
             transition: 0.3s;
         }
-
         .nav-links a:hover,
         .nav-links a.active {
             color: var(--gg-yellow);
         }
-
         .logo-circle {
             background-color: var(--gg-yellow);
             width: 45px;
@@ -83,12 +75,9 @@
             box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
             transition: 0.3s;
         }
-
         .logo-circle:hover {
             transform: rotate(0deg) scale(1.1);
         }
-
-        /* Messages */
         .message-container {
             position: fixed;
             top: 5rem;
@@ -96,7 +85,6 @@
             z-index: 1050;
             max-width: 350px;
         }
-
         .alert {
             border-radius: 16px;
             border: none;
@@ -104,24 +92,20 @@
             backdrop-filter: blur(10px);
             animation: slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
         @keyframes slideInRight {
             from {
                 transform: translateX(100%);
                 opacity: 0;
             }
-
             to {
                 transform: translateX(0);
                 opacity: 1;
             }
         }
-
         /* Hero Container */
         .hero-container {
             padding: 1.5rem 0 0;
         }
-
         .hero-box {
             background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
             url("{% static 'images/hero_powertools.png' %}") center/cover;
@@ -136,19 +120,16 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
             animation: fadeIn 1s ease-out;
         }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(20px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
         .hero-content h1 {
             font-size: 3.2rem;
             line-height: 1.1;
@@ -156,7 +137,6 @@
             color: white;
             text-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
         }
-
         .hero-search {
             background: white;
             border-radius: 16px;
@@ -167,7 +147,6 @@
             margin: 0 auto 2rem;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
         }
-
         .hero-search input {
             border: none;
             flex-grow: 1;
@@ -176,7 +155,6 @@
             outline: none;
             background: transparent;
         }
-
         .btn-terracotta {
             background-color: var(--gg-accent);
             color: white;
@@ -189,13 +167,11 @@
             letter-spacing: 1.5px;
             box-shadow: 0 10px 20px rgba(230, 126, 34, 0.2);
         }
-
         .btn-terracotta:hover {
             background-color: #d35400;
             transform: translateY(-4px);
             box-shadow: 0 15px 30px rgba(230, 126, 34, 0.3);
         }
-
         /* Category Slider */
         .cat-slider-container {
             overflow-x: auto;
@@ -207,18 +183,15 @@
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
         }
-
         .cat-slider-container::-webkit-scrollbar {
             display: none;
         }
-
         .cat-slide-item {
             flex: 0 0 calc(22% - 1.2rem);
             /* Shows 4 full items and a peek of the 5th */
             min-width: 250px;
             scroll-snap-align: start;
         }
-
         @media (max-width: 992px) {
             .cat-slide-item {
                 flex: 0 0 75%;
@@ -226,12 +199,10 @@
                 min-width: 200px;
             }
         }
-
         /* Slider Navigation */
         .slider-nav-container {
             position: relative;
         }
-
         .slider-btn {
             position: absolute;
             top: 55%;
@@ -250,27 +221,22 @@
             color: var(--gg-header);
             transition: 0.3s;
         }
-
         .slider-btn:hover {
             background: var(--gg-accent);
             color: white;
             border-color: var(--gg-accent);
         }
-
         .btn-prev {
             left: -20px;
         }
-
         .btn-next {
             right: -20px;
         }
-
         @media (max-width: 1200px) {
             .slider-btn {
                 display: none;
             }
         }
-
         .cat-card {
             background-color: white;
             border-radius: 24px;
@@ -281,30 +247,25 @@
             border: 1px solid var(--gg-border);
             height: 100%;
         }
-
         .cat-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
             border-color: var(--gg-accent);
         }
-
         .cat-img {
             height: 160px;
             overflow: hidden;
             background: #f9f9f9;
         }
-
         .cat-img img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: 0.6s;
         }
-
         .cat-card:hover .cat-img img {
             transform: scale(1.1);
         }
-
         /* Featured Section */
         .section-title {
             text-align: center;
@@ -315,7 +276,6 @@
             position: relative;
             padding-bottom: 1rem;
         }
-
         .section-title::after {
             content: '';
             position: absolute;
@@ -327,7 +287,6 @@
             background: var(--gg-accent);
             border-radius: 2px;
         }
-
         /* Product Cards */
         .prod-card {
             background: white;
@@ -341,12 +300,10 @@
             flex-direction: column;
             position: relative;
         }
-
         .prod-card:hover {
             transform: translateY(-12px);
             box-shadow: 0 40px 80px rgba(0, 0, 0, 0.12);
         }
-
         .prod-img {
             height: 50%;
             /* Exact half */
@@ -355,7 +312,6 @@
             position: relative;
             background: #f8f9fa;
         }
-
         .prod-img img {
             width: 100%;
             height: 100%;
@@ -365,11 +321,9 @@
             padding: 0 !important;
             /* Remove padding for full bleed */
         }
-
         .prod-card:hover .prod-img img {
             transform: scale(1.15);
         }
-
         .prod-info {
             height: 50%;
             /* Exact half */
@@ -380,21 +334,18 @@
             justify-content: center;
             background: white;
         }
-
         .prod-info h4 {
             font-size: 1.15rem;
             font-weight: 800;
             margin-bottom: 0.5rem;
             color: var(--gg-header);
         }
-
         .prod-price {
             font-weight: 900;
             font-size: 1.4rem;
             color: var(--gg-accent);
             margin-bottom: 1rem;
         }
-
         .btn-add {
             background-color: var(--gg-header);
             color: white;
@@ -407,12 +358,10 @@
             border: none;
             transition: 0.3s;
         }
-
         .btn-add:hover {
             background-color: var(--gg-accent);
             transform: translateY(-2px);
         }
-
         /* Footer */
         footer {
             background: var(--gg-header);
@@ -420,7 +369,6 @@
             padding: 5rem 0 2rem;
             margin-top: 5rem;
         }
-
         .footer-title {
             font-weight: 800;
             text-transform: uppercase;
@@ -429,33 +377,27 @@
             font-size: 1rem;
             color: var(--gg-yellow);
         }
-
         .footer-links {
             list-style: none;
             padding: 0;
         }
-
         .footer-links li {
             margin-bottom: 1rem;
         }
-
         .footer-links a {
             color: rgba(255, 255, 255, 0.6);
             text-decoration: none;
             transition: 0.3s;
             font-weight: 500;
         }
-
         .footer-links a:hover {
             color: white;
             padding-left: 5px;
         }
-
         .social-icons {
             display: flex;
             gap: 1.5rem;
         }
-
         .social-icons a {
             width: 45px;
             height: 45px;
@@ -468,13 +410,11 @@
             text-decoration: none;
             transition: 0.3s;
         }
-
         .social-icons a:hover {
             background: var(--gg-yellow);
             color: var(--gg-header);
             transform: translateY(-5px);
         }
-
         .copyright {
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             margin-top: 4rem;
@@ -485,47 +425,67 @@
         }
     </style>
 </head>
-
 <body>
-
     <header>
         <div class="container d-flex align-items-center justify-content-between">
             <a href="{% url 'home' %}" class="d-flex align-items-center text-decoration-none">
                 <div class="logo-circle">
                     <i class="bi bi-tools fs-5"></i>
                 </div>
-                <span class="heading-font fs-4 text-white" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
+                <span class="heading-font fs-4 text-white d-none d-sm-inline" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
+                <span class="heading-font fs-4 text-white d-inline d-sm-none" style="letter-spacing: 1px;">BURHANI</span>
             </a>
-
             <div class="d-none d-lg-flex nav-links">
                 <a href="{% url 'home' %}" class="active">Home</a>
                 <a href="#categories">Shop Tools</a>
                 <a href="{% url 'your_orders' %}">My Orders</a>
                 <a href="#about">About Us</a>
             </div>
-
-            <div class="d-flex align-items-center gap-4">
-                <div class="d-flex gap-3 fs-5 align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <div class="d-none d-lg-flex gap-3 fs-5 align-items-center me-3">
                     {% if user.is_authenticated %}
-                    <span class="fs-6 fw-bold text-white-50 d-none d-md-inline">Hi, {% firstof user.first_name user.username %}</span>
+                    <span class="fs-6 fw-bold text-white-50">Hi, {% firstof user.first_name user.username %}</span>
                     <a href="{% url 'logout' %}" class="text-white text-decoration-none fs-6 fw-bold">LOGOUT</a>
                     {% else %}
                     <a href="{% url 'login' %}" class="text-white text-decoration-none fs-6 fw-bold">LOGIN</a>
                     {% endif %}
-                    <a href="{% url 'cart' %}" class="text-white">
-                        <i class="bi bi-cart3 position-relative">
-                            {% if cart_count > 0 %}
-                            <span
-                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                                style="font-size: 0.5rem;">{{ cart_count }}</span>
-                            {% endif %}
-                        </i>
-                    </a>
                 </div>
+                <a href="{% url 'cart' %}" class="text-white fs-5">
+                    <i class="bi bi-cart3 position-relative">
+                        {% if cart_count > 0 %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem;">{{ cart_count }}</span>
+                        {% endif %}
+                    </i>
+                </a>
+                <button class="btn btn-link text-white d-lg-none fs-4 p-0 ms-2" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+                    <i class="bi bi-list"></i>
+                </button>
             </div>
         </div>
     </header>
 
+    <!-- Mobile Offcanvas Menu -->
+    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="mobileMenu">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h5 class="offcanvas-title heading-font">Menu</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="d-flex flex-column gap-3 fs-5">
+                <a href="{% url 'home' %}" class="text-white text-decoration-none">Home</a>
+                <a href="#categories" class="text-white text-decoration-none">Shop Tools</a>
+                <a href="{% url 'your_orders' %}" class="text-white text-decoration-none">My Orders</a>
+                <a href="#about" class="text-white text-decoration-none">About Us</a>
+                <hr class="border-secondary">
+                {% if user.is_authenticated %}
+                    <span class="text-white-50 fs-6">Hi, {% firstof user.first_name user.username %}</span>
+                    <a href="{% url 'logout' %}" class="text-danger text-decoration-none fw-bold">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-warning text-decoration-none fw-bold">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
     {% if messages %}
     <div class="message-container">
         {% for message in messages %}
@@ -539,28 +499,23 @@
         {% endfor %}
     </div>
     {% endif %}
-
     {% if not query %}
-    <!-- Hero -->
     <div class="container hero-container">
         <div class="hero-box">
             <div class="hero-content">
                 <h1>EQUIP YOUR<br>CREATIVE SPACE</h1>
                 <p class="lead mb-5 opacity-75">Premium tools, machinery, and expert advice for professional workshops.
                 </p>
-
                 <form action="{% url 'home' %}" method="GET" class="hero-search">
                     <input type="text" name="q" placeholder="Search for tools, machinery, spare parts..."
                         value="{{ query|default:'' }}">
                     <button type="submit" class="btn-terracotta">Search</button>
                 </form>
-
                 <a href="#categories" class="btn-terracotta text-decoration-none">Explore Categories</a>
             </div>
         </div>
     </div>
     {% else %}
-    <!-- Search Results Header -->
     <div class="container py-4 mt-2">
         <div class="d-flex justify-content-between align-items-end mb-4">
             <div>
@@ -573,15 +528,12 @@
         <hr class="opacity-10 mb-3">
     </div>
     {% endif %}
-
-    <!-- Categories -->
     <div class="container pb-2 slider-nav-container" id="categories">
         <h2 class="section-title">Shop By Category</h2>
         <button class="slider-btn btn-prev"
             onclick="document.querySelector('.cat-slider-container').scrollBy({left: -300, behavior: 'smooth'})">
             <i class="bi bi-chevron-left"></i>
         </button>
-
         <div class="cat-slider-container">
             {% for category in categories %}
             <div class="cat-slide-item">
@@ -601,15 +553,12 @@
             </div>
             {% endfor %}
         </div>
-
         <button class="slider-btn btn-next"
             onclick="document.querySelector('.cat-slider-container').scrollBy({left: 300, behavior: 'smooth'})">
             <i class="bi bi-chevron-right"></i>
         </button>
     </div>
-
-    <!-- Featured Arrivals -->
-    <div class="container pb-5">
+    <div class="container pb-4 pb-md-5">
         {% if query %}
         <h2 class="section-title">Products Found ({{ products|length }})</h2>
         {% else %}
@@ -645,11 +594,9 @@
             {% endfor %}
         </div>
     </div>
-
     {% if not query %}
-    <!-- About Section -->
-    <div class="container py-5" id="about">
-        <div class="row align-items-center g-5">
+    <div class="container py-4 py-md-5" id="about">
+        <div class="row align-items-center g-4 g-lg-5">
             <div class="col-lg-6">
                 <h2 class="heading-font mb-4 fs-1">Quality You Can Trust</h2>
                 <p class="lead text-muted">At Burhani Hardware, we pride ourselves on providing the highest quality
@@ -676,9 +623,7 @@
             </div>
         </div>
     </div>
-
     {% endif %}
-    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="row g-4">
@@ -730,7 +675,6 @@
             </div>
         </div>
     </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Auto-dismiss alerts
@@ -743,5 +687,4 @@
         }, 5000);
     </script>
 </body>
-
 </html>
