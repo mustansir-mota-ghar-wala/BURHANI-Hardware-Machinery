@@ -201,10 +201,18 @@
 /* 8. Hero Section Mobile Fixes */
 @media (max-width: 768px) {
     .hero-box {
-        height: auto !important;
-        padding: 1.5rem 1rem !important;
-        /* Decreased padding to reduce height */
+        height: 390px !important;
+        padding: 1.5rem 1rem 0.75rem !important;
+        justify-content: flex-end !important;
         border-radius: 20px;
+    }
+
+    .hero-content {
+        width: 100%;
+        padding: 0 !important;
+        margin-top: auto !important;
+        display: flex;
+        justify-content: center;
     }
 
     .hero-content h1 {
