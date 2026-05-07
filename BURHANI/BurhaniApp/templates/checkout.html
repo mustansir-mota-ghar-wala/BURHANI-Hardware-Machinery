@@ -1,12 +1,14 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Burhani Hardware | Secure Checkout</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/mobile_app.css' %}">
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -19,12 +21,14 @@
             --gg-yellow: #ffc107;
             --gg-border: rgba(0, 0, 0, 0.08);
         }
+
         body {
             background-color: var(--gg-bg);
             color: var(--gg-text);
             font-family: 'Inter', sans-serif;
             margin: 0;
         }
+
         h1,
         h2,
         h3,
@@ -33,6 +37,7 @@
             font-weight: 900;
             color: var(--gg-header);
         }
+
         header {
             background-color: var(--gg-header);
             color: white;
@@ -43,6 +48,7 @@
             top: 0;
             z-index: 2000;
         }
+
         .logo-circle {
             background-color: var(--gg-yellow);
             width: 45px;
@@ -56,6 +62,7 @@
             transform: rotate(-3deg);
             box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
         }
+
         .checkout-card {
             background: white;
             border-radius: 32px;
@@ -63,11 +70,13 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
             border: 1px solid var(--gg-border);
         }
+
         @media (max-width: 991.98px) {
             .checkout-card {
                 padding: 1.5rem;
             }
         }
+
         .form-label {
             font-weight: 700;
             font-size: 0.85rem;
@@ -76,6 +85,7 @@
             color: #666;
             margin-bottom: 0.8rem;
         }
+
         .form-control {
             border-radius: 14px;
             padding: 1rem 1.2rem;
@@ -83,16 +93,19 @@
             font-size: 1rem;
             transition: 0.3s;
         }
+
         .form-control:focus {
             border-color: var(--gg-accent);
             box-shadow: 0 0 0 5px rgba(230, 126, 34, 0.1);
         }
+
         .order-summary-box {
             background: #fdfdfd;
             border-radius: 24px;
             padding: 2rem;
             border: 1px solid #f0f0f0;
         }
+
         .summary-item {
             display: flex;
             align-items: center;
@@ -100,33 +113,39 @@
             padding: 1.2rem 0;
             border-bottom: 1px solid #f0f0f0;
         }
+
         .summary-item:last-child {
             border-bottom: none;
         }
+
         .btn-place-order {
-            background-color: var(--gg-header);
-            color: white;
+            background-color: var(--gg-yellow);
+            color: var(--gg-header);
             width: 100%;
-            border-radius: 16px;
-            padding: 1.2rem;
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            font-size: 0.95rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             border: none;
             transition: 0.4s;
-            margin-top: 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            margin-top: 1rem;
         }
+
         .btn-place-order:hover {
-            background-color: var(--gg-accent);
-            transform: translateY(-4px);
-            box-shadow: 0 15px 30px rgba(230, 126, 34, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(255, 193, 7, 0.2);
         }
+
         .payment-methods {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
             margin-top: 1.5rem;
         }
+
         .payment-option {
             border: 2px solid #eee;
             border-radius: 16px;
@@ -137,17 +156,20 @@
             font-weight: 700;
             user-select: none;
         }
+
         .payment-option.active {
             border-color: var(--gg-accent);
             background: rgba(230, 126, 34, 0.05);
             color: var(--gg-accent);
         }
+
         footer {
             background: var(--gg-header);
             color: white;
             padding: 5rem 0 2rem;
             margin-top: 5rem;
         }
+
         .copyright {
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             margin-top: 4rem;
@@ -158,6 +180,7 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         <div class="container d-flex align-items-center justify-content-between">
@@ -165,22 +188,25 @@
                 <div class="logo-circle">
                     <i class="bi bi-tools fs-5"></i>
                 </div>
-                <span class="heading-font fs-4 text-white d-none d-sm-inline" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
-                <span class="heading-font fs-4 text-white d-inline d-sm-none" style="letter-spacing: 1px;">BURHANI</span>
+                <span class="heading-font fs-4 text-white d-none d-sm-inline" style="letter-spacing: 1px;">BURHANI
+                    HARDWARE</span>
+                <span class="heading-font fs-4 text-white d-inline d-sm-none"
+                    style="letter-spacing: 1px;">BURHANI</span>
             </a>
             <div class="d-flex align-items-center gap-3">
                 <a href="{% url 'cart' %}" class="text-white text-decoration-none fs-6 fw-bold d-none d-md-inline">
                     <i class="bi bi-arrow-left me-2"></i>RETURN TO CART
                 </a>
-                <button class="btn btn-link text-white d-md-none fs-4 p-0 ms-2" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+                <button class="btn btn-link text-white d-md-none fs-4 p-0 ms-2" data-bs-toggle="offcanvas"
+                    data-bs-target="#mobileMenu">
                     <i class="bi bi-list"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Mobile Offcanvas Menu -->
-    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="mobileMenu">
+    <!-- Mobile Offcanvas Menu (Bottom Sheet) -->
+    <div class="offcanvas offcanvas-bottom-sheet text-bg-dark" tabindex="-1" id="mobileMenu">
         <div class="offcanvas-header border-bottom border-secondary">
             <h5 class="offcanvas-title heading-font">Menu</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
@@ -192,50 +218,93 @@
                 <a href="{% url 'your_orders' %}" class="text-white text-decoration-none">My Orders</a>
                 <hr class="border-secondary">
                 {% if user.is_authenticated %}
-                    <span class="text-white-50 fs-6">Hi, {% firstof user.first_name user.username %}</span>
-                    <a href="{% url 'logout' %}" class="text-danger text-decoration-none fw-bold">Logout</a>
+                <span class="text-white-50 fs-6">Hi, {% firstof user.first_name user.username %}</span>
+                <a href="{% url 'logout' %}" class="text-danger text-decoration-none fw-bold">Logout</a>
                 {% else %}
-                    <a href="{% url 'login' %}" class="text-warning text-decoration-none fw-bold">Login</a>
+                <a href="{% url 'login' %}" class="text-warning text-decoration-none fw-bold">Login</a>
                 {% endif %}
             </div>
         </div>
     </div>
-    <div class="container my-5 pt-4">
-        <h1 class="mb-5">Complete Your Order</h1>
-        <div class="row g-5">
+    <div class="container my-0 my-md-4 px-0 px-md-3">
+        <h1 class="mb-2 mb-md-4 fs-5 fw-bold px-3 pt-3" style="font-family: 'Inter', sans-serif; text-transform: uppercase;">Complete Your Order</h1>
+        <div class="row g-0 g-md-4">
             <div class="col-lg-7">
-                <div class="checkout-card">
-                    <h3 class="mb-4">1. Shipping Details</h3>
+                <div class="checkout-form-section bg-white p-3" style="border-top: 1px solid rgba(0,0,0,0.05); border-bottom: 1px solid rgba(0,0,0,0.05);">
+                    <h3 class="mb-4 fs-4" style="font-family: 'Inter', sans-serif;">1. Shipping Details</h3>
                     <form id="checkoutForm" method="POST" action="{% url 'order' %}">
                         {% csrf_token %}
                         <input type="hidden" name="order_id" value="{{ order_instance.id }}">
                         <input type="hidden" id="rzp_key" value="{{ razorpay_key_id|default:''|escapejs }}">
                         <input type="hidden" id="rzp_order_id" value="{{ razorpay_order_id|default:''|escapejs }}">
                         <input type="hidden" id="rzp_amount" value="{{ amount|default:'0' }}">
-                        <div class="row g-4">
-                            <div class="col-md-6">
+                        <div class="row g-3">
+                            <h5 class="mb-1 text-muted"
+                                style="font-size: 0.95rem; font-weight: 700; text-transform: uppercase;">Contact
+                                Information</h5>
+                            <div class="col-md-6 mt-2">
                                 <label class="form-label">First Name</label>
                                 <input type="text" name="first_name" class="form-control" placeholder="John"
                                     value="{% firstof user.first_name user.username %}" required>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 mt-2">
                                 <label class="form-label">Last Name</label>
                                 <input type="text" name="last_name" class="form-control" placeholder="Doe" required>
                             </div>
-                            <div class="col-12">
-                                <label class="form-label">Shipping Address</label>
-                                <textarea name="address" class="form-control" rows="3"
-                                    placeholder="Street, City, Pincode" required></textarea>
+                            <div class="col-md-6">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-control bg-light" value="{{ user.email }}" readonly>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Phone Number</label>
                                 <input type="tel" id="phone_number" name="phone" class="form-control"
                                     placeholder="+91 XXXXX XXXXX" value="" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Email Address</label>
-                                <input type="email" class="form-control" value="{{ user.email }}" readonly>
+
+                            <div class="col-12 mt-4">
+                                <div class="d-flex justify-content-between align-items-end mb-2 border-bottom pb-2">
+                                    <h5 class="mb-0 text-muted"
+                                        style="font-size: 0.95rem; font-weight: 700; text-transform: uppercase;">
+                                        Shipping Address</h5>
+                                    <button type="button"
+                                        class="btn btn-sm btn-outline-secondary d-flex align-items-center"
+                                        id="getLocationBtn"
+                                        style="border-radius: 8px; font-weight: 600; font-size: 0.8rem;">
+                                        <i class="bi bi-geo-alt-fill me-1"></i> Auto-Detect Location
+                                    </button>
+                                </div>
+                                <div id="locationStatus" class="form-text text-muted mb-2" style="display: none;"></div>
                             </div>
+
+                            <div class="col-12 mt-2">
+                                <label class="form-label">Street Address</label>
+                                <input type="text" id="streetAddress" class="form-control address-field"
+                                    placeholder="House number and street name" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Apartment, suite, etc. <span
+                                        class="text-muted fw-normal text-lowercase">(optional)</span></label>
+                                <input type="text" id="apartment" class="form-control address-field"
+                                    placeholder="Apartment, suite, unit, etc.">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">City</label>
+                                <input type="text" id="city" class="form-control address-field" placeholder="City"
+                                    required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">State</label>
+                                <input type="text" id="state" class="form-control address-field" placeholder="State"
+                                    required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">PIN Code</label>
+                                <input type="text" id="pincode" class="form-control address-field"
+                                    placeholder="PIN Code" required>
+                            </div>
+
+                            <!-- Hidden field to send combined address to Django backend -->
+                            <textarea name="address" id="shippingAddress" style="display: none;" required></textarea>
                         </div>
                     </form>
                     <h3 class="mt-5 mb-4">2. Payment Method</h3>
@@ -249,11 +318,21 @@
                             <span>Online Payment</span>
                         </div>
                     </div>
+                    
+                    <div class="mt-4 mb-2">
+                        <button type="submit" id="place-order-btn" form="checkoutForm" class="btn-place-order touch-feedback w-100 fw-bold" style="padding: 0.6rem; font-size: 0.9rem; border-radius: 6px; letter-spacing: 0.5px;">
+                            CONFIRM & PLACE ORDER
+                        </button>
+                    </div>
+                    <p class="text-center text-muted small mt-3">
+                        <i class="bi bi-shield-check me-1"></i>
+                        Your transaction is secured with 256-bit SSL encryption.
+                    </p>
                 </div>
             </div>
-            <div class="col-lg-5">
-                <div class="checkout-card sticky-lg-top" style="top: 9rem;">
-                    <h3 class="mb-4">Order Summary</h3>
+            <div class="col-lg-5 mt-2 mt-lg-0">
+                <div class="checkout-summary-section bg-white p-3" style="border-bottom: 1px solid rgba(0,0,0,0.05);">
+                    <h3 class="mb-4 fs-4" style="font-family: 'Inter', sans-serif;">Order Summary</h3>
                     <div class="order-summary-box mb-4">
                         {% for item in cart %}
                         <div class="summary-item">
@@ -275,18 +354,11 @@
                             <span class="text-success fw-bold">FREE</span>
                         </div>
                         <hr>
-                        <div class="d-flex justify-content-between mb-4">
-                            <span class="fs-4 fw-bold">Total Bill</span>
-                            <span class="fs-4 fw-bold">₹{{ grand_total }}</span>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fs-5 fw-bold">Total Bill</span>
+                            <span class="fs-5 fw-bold text-accent">₹{{ grand_total }}</span>
                         </div>
                     </div>
-                    <button type="submit" id="place-order-btn" form="checkoutForm" class="btn-place-order">
-                        Confirm & Place Order
-                    </button>
-                    <p class="text-center text-muted small mt-4">
-                        <i class="bi bi-shield-check me-1"></i>
-                        Your transaction is secured with 256-bit SSL encryption.
-                    </p>
                 </div>
             </div>
         </div>
@@ -312,6 +384,25 @@
             </div>
         </div>
     </footer>
+    <!-- Bottom App Bar -->
+    <nav class="bottom-app-bar">
+        <a href="{% url 'home' %}" class="bottom-app-bar-item">
+            <i class="bi bi-house-door"></i>
+            <span>Home</span>
+        </a>
+        <a href="{% url 'cart' %}" class="bottom-app-bar-item">
+            <i class="bi bi-cart"></i>
+            <span>Cart</span>
+        </a>
+        <a href="{% url 'your_orders' %}" class="bottom-app-bar-item">
+            <i class="bi bi-box-seam"></i>
+            <span>Orders</span>
+        </a>
+        <a href="#" class="bottom-app-bar-item" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+            <i class="bi bi-person"></i>
+            <span>Menu</span>
+        </a>
+    </nav>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
@@ -369,7 +460,105 @@
                     checkoutForm.submit();
                 }
             });
+
+            // Location Autocomplete functionality
+            const getLocationBtn = document.getElementById('getLocationBtn');
+            const shippingAddress = document.getElementById('shippingAddress');
+            const locationStatus = document.getElementById('locationStatus');
+
+            // Combine individual address fields into hidden textarea
+            function updateHiddenAddress() {
+                const street = document.getElementById('streetAddress').value.trim();
+                const apt = document.getElementById('apartment').value.trim();
+                const city = document.getElementById('city').value.trim();
+                const state = document.getElementById('state').value.trim();
+                const pin = document.getElementById('pincode').value.trim();
+
+                let parts = [];
+                if (street) parts.push(street);
+                if (apt) parts.push(apt);
+                if (city) parts.push(city);
+                if (state) parts.push(state);
+                if (pin) parts.push(pin);
+
+                if (shippingAddress) {
+                    shippingAddress.value = parts.join(', ');
+                }
+            }
+
+            // Sync on input
+            document.querySelectorAll('.address-field').forEach(field => {
+                field.addEventListener('input', updateHiddenAddress);
+            });
+
+            if (getLocationBtn && shippingAddress && locationStatus) {
+                getLocationBtn.addEventListener('click', function () {
+                    if ("geolocation" in navigator) {
+                        getLocationBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Locating...';
+                        getLocationBtn.disabled = true;
+                        locationStatus.style.display = 'block';
+                        locationStatus.innerHTML = 'Getting coordinates...';
+
+                        navigator.geolocation.getCurrentPosition(async function (position) {
+                            const lat = position.coords.latitude;
+                            const lon = position.coords.longitude;
+                            locationStatus.innerHTML = `Coordinates found. Fetching address details...`;
+
+                            try {
+                                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`);
+                                const data = await response.json();
+
+                                if (data && data.address) {
+                                    const addr = data.address;
+
+                                    // Parse complex Nominatim address object
+                                    const road = addr.road || addr.pedestrian || addr.suburb || addr.neighbourhood || '';
+                                    const house_number = addr.house_number || '';
+                                    document.getElementById('streetAddress').value = [house_number, road].filter(Boolean).join(' ');
+
+                                    document.getElementById('city').value = addr.city || addr.town || addr.village || addr.county || '';
+                                    document.getElementById('state').value = addr.state || '';
+                                    document.getElementById('pincode').value = addr.postcode || '';
+
+                                    updateHiddenAddress();
+
+                                    locationStatus.innerHTML = '<span class="text-success fw-bold"><i class="bi bi-check-circle-fill"></i> Fields populated successfully!</span>';
+                                } else {
+                                    locationStatus.innerHTML = '<span class="text-danger">Could not parse address details. Please enter manually.</span>';
+                                }
+                            } catch (error) {
+                                locationStatus.innerHTML = '<span class="text-danger">Error connecting to location service.</span>';
+                            } finally {
+                                getLocationBtn.innerHTML = '<i class="bi bi-geo-alt-fill me-1"></i> Auto-Detect Location';
+                                getLocationBtn.disabled = false;
+                            }
+                        }, function (error) {
+                            getLocationBtn.innerHTML = '<i class="bi bi-geo-alt-fill me-1"></i> Auto-Detect Location';
+                            getLocationBtn.disabled = false;
+                            locationStatus.style.display = 'block';
+
+                            switch (error.code) {
+                                case error.PERMISSION_DENIED:
+                                    locationStatus.innerHTML = '<span class="text-danger">Location permission denied. Please enter address manually.</span>';
+                                    break;
+                                case error.POSITION_UNAVAILABLE:
+                                    locationStatus.innerHTML = '<span class="text-danger">Location information unavailable.</span>';
+                                    break;
+                                case error.TIMEOUT:
+                                    locationStatus.innerHTML = '<span class="text-danger">Location request timed out.</span>';
+                                    break;
+                                default:
+                                    locationStatus.innerHTML = '<span class="text-danger">An unknown error occurred.</span>';
+                                    break;
+                            }
+                        });
+                    } else {
+                        alert("Geolocation is not supported by your browser");
+                    }
+                });
+            }
         });
     </script>
 </body>
+
 </html>

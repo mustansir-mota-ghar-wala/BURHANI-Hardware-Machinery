@@ -1,12 +1,14 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Burhani Hardware | Quality Tools & Machinery</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/mobile_app.css' %}">
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -22,6 +24,7 @@
             --gg-glass: rgba(255, 255, 255, 0.9);
             --gg-border: rgba(0, 0, 0, 0.08);
         }
+
         body {
             background-color: var(--gg-bg);
             color: var(--gg-text);
@@ -29,6 +32,7 @@
             margin: 0;
             overflow-x: hidden;
         }
+
         h1,
         h2,
         h3,
@@ -37,6 +41,7 @@
             font-weight: 900;
             color: var(--gg-header);
         }
+
         header {
             background-color: var(--gg-header);
             color: var(--gg-white);
@@ -47,6 +52,7 @@
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
+
         .nav-links a {
             color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
@@ -57,10 +63,12 @@
             margin-right: 2rem;
             transition: 0.3s;
         }
+
         .nav-links a:hover,
         .nav-links a.active {
             color: var(--gg-yellow);
         }
+
         .logo-circle {
             background-color: var(--gg-yellow);
             width: 45px;
@@ -75,9 +83,11 @@
             box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
             transition: 0.3s;
         }
+
         .logo-circle:hover {
             transform: rotate(0deg) scale(1.1);
         }
+
         .message-container {
             position: fixed;
             top: 5rem;
@@ -85,6 +95,7 @@
             z-index: 1050;
             max-width: 350px;
         }
+
         .alert {
             border-radius: 16px;
             border: none;
@@ -92,20 +103,24 @@
             backdrop-filter: blur(10px);
             animation: slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+
         @keyframes slideInRight {
             from {
                 transform: translateX(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
             }
         }
+
         /* Hero Container */
         .hero-container {
             padding: 1.5rem 0 0;
         }
+
         .hero-box {
             background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
             url("{% static 'images/hero_powertools.png' %}") center/cover;
@@ -120,16 +135,19 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
             animation: fadeIn 1s ease-out;
         }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
+
         .hero-content h1 {
             font-size: 3.2rem;
             line-height: 1.1;
@@ -137,6 +155,7 @@
             color: white;
             text-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
         }
+
         .hero-search {
             background: white;
             border-radius: 16px;
@@ -147,6 +166,7 @@
             margin: 0 auto 2rem;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
         }
+
         .hero-search input {
             border: none;
             flex-grow: 1;
@@ -155,6 +175,7 @@
             outline: none;
             background: transparent;
         }
+
         .btn-terracotta {
             background-color: var(--gg-accent);
             color: white;
@@ -167,11 +188,13 @@
             letter-spacing: 1.5px;
             box-shadow: 0 10px 20px rgba(230, 126, 34, 0.2);
         }
+
         .btn-terracotta:hover {
             background-color: #d35400;
             transform: translateY(-4px);
             box-shadow: 0 15px 30px rgba(230, 126, 34, 0.3);
         }
+
         /* Category Slider */
         .cat-slider-container {
             overflow-x: auto;
@@ -183,15 +206,18 @@
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
         }
+
         .cat-slider-container::-webkit-scrollbar {
             display: none;
         }
+
         .cat-slide-item {
             flex: 0 0 calc(22% - 1.2rem);
             /* Shows 4 full items and a peek of the 5th */
             min-width: 250px;
             scroll-snap-align: start;
         }
+
         @media (max-width: 992px) {
             .cat-slide-item {
                 flex: 0 0 75%;
@@ -199,10 +225,12 @@
                 min-width: 200px;
             }
         }
+
         /* Slider Navigation */
         .slider-nav-container {
             position: relative;
         }
+
         .slider-btn {
             position: absolute;
             top: 55%;
@@ -221,22 +249,27 @@
             color: var(--gg-header);
             transition: 0.3s;
         }
+
         .slider-btn:hover {
             background: var(--gg-accent);
             color: white;
             border-color: var(--gg-accent);
         }
+
         .btn-prev {
             left: -20px;
         }
+
         .btn-next {
             right: -20px;
         }
+
         @media (max-width: 1200px) {
             .slider-btn {
                 display: none;
             }
         }
+
         .cat-card {
             background-color: white;
             border-radius: 24px;
@@ -247,25 +280,30 @@
             border: 1px solid var(--gg-border);
             height: 100%;
         }
+
         .cat-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
             border-color: var(--gg-accent);
         }
+
         .cat-img {
             height: 160px;
             overflow: hidden;
             background: #f9f9f9;
         }
+
         .cat-img img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: 0.6s;
         }
+
         .cat-card:hover .cat-img img {
             transform: scale(1.1);
         }
+
         /* Featured Section */
         .section-title {
             text-align: center;
@@ -276,6 +314,7 @@
             position: relative;
             padding-bottom: 1rem;
         }
+
         .section-title::after {
             content: '';
             position: absolute;
@@ -287,6 +326,7 @@
             background: var(--gg-accent);
             border-radius: 2px;
         }
+
         /* Product Cards */
         .prod-card {
             background: white;
@@ -300,10 +340,12 @@
             flex-direction: column;
             position: relative;
         }
+
         .prod-card:hover {
             transform: translateY(-12px);
             box-shadow: 0 40px 80px rgba(0, 0, 0, 0.12);
         }
+
         .prod-img {
             height: 50%;
             /* Exact half */
@@ -312,6 +354,7 @@
             position: relative;
             background: #f8f9fa;
         }
+
         .prod-img img {
             width: 100%;
             height: 100%;
@@ -321,9 +364,11 @@
             padding: 0 !important;
             /* Remove padding for full bleed */
         }
+
         .prod-card:hover .prod-img img {
             transform: scale(1.15);
         }
+
         .prod-info {
             height: 50%;
             /* Exact half */
@@ -334,18 +379,21 @@
             justify-content: center;
             background: white;
         }
+
         .prod-info h4 {
             font-size: 1.15rem;
             font-weight: 800;
             margin-bottom: 0.5rem;
             color: var(--gg-header);
         }
+
         .prod-price {
             font-weight: 900;
             font-size: 1.4rem;
             color: var(--gg-accent);
             margin-bottom: 1rem;
         }
+
         .btn-add {
             background-color: var(--gg-header);
             color: white;
@@ -358,10 +406,12 @@
             border: none;
             transition: 0.3s;
         }
+
         .btn-add:hover {
             background-color: var(--gg-accent);
             transform: translateY(-2px);
         }
+
         /* Footer */
         footer {
             background: var(--gg-header);
@@ -369,6 +419,7 @@
             padding: 5rem 0 2rem;
             margin-top: 5rem;
         }
+
         .footer-title {
             font-weight: 800;
             text-transform: uppercase;
@@ -377,27 +428,33 @@
             font-size: 1rem;
             color: var(--gg-yellow);
         }
+
         .footer-links {
             list-style: none;
             padding: 0;
         }
+
         .footer-links li {
             margin-bottom: 1rem;
         }
+
         .footer-links a {
             color: rgba(255, 255, 255, 0.6);
             text-decoration: none;
             transition: 0.3s;
             font-weight: 500;
         }
+
         .footer-links a:hover {
             color: white;
             padding-left: 5px;
         }
+
         .social-icons {
             display: flex;
             gap: 1.5rem;
         }
+
         .social-icons a {
             width: 45px;
             height: 45px;
@@ -410,11 +467,13 @@
             text-decoration: none;
             transition: 0.3s;
         }
+
         .social-icons a:hover {
             background: var(--gg-yellow);
             color: var(--gg-header);
             transform: translateY(-5px);
         }
+
         .copyright {
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             margin-top: 4rem;
@@ -425,6 +484,7 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         <div class="container d-flex align-items-center justify-content-between">
@@ -432,8 +492,10 @@
                 <div class="logo-circle">
                     <i class="bi bi-tools fs-5"></i>
                 </div>
-                <span class="heading-font fs-4 text-white d-none d-sm-inline" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
-                <span class="heading-font fs-4 text-white d-inline d-sm-none" style="letter-spacing: 1px;">BURHANI</span>
+                <span class="heading-font fs-4 text-white d-none d-sm-inline" style="letter-spacing: 1px;">BURHANI
+                    HARDWARE</span>
+                <span class="heading-font fs-4 text-white d-inline d-sm-none"
+                    style="letter-spacing: 1px;">BURHANI</span>
             </a>
             <div class="d-none d-lg-flex nav-links">
                 <a href="{% url 'home' %}" class="active">Home</a>
@@ -453,19 +515,21 @@
                 <a href="{% url 'cart' %}" class="text-white fs-5">
                     <i class="bi bi-cart3 position-relative">
                         {% if cart_count > 0 %}
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem;">{{ cart_count }}</span>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                            style="font-size: 0.5rem;">{{ cart_count }}</span>
                         {% endif %}
                     </i>
                 </a>
-                <button class="btn btn-link text-white d-lg-none fs-4 p-0 ms-2" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+                <button class="btn btn-link text-white d-lg-none fs-4 p-0 ms-2" data-bs-toggle="offcanvas"
+                    data-bs-target="#mobileMenu">
                     <i class="bi bi-list"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Mobile Offcanvas Menu -->
-    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="mobileMenu">
+    <!-- Mobile Offcanvas Menu (Bottom Sheet) -->
+    <div class="offcanvas offcanvas-bottom-sheet text-bg-dark" tabindex="-1" id="mobileMenu">
         <div class="offcanvas-header border-bottom border-secondary">
             <h5 class="offcanvas-title heading-font">Menu</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
@@ -478,10 +542,10 @@
                 <a href="#about" class="text-white text-decoration-none">About Us</a>
                 <hr class="border-secondary">
                 {% if user.is_authenticated %}
-                    <span class="text-white-50 fs-6">Hi, {% firstof user.first_name user.username %}</span>
-                    <a href="{% url 'logout' %}" class="text-danger text-decoration-none fw-bold">Logout</a>
+                <span class="text-white-50 fs-6">Hi, {% firstof user.first_name user.username %}</span>
+                <a href="{% url 'logout' %}" class="text-danger text-decoration-none fw-bold">Logout</a>
                 {% else %}
-                    <a href="{% url 'login' %}" class="text-warning text-decoration-none fw-bold">Login</a>
+                <a href="{% url 'login' %}" class="text-warning text-decoration-none fw-bold">Login</a>
                 {% endif %}
             </div>
         </div>
@@ -499,6 +563,21 @@
         {% endfor %}
     </div>
     {% endif %}
+
+    <!-- Mobile Search Bar (Phase 2) -->
+    <form action="{% url 'home' %}" method="GET" class="mobile-search-bar">
+        <input type="text" name="q" placeholder="Search for tools, machinery..." value="{{ query|default:'' }}">
+        <button type="submit"><i class="bi bi-search"></i></button>
+    </form>
+
+    <!-- Mobile Category Pills (Phase 2) -->
+    <div class="cat-pill-container">
+        <a href="{% url 'home' %}" class="cat-pill active">All Tools</a>
+        {% for category in categories %}
+        <a href="{% url 'product' category.id %}" class="cat-pill">{{ category.name }}</a>
+        {% endfor %}
+    </div>
+
     {% if not query %}
     <div class="container hero-container">
         <div class="hero-box">
@@ -528,15 +607,11 @@
         <hr class="opacity-10 mb-3">
     </div>
     {% endif %}
-    <div class="container pb-2 slider-nav-container" id="categories">
+    <div class="container pb-2" id="categories">
         <h2 class="section-title">Shop By Category</h2>
-        <button class="slider-btn btn-prev"
-            onclick="document.querySelector('.cat-slider-container').scrollBy({left: -300, behavior: 'smooth'})">
-            <i class="bi bi-chevron-left"></i>
-        </button>
-        <div class="cat-slider-container">
+        <div class="row g-3">
             {% for category in categories %}
-            <div class="cat-slide-item">
+            <div class="col-6 col-md-3">
                 <a href="{% url 'product' category.id %}" style="text-decoration: none; color: inherit;">
                     <div class="cat-card">
                         <div class="cat-img">
@@ -547,27 +622,26 @@
                             {% endif %}
                         </div>
                         <h3 class="mt-3 fs-5" style="text-transform: capitalize;">{{ category.name }}</h3>
-                        <p class="small text-muted">Shop Essentials</p>
+                        <p class="small text-muted d-none d-md-block">Shop Essentials</p>
                     </div>
                 </a>
             </div>
             {% endfor %}
         </div>
-        <button class="slider-btn btn-next"
-            onclick="document.querySelector('.cat-slider-container').scrollBy({left: 300, behavior: 'smooth'})">
-            <i class="bi bi-chevron-right"></i>
-        </button>
     </div>
-    <div class="container pb-4 pb-md-5">
+    <div class="container pb-4 pb-md-5 mt-4 pt-2 border-top border-2 border-light">
         {% if query %}
         <h2 class="section-title">Products Found ({{ products|length }})</h2>
         {% else %}
-        <h2 class="section-title">Featured Arrivals</h2>
+        <div class="d-flex justify-content-center align-items-center gap-2" style="margin: 2.5rem 0 1.5rem;">
+            <h2 class="section-title m-0" style="margin: 0 !important;">Featured Arrivals</h2>
+            <span class="badge bg-danger rounded-pill shadow-sm px-2 py-1" style="font-size: 0.7rem; transform: translateY(-8px);">🔥 NEW</span>
+        </div>
         {% endif %}
-        <div class="row g-4">
+        <div class="row g-3">
             {% for product in products %}
-            <div class="col-sm-6 col-md-3 col-lg-3">
-                <div class="prod-card">
+            <div class="col-6 col-md-3 col-lg-3">
+                <div class="prod-card touch-feedback">
                     <div class="prod-img">
                         {% if product.image %}
                         <img src="{{ product.image.url }}" alt="{{ product.name }}">
@@ -581,6 +655,8 @@
                         <div class="prod-price">₹{{ product.price }}</div>
                         <a href="{% url 'add_to_cart' product.id %}" class="w-100"><button class="btn-add">Add to
                                 Cart</button></a>
+                        <a href="{% url 'add_to_cart' product.id %}" class="floating-cart-btn"><i
+                                class="bi bi-plus-lg"></i></a>
                     </div>
                 </div>
             </div>
@@ -675,6 +751,25 @@
             </div>
         </div>
     </footer>
+    <!-- Bottom App Bar -->
+    <nav class="bottom-app-bar">
+        <a href="{% url 'home' %}" class="bottom-app-bar-item active">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Home</span>
+        </a>
+        <a href="{% url 'cart' %}" class="bottom-app-bar-item">
+            <i class="bi bi-cart"></i>
+            <span>Cart</span>
+        </a>
+        <a href="{% url 'your_orders' %}" class="bottom-app-bar-item">
+            <i class="bi bi-box-seam"></i>
+            <span>Orders</span>
+        </a>
+        <a href="#" class="bottom-app-bar-item" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+            <i class="bi bi-person"></i>
+            <span>Menu</span>
+        </a>
+    </nav>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Auto-dismiss alerts
@@ -687,4 +782,5 @@
         }, 5000);
     </script>
 </body>
+
 </html>

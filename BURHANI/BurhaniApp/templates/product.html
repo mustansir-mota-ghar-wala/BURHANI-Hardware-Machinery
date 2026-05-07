@@ -7,6 +7,7 @@
     <title>Burhani Hardware | {{ selected_category.name }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/mobile_app.css' %}">
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -371,8 +372,8 @@
         </div>
     </header>
 
-    <!-- Mobile Offcanvas Menu -->
-    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="mobileMenu">
+    <!-- Mobile Offcanvas Menu (Bottom Sheet) -->
+    <div class="offcanvas offcanvas-bottom-sheet text-bg-dark" tabindex="-1" id="mobileMenu">
         <div class="offcanvas-header border-bottom border-secondary">
             <h5 class="offcanvas-title heading-font">Menu</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
@@ -408,7 +409,7 @@
     {% endif %}
     <div class="container mt-3 mb-4 mb-md-5">
         <div class="row g-4 g-lg-5">
-            <div class="col-lg-3">
+            <div class="col-lg-3 d-none d-lg-block">
                 <div class="sidebar">
                     <h5 class="fw-bold mb-4 text-uppercase small letter-spacing-2">Categories</h5>
                     <div class="cat-list">
@@ -431,21 +432,32 @@
                 </div>
             </div>
             <div class="col-lg-9">
-                <div class="d-flex justify-content-between align-items-end mb-3">
+                <div class="d-none d-lg-flex justify-content-between align-items-end mb-3">
                     <div>
-                        <div class="custom-breadcrumb mb-2">
+                        <div class="custom-breadcrumb mb-2 d-none d-md-block">
                             <a href="{% url 'home' %}">Home</a>
                             <span class="mx-2">/</span>
-                            <span class="active">{{ selected_category.name }}</span>
+                            <span class="active">{% if selected_category %}{{ selected_category.name }}{% else %}All Tools{% endif %}</span>
                         </div>
-                        <h1 class="mb-0">{{ selected_category.name }}</h1>
+                        <div class="d-flex align-items-center gap-3 mt-1">
+                            <h1 class="mb-0 fs-2 fw-bold heading-font text-dark">{% if selected_category %}{{ selected_category.name }}{% else %}All Tools{% endif %}</h1>
+                            <span class="badge text-bg-light border text-muted rounded-pill px-3 py-2 shadow-sm" style="font-size: 0.8rem;">{{ products|length }} Items</span>
+                        </div>
                     </div>
-                    <span class="text-muted small fw-bold">Showing {{ products|length }} Products</span>
                 </div>
+                
+                <!-- Mobile Category Pills (Phase 3) -->
+                <div class="cat-pill-container d-lg-none mb-4" style="padding: 0; margin-left: -10px; margin-right: -10px; padding-left: 10px;">
+                    <a href="{% url 'home' %}" class="cat-pill">All Tools</a>
+                    {% for cat in categories %}
+                    <a href="{% url 'product' cat.id %}" class="cat-pill {% if cat.id == selected_category.id %}active{% endif %}">{{ cat.name }}</a>
+                    {% endfor %}
+                </div>
+
                 <div class="row g-4">
                     {% for p in products %}
-                    <div class="col-sm-6 col-md-3 col-lg-3">
-                        <div class="prod-card">
+                    <div class="col-6 col-md-3 col-lg-3">
+                        <div class="prod-card touch-feedback">
                             <div class="prod-img">
                                 {% if p.image %}
                                 <img src="{{ p.image.url }}" alt="{{ p.name }}">
@@ -459,6 +471,7 @@
                                 <div class="prod-price">₹{{ p.price }}</div>
                                 <a href="{% url 'add_to_cart' p.id %}" class="w-100"><button class="btn-add">Add to
                                         Cart</button></a>
+                                <a href="{% url 'add_to_cart' p.id %}" class="floating-cart-btn"><i class="bi bi-plus-lg"></i></a>
                             </div>
                         </div>
                     </div>
@@ -525,6 +538,25 @@
             </div>
         </div>
     </footer>
+    <!-- Bottom App Bar -->
+    <nav class="bottom-app-bar">
+        <a href="{% url 'home' %}" class="bottom-app-bar-item active">
+            <i class="bi bi-house-door-fill"></i>
+            <span>Home</span>
+        </a>
+        <a href="{% url 'cart' %}" class="bottom-app-bar-item">
+            <i class="bi bi-cart"></i>
+            <span>Cart</span>
+        </a>
+        <a href="{% url 'your_orders' %}" class="bottom-app-bar-item">
+            <i class="bi bi-box-seam"></i>
+            <span>Orders</span>
+        </a>
+        <a href="#" class="bottom-app-bar-item" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+            <i class="bi bi-person"></i>
+            <span>Menu</span>
+        </a>
+    </nav>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
