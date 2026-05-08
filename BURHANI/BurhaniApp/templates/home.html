@@ -605,9 +605,36 @@
     {% endif %}
     <div class="container pb-2" id="categories">
         <h2 class="section-title">Shop By Category</h2>
-        <div class="row g-3">
+        
+        <!-- Desktop Slider -->
+        <div class="d-none d-md-block slider-nav-container">
+            <button class="slider-btn btn-prev" id="catPrev"><i class="bi bi-chevron-left"></i></button>
+            <button class="slider-btn btn-next" id="catNext"><i class="bi bi-chevron-right"></i></button>
+            <div class="cat-slider-container" id="catSlider">
+                {% for category in categories %}
+                <div class="cat-slide-item">
+                    <a href="{% url 'product' category.id %}" style="text-decoration: none; color: inherit;">
+                        <div class="cat-card">
+                            <div class="cat-img">
+                                {% if category.image %}
+                                <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                                {% else %}
+                                <img src="{% static 'images/cat_hardware.png' %}" alt="Hardware">
+                                {% endif %}
+                            </div>
+                            <h3 class="mt-3 fs-5" style="text-transform: capitalize;">{{ category.name }}</h3>
+                            <p class="small text-muted d-none d-md-block">Shop Essentials</p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Mobile Grid (Current) -->
+        <div class="row g-3 d-flex d-md-none">
             {% for category in categories %}
-            <div class="col-6 col-md-3">
+            <div class="col-6">
                 <a href="{% url 'product' category.id %}" style="text-decoration: none; color: inherit;">
                     <div class="cat-card">
                         <div class="cat-img">
@@ -625,12 +652,12 @@
             {% endfor %}
         </div>
     </div>
-    <div class="container pb-4 pb-md-5 mt-4 pt-2 border-top border-2 border-light">
+    <div class="container pb-4 pb-md-5 mt-1 pt-1 border-top border-2 border-light">
         {% if query %}
         <h2 class="section-title">Products Found ({{ products|length }})</h2>
         {% else %}
-        <div class="d-flex justify-content-center align-items-center gap-2" style="margin: 2.5rem 0 1.5rem;">
-            <h2 class="section-title m-0" style="margin: 0 !important;">Featured Arrivals</h2>
+        <div class="d-flex justify-content-center align-items-center gap-2 flex-nowrap" style="margin: 0.5rem 0 1.5rem;">
+            <h2 class="section-title m-0 text-nowrap" style="margin: 0 !important; font-size: clamp(1.2rem, 5vw, 2rem);">New Arrivals</h2>
             <span class="badge bg-danger rounded-pill shadow-sm px-2 py-1" style="font-size: 0.7rem; transform: translateY(-8px);">🔥 NEW</span>
         </div>
         {% endif %}
@@ -776,6 +803,25 @@
                 bsAlert.close();
             });
         }, 5000);
+
+        // Category Slider Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            const slider = document.getElementById('catSlider');
+            const btnPrev = document.getElementById('catPrev');
+            const btnNext = document.getElementById('catNext');
+
+            if (slider && btnPrev && btnNext) {
+                const scrollAmount = 300; // Adjust based on item width
+
+                btnPrev.addEventListener('click', () => {
+                    slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                });
+
+                btnNext.addEventListener('click', () => {
+                    slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                });
+            }
+        });
     </script>
 </body>
 
