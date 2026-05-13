@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}404 - Page Not Found | Burhani Hardware{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center" style="min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <div class="logo-circle mb-4" style="width: 80px; height: 80px; font-size: 2rem; margin-right: 0;">
+        <i class="bi bi-exclamation-triangle"></i>
+    </div>
+    <h1 class="heading-font display-1">404</h1>
+    <h2 class="heading-font mb-4">Oops! Tool Not Found</h2>
+    <p class="lead text-muted mb-5">The page you're looking for seems to have gone missing from our workshop.</p>
+    <a href="{% url 'home' %}" class="btn-terracotta text-decoration-none">Back to Workshop</a>
+</div>
+{% endblock %}

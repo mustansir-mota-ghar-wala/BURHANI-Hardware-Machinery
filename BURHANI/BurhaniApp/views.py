@@ -209,7 +209,6 @@ def checkout(request):
         })
 
         razorpay_order_id = razorpay_order['id']
-        print("RAZORPAY ORDER ID:", razorpay_order_id)
 
     except Exception as e:
         print("RAZORPAY ORDER CREATION ERROR:", str(e))
@@ -243,10 +242,6 @@ def payment_callback(request):
             payment_id = request.POST.get("razorpay_payment_id")
             razorpay_order_id = request.POST.get("razorpay_order_id")
             signature = request.POST.get("razorpay_signature")
-
-            print("CALLBACK PAYMENT ID:", payment_id)
-            print("CALLBACK ORDER ID:", razorpay_order_id)
-            print("CALLBACK SIGNATURE:", signature)
 
             params_dict = {
                 "razorpay_order_id": razorpay_order_id,
@@ -387,11 +382,9 @@ def send_otp(request):
             request.session['verification_otp'] = otp
             request.session['last_otp_time'] = current_time # Save the time we sent it
             
-            print(f"\n[OTP DEBUG] Sending OTP {otp} to {phone}\n")
-
             url = "https://www.fast2sms.com/dev/bulkV2"
             payload = f"variables_values={otp}&route=otp&numbers={phone}"
-            headers = {'authorization': 'IpOzsWcVGLm8Cy5Rxa7bKi10TrASYnU3qeJN9Egodl6MjtQH2PY0owZnDaAqm1P7eRCFukUxWgbQ85jT'}
+            headers = {'authorization': settings.FAST2SMS_KEY}
             response = requests.get(url, params=payload, headers=headers)
             
             return JsonResponse({'status': 'success'})

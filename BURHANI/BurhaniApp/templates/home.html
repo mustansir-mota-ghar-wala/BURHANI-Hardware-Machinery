@@ -1,19 +1,8 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Burhani Hardware | Quality Tools & Machinery</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="{% static 'css/mobile_app.css' %}">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <style>
-        :root {
+{% block extra_css %}
+:root {
             --gg-header: #0a110f;
             --gg-bg: #f8f9fa;
             --gg-accent: #e67e22;
@@ -622,53 +611,10 @@
             color: rgba(255, 255, 255, 0.4);
             font-size: 0.9rem;
         }
-    </style>
-</head>
+{% endblock %}
 
-<body>
-    <header>
-        <div class="container d-flex align-items-center justify-content-between">
-            <a href="{% url 'home' %}" class="d-flex align-items-center text-decoration-none">
-                <div class="logo-circle">
-                    <i class="bi bi-tools fs-5"></i>
-                </div>
-                <span class="heading-font fs-4 text-white d-none d-sm-inline" style="letter-spacing: 1px;">BURHANI
-                    HARDWARE</span>
-                <span class="heading-font fs-4 text-white d-inline d-sm-none"
-                    style="letter-spacing: 1px;">BURHANI</span>
-            </a>
-            <div class="d-none d-lg-flex nav-links">
-                <a href="{% url 'home' %}" class="active">Home</a>
-                <a href="#categories">Shop Tools</a>
-                <a href="{% url 'your_orders' %}">My Orders</a>
-                <a href="#about">About Us</a>
-            </div>
-            <div class="d-flex align-items-center gap-3">
-                <div class="d-none d-lg-flex gap-3 fs-5 align-items-center me-3">
-                    {% if user.is_authenticated %}
-                    <span class="fs-6 fw-bold text-white-50">Hi, {% firstof user.first_name user.username %}</span>
-                    <a href="{% url 'logout' %}" class="text-white text-decoration-none fs-6 fw-bold">LOGOUT</a>
-                    {% else %}
-                    <a href="{% url 'login' %}" class="text-white text-decoration-none fs-6 fw-bold">LOGIN</a>
-                    {% endif %}
-                </div>
-                <a href="{% url 'cart' %}" class="text-white fs-5">
-                    <i class="bi bi-cart3 position-relative">
-                        {% if cart_count > 0 %}
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                            style="font-size: 0.5rem;">{{ cart_count }}</span>
-                        {% endif %}
-                    </i>
-                </a>
-                <button class="btn btn-link text-white d-lg-none fs-4 p-0 ms-2" data-bs-toggle="offcanvas"
-                    data-bs-target="#mobileMenu">
-                    <i class="bi bi-list"></i>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Mobile Offcanvas Menu (Bottom Sheet) -->
+{% block content %}
+<!-- Mobile Offcanvas Menu (Bottom Sheet) -->
     <div class="offcanvas offcanvas-bottom-sheet text-bg-dark" tabindex="-1" id="mobileMenu">
         <div class="offcanvas-header border-bottom border-secondary">
             <h5 class="offcanvas-title heading-font">Menu</h5>
@@ -874,79 +820,11 @@
         </div>
     </div>
     {% endif %}
-    <footer>
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-4">
-                    <div class="d-flex align-items-center mb-4">
-                        <div class="logo-circle">
-                            <i class="bi bi-tools fs-5"></i>
-                        </div>
-                        <span class="heading-font fs-4 text-white" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
-                    </div>
-                    <p class="text-white-50 mb-4">Your one-stop shop for premium hardware, industrial machinery, and
-                        professional tools. Quality service since 2004.</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="bi bi-facebook"></i></a>
-                        <a href="#"><i class="bi bi-instagram"></i></a>
-                        <a href="#"><i class="bi bi-twitter-x"></i></a>
-                        <a href="#"><i class="bi bi-linkedin"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-2 offset-lg-1">
-                    <h5 class="footer-title">Quick Links</h5>
-                    <ul class="footer-links">
-                        <li><a href="{% url 'home' %}">Home</a></li>
-                        <li><a href="#categories">Shop Tools</a></li>
-                        <li><a href="{% url 'your_orders' %}">My Orders</a></li>
-                        <li><a href="{% url 'cart' %}">Shopping Cart</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-2">
-                    <h5 class="footer-title">Categories</h5>
-                    <ul class="footer-links">
-                        {% for cat in categories|slice:":4" %}
-                        <li><a href="{% url 'product' cat.id %}">{{ cat.name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="col-lg-3">
-                    <h5 class="footer-title">Contact Info</h5>
-                    <ul class="footer-links">
-                        <li><a href="#"><i class="bi bi-geo-alt me-2"></i> 123 Hardware Lane, Industrial Hub, IN</a>
-                        </li>
-                        <li><a href="#"><i class="bi bi-telephone me-2"></i> +91 98765 43210</a></li>
-                        <li><a href="#"><i class="bi bi-envelope me-2"></i> support@burhani.com</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                &copy; 2026 Burhani Hardware and Machinery. All rights reserved.
-            </div>
-        </div>
-    </footer>
-    <!-- Bottom App Bar -->
-    <nav class="bottom-app-bar">
-        <a href="{% url 'home' %}" class="bottom-app-bar-item active">
-            <i class="bi bi-house-door-fill"></i>
-            <span>Home</span>
-        </a>
-        <a href="{% url 'cart' %}" class="bottom-app-bar-item">
-            <i class="bi bi-cart"></i>
-            <span>Cart</span>
-        </a>
-        <a href="{% url 'your_orders' %}" class="bottom-app-bar-item">
-            <i class="bi bi-box-seam"></i>
-            <span>Orders</span>
-        </a>
-        <a href="#" class="bottom-app-bar-item" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
-            <i class="bi bi-person"></i>
-            <span>Menu</span>
-        </a>
-    </nav>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Auto-dismiss alerts
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Auto-dismiss alerts
         setTimeout(function () {
             let alerts = document.querySelectorAll('.alert');
             alerts.forEach(function (alert) {
@@ -973,7 +851,5 @@
                 });
             }
         });
-    </script>
-</body>
-
-</html>
+</script>
+{% endblock %}

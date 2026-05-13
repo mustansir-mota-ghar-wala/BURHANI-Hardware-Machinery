@@ -43,8 +43,14 @@ class Order(models.Model):
     razorpay_payment_id = models.CharField(max_length=100, null=True, blank=True)
     razorpay_signature = models.CharField(max_length=200, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    def save(self, *args, **kwargs):
+        # Automatically set payment status to 'Paid' when delivery is 'Delivered'
+        if self.delivery_status == 'Delivered':
+            self.payment_status = 'Paid'
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return self.user.username
+        return f"Order #{self.id} - {self.user.username}"
     
 class Order_Item(models.Model):
     order = models.ForeignKey(Order,on_delete=models.CASCADE)

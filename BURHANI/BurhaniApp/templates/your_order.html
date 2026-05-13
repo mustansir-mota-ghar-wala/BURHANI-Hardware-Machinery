@@ -1,425 +1,220 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Orders | Burhani Hardware</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="{% static 'css/mobile_app.css' %}">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <style>
-        :root {
-            --gg-header: #0a110f;
-            --gg-bg: #f8f9fa;
-            --gg-accent: #e67e22;
-            --gg-text: #1a1a1a;
-            --gg-yellow: #ffc107;
-            --gg-glass: rgba(255, 255, 255, 0.9);
-            --gg-border: rgba(0, 0, 0, 0.08);
-        }
+{% block title %}My Orders | Burhani Hardware{% endblock %}
 
-        body {
-            background-color: var(--gg-bg);
-            color: var(--gg-text);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-        }
+{% block extra_css %}
+    .order-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        border: 1px solid var(--gg-border);
+    }
 
-        h1,
-        h2,
-        h3,
-        .heading-font {
-            font-family: 'Playfair Display', serif;
-            font-weight: 900;
-            color: var(--gg-header);
-        }
+    .order-header-compact {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.5rem;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
 
-        header {
-            background-color: var(--gg-header);
-            color: white;
-            padding: 1.2rem 0;
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 2000;
-        }
+    .status-badge-small {
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
-        .logo-circle {
-            background-color: var(--gg-yellow);
-            width: 45px;
-            height: 45px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--gg-header);
-            margin-right: 15px;
-            transform: rotate(-3deg);
-            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
-        }
+    .status-paid { background: #e8f5e9; color: #2e7d32; }
+    .status-pending { background: #fff8e1; color: #f57f17; }
+    .status-failed { background: #ffebee; color: #c62828; }
 
-        .order-card {
-            background: white;
-            border-radius: 24px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
-            border: 1px solid var(--gg-border);
-            transition: 0.3s;
-        }
+    .track-stepper-compact {
+        display: flex;
+        justify-content: space-between;
+        margin: 1rem 0;
+        position: relative;
+    }
 
-        .order-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
-        }
+    .track-stepper-compact::before {
+        content: '';
+        position: absolute;
+        top: 12px;
+        left: 10%;
+        width: 80%;
+        height: 2px;
+        background: #eee;
+        z-index: 1;
+    }
 
-        .status-badge {
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+    .track-step-compact {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        flex: 1;
+    }
 
-        .status-paid {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
+    .track-dot {
+        width: 24px;
+        height: 24px;
+        background: #eee;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-size: 0.7rem;
+        margin-bottom: 4px;
+        transition: 0.3s;
+    }
 
-        .status-pending {
-            background: #fff8e1;
-            color: #f57f17;
-        }
+    .track-step-compact.active .track-dot {
+        background: var(--gg-accent);
+        color: white;
+    }
 
-        .status-failed {
-            background: #ffebee;
-            color: #c62828;
-        }
+    .track-label-compact {
+        font-size: 0.6rem;
+        font-weight: 700;
+        color: #999;
+        text-transform: uppercase;
+    }
 
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #f0f0f0;
-            padding-bottom: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
+    .track-step-compact.active .track-label-compact {
+        color: var(--gg-header);
+    }
 
-        .order-item-row {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            padding: 1rem 0;
-            border-bottom: 1px solid #f9f9f9;
-        }
+    .order-item-compact {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f9f9f9;
+    }
 
-        .order-item-row:last-child {
-            border-bottom: none;
-        }
+    .order-item-compact:last-child { border-bottom: none; }
 
-        .product-thumb {
-            width: 60px;
-            height: 60px;
-            background: #f0f0f0;
-            border-radius: 12px;
-            object-fit: cover;
-        }
+    .product-thumb-small {
+        width: 45px;
+        height: 45px;
+        background: #f0f0f0;
+        border-radius: 8px;
+        object-fit: cover;
+    }
 
-        .empty-state {
-            text-align: center;
-            padding: 5rem 2rem;
-        }
+    .empty-state {
+        text-align: center;
+        padding: 4rem 1rem;
+    }
 
-        .empty-icon {
-            font-size: 4rem;
-            color: #ddd;
-            margin-bottom: 1.5rem;
-        }
+    .empty-icon {
+        font-size: 3rem;
+        color: #ddd;
+        margin-bottom: 1rem;
+    }
+{% endblock %}
 
-        footer {
-            background: var(--gg-header);
-            color: white;
-            padding: 5rem 0 2rem;
-            margin-top: 5rem;
-        }
-
-        .copyright {
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            margin-top: 4rem;
-            padding-top: 2rem;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 0.9rem;
-        }
-
-        .track-stepper {
-            display: flex;
-            justify-content: space-between;
-            margin: 1.5rem 0;
-            position: relative;
-        }
-
-        .track-stepper::before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: #eee;
-            z-index: 1;
-        }
-
-        .track-step {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            flex: 1;
-        }
-
-        .track-icon {
-            width: 35px;
-            height: 35px;
-            background: #eee;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: #999;
-            margin-bottom: 5px;
-            transition: 0.3s;
-        }
-
-        .track-step.active .track-icon {
-            background: var(--gg-accent);
-            color: white;
-            box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.2);
-        }
-
-        .track-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #999;
-            transition: 0.3s;
-        }
-
-        .track-step.active .track-label {
-            color: var(--gg-header);
-        }
-
-        @media (max-width: 767.98px) {
-            .track-icon {
-                width: 28px;
-                height: 28px;
-                font-size: 0.8rem;
-            }
-
-            .track-label {
-                font-size: 0.65rem;
-            }
-
-            .order-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .order-item-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-
-            .order-item-row .text-end {
-                text-align: left !important;
-                margin-top: 0.5rem;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <header>
-        <div class="container d-flex align-items-center justify-content-between">
-            <a href="{% url 'home' %}" class="d-flex align-items-center text-decoration-none">
-                <div class="logo-circle">
-                    <i class="bi bi-tools fs-5"></i>
-                </div>
-                <span class="heading-font fs-4 text-white d-none d-sm-inline" style="letter-spacing: 1px;">BURHANI
-                    HARDWARE</span>
-                <span class="heading-font fs-4 text-white d-inline d-sm-none"
-                    style="letter-spacing: 1px;">BURHANI</span>
-            </a>
-            <div class="d-flex align-items-center gap-3">
-                <a href="{% url 'home' %}"
-                    class="text-white text-decoration-none fs-6 fw-bold d-none d-md-inline">CONTINUE SHOPPING</a>
-                <button class="btn btn-link text-white d-md-none fs-4 p-0 ms-2" data-bs-toggle="offcanvas"
-                    data-bs-target="#mobileMenu">
-                    <i class="bi bi-list"></i>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Mobile Offcanvas Menu (Bottom Sheet) -->
-    <div class="offcanvas offcanvas-bottom-sheet text-bg-dark" tabindex="-1" id="mobileMenu">
-        <div class="offcanvas-header border-bottom border-secondary">
-            <h5 class="offcanvas-title heading-font">Menu</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div class="d-flex flex-column gap-3 fs-5">
-                <a href="{% url 'home' %}" class="text-white text-decoration-none">Home</a>
-                <a href="{% url 'home' %}" class="text-white text-decoration-none">Continue Shopping</a>
-                <a href="{% url 'cart' %}" class="text-white text-decoration-none">Shopping Cart</a>
-                <hr class="border-secondary">
-                {% if user.is_authenticated %}
-                <span class="text-white-50 fs-6">Hi, {% firstof user.first_name user.username %}</span>
-                <a href="{% url 'logout' %}" class="text-danger text-decoration-none fw-bold">Logout</a>
-                {% else %}
-                <a href="{% url 'login' %}" class="text-warning text-decoration-none fw-bold">Login</a>
-                {% endif %}
-            </div>
-        </div>
+{% block content %}
+<div class="container py-3 px-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="fs-4 fw-bold mb-0">My Orders</h1>
+        <span class="badge bg-dark rounded-pill">{{ orders.count }} Total</span>
     </div>
-    <div class="container my-0 my-md-4 px-0 px-md-3">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-3 gap-2 px-3 pt-3">
-            <div>
-                <h1 class="mb-1 fs-5 fw-bold" style="font-family: 'Inter', sans-serif; text-transform: uppercase;">My Order History</h1>
-                <p class="text-muted small">Track and manage your recent purchases</p>
-            </div>
-            <div class="text-end">
-                <span class="badge bg-dark rounded-pill px-3 py-2">{{ orders.count }} Total Orders</span>
-            </div>
-        </div>
-        {% if orders %}
+
+    {% if orders %}
         {% for order in orders %}
-        <div class="order-section bg-white p-3 position-relative" style="border-bottom: 1px solid rgba(0,0,0,0.05);">
-            <div class="order-header">
+        <div class="order-card">
+            <div class="order-header-compact">
                 <div>
-                    <span class="text-muted small">Order Date:</span>
-                    <div class="fw-bold">{{ order.created_at|date:"M d, Y" }}</div>
+                    <div class="text-muted" style="font-size: 0.7rem;">Order #{{ order.id|stringformat:"05d" }}</div>
+                    <div class="fw-bold" style="font-size: 0.9rem;">{{ order.created_at|date:"M d, Y" }}</div>
                 </div>
-                <div>
-                    <span class="text-muted small">Order ID:</span>
-                    <div class="fw-bold text-uppercase">#{{ order.id|stringformat:"05d" }}</div>
-                </div>
-                <div>
-                    <span class="text-muted small">Total Bill:</span>
-                    <div class="fw-bold text-accent fs-5">₹{{ order.bill }}</div>
-                </div>
-                <div>
-                    <span
-                        class="status-badge {% if order.payment_status == 'Paid' %}status-paid{% elif order.payment_status == 'Pending' %}status-pending{% else %}status-failed{% endif %}">
+                <div class="text-end">
+                    <div class="status-badge-small {% if order.payment_status == 'Paid' %}status-paid{% else %}status-pending{% endif %}">
                         {{ order.payment_status }}
-                    </span>
+                    </div>
+                    <div class="fw-bold text-accent mt-1">₹{{ order.bill }}</div>
                 </div>
             </div>
-            <div class="order-body">
-                <div class="track-stepper px-md-4 mb-4">
-                    <div class="track-step active">
-                        <div class="track-icon"><i class="bi bi-cart-check"></i></div>
-                        <div class="track-label">Placed</div>
-                    </div>
-                    <div
-                        class="track-step {% if order.delivery_status in 'Processing,Shipped,Out for Delivery,Delivered' %}active{% endif %}">
-                        <div class="track-icon"><i class="bi bi-box-seam"></i></div>
-                        <div class="track-label">Processing</div>
-                    </div>
-                    <div
-                        class="track-step {% if order.delivery_status in 'Shipped,Out for Delivery,Delivered' %}active{% endif %}">
-                        <div class="track-icon"><i class="bi bi-truck"></i></div>
-                        <div class="track-label">Shipped</div>
-                    </div>
-                    <div class="track-step {% if order.delivery_status == 'Delivered' %}active{% endif %}">
-                        <div class="track-icon"><i class="bi bi-house-check"></i></div>
-                        <div class="track-label">Delivered</div>
-                    </div>
+
+            <div class="track-stepper-compact">
+                <div class="track-step-compact active">
+                    <div class="track-dot"><i class="bi bi-check"></i></div>
+                    <div class="track-label-compact">Placed</div>
                 </div>
-                <div class="row">
-                    <div class="col-md-8">
-                        <h6 class="text-muted small text-uppercase fw-bold mb-3">Items Purchased</h6>
-                        {% for item in order.order_item_set.all %}
-                        <div class="order-item-row">
-                            {% if item.product.image %}
-                            <img src="{{ item.product.image.url }}" class="product-thumb" alt="{{ item.product.name }}">
-                            {% else %}
-                            <div class="product-thumb d-flex align-items-center justify-content-center bg-light">
-                                <i class="bi bi-box-seam text-muted"></i>
-                            </div>
-                            {% endif %}
-                            <div class="flex-grow-1">
-                                <div class="fw-bold">{{ item.product.name }}</div>
-                                <span class="text-muted small">Quantity: {{ item.product_quantity }} × ₹{{
-                                    item.product.price }}</span>
-                            </div>
-                            <div class="text-end fw-bold">
-                                ₹{{ item.product_total }}
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <div class="col-md-4">
-                        <div class="bg-light p-4 rounded-4 h-100">
-                            <h6 class="text-muted small text-uppercase fw-bold mb-3">Shipping Address</h6>
-                            <p class="mb-0 small" style="line-height: 1.6;">{{ order.address }}</p>
-                            {% if order.razorpay_order_id %}
-                            <div class="mt-4 pt-4 border-top">
-                                <h6 class="text-muted small text-uppercase fw-bold mb-2">Payment Info</h6>
-                                <p class="mb-0 small text-muted">Ref: {{ order.razorpay_order_id }}</p>
-                            </div>
-                            {% endif %}
-                        </div>
-                    </div>
+                <div class="track-step-compact {% if order.delivery_status != 'Placed' %}active{% endif %}">
+                    <div class="track-dot"><i class="bi bi-gear"></i></div>
+                    <div class="track-label-compact">Processing</div>
                 </div>
+                <div class="track-step-compact {% if order.delivery_status in 'Shipped,Out for Delivery,Delivered' %}active{% endif %}">
+                    <div class="track-dot"><i class="bi bi-truck"></i></div>
+                    <div class="track-label-compact">Shipped</div>
+                </div>
+                <div class="track-step-compact {% if order.delivery_status == 'Delivered' %}active{% endif %}">
+                    <div class="track-dot"><i class="bi bi-house"></i></div>
+                    <div class="track-label-compact">Done</div>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <h6 class="text-muted fw-bold" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px;">Items</h6>
+                {% for item in order.order_item_set.all %}
+                <div class="order-item-compact">
+                    {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" class="product-thumb-small" alt="{{ item.product.name }}">
+                    {% else %}
+                    <div class="product-thumb-small d-flex align-items-center justify-content-center bg-light">
+                        <i class="bi bi-box" style="font-size: 1rem;"></i>
+                    </div>
+                    {% endif %}
+                    <div class="flex-grow-1">
+                        <div class="fw-bold" style="font-size: 0.8rem; line-height: 1.2;">{{ item.product.name }}</div>
+                        <div class="text-muted" style="font-size: 0.7rem;">Qty: {{ item.product_quantity }} × ₹{{ item.product.price }}</div>
+                    </div>
+                    <div class="fw-bold" style="font-size: 0.8rem;">₹{{ item.product_total }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="mt-2 pt-2 border-top">
+                <div class="text-muted" style="font-size: 0.65rem; text-transform: uppercase;">Shipping To:</div>
+                <div style="font-size: 0.75rem; color: #555;">{{ order.address|truncatechars:60 }}</div>
             </div>
         </div>
         {% endfor %}
-        {% else %}
+    {% else %}
         <div class="empty-state">
             <div class="empty-icon"><i class="bi bi-bag-x"></i></div>
-            <h3>No Orders Found</h3>
-            <p class="text-muted mb-4">You haven't placed any orders yet. Start shopping to see your history here!</p>
-            <a href="{% url 'home' %}" class="btn btn-dark px-4 py-2 rounded-pill">Shop Now</a>
+            <h3 class="heading-font">No Orders Yet</h3>
+            <p class="text-muted small mb-4">Your future tools will appear here once you place an order.</p>
+            <a href="{% url 'home' %}" class="btn-terracotta btn-sm text-decoration-none">Start Shopping</a>
         </div>
-        {% endif %}
-    </div>
-    <footer>
-        <div class="container">
-            <div class="copyright">
-                &copy; 2026 Burhani Hardware and Machinery. All rights reserved.
-            </div>
-        </div>
-    </footer>
-    <!-- Bottom App Bar -->
-    <nav class="bottom-app-bar">
-        <a href="{% url 'home' %}" class="bottom-app-bar-item">
-            <i class="bi bi-house-door"></i>
-            <span>Home</span>
-        </a>
-        <a href="{% url 'cart' %}" class="bottom-app-bar-item">
-            <i class="bi bi-cart"></i>
-            <span>Cart</span>
-        </a>
-        <a href="{% url 'your_orders' %}" class="bottom-app-bar-item active">
-            <i class="bi bi-box-seam-fill"></i>
-            <span>Orders</span>
-        </a>
-        <a href="#" class="bottom-app-bar-item" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
-            <i class="bi bi-person"></i>
-            <span>Menu</span>
-        </a>
-    </nav>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    {% endif %}
+</div>
 
-</html>
-
-</html>
+<!-- Bottom App Bar (Keep as is since it's already app-like) -->
+<nav class="bottom-app-bar">
+    <a href="{% url 'home' %}" class="bottom-app-bar-item">
+        <i class="bi bi-house-door"></i>
+        <span>Home</span>
+    </a>
+    <a href="{% url 'cart' %}" class="bottom-app-bar-item">
+        <i class="bi bi-cart"></i>
+        <span>Cart</span>
+    </a>
+    <a href="{% url 'your_orders' %}" class="bottom-app-bar-item active">
+        <i class="bi bi-box-seam-fill"></i>
+        <span>Orders</span>
+    </a>
+    <a href="#" class="bottom-app-bar-item" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+        <i class="bi bi-person"></i>
+        <span>Menu</span>
+    </a>
+</nav>
+{% endblock %}
