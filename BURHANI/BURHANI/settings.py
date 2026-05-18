@@ -36,13 +36,13 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'burhani-hardware-machinery.onre
 # Application definition
 
 INSTALLED_APPS = [
-    'cloudinary_storage',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary_storage',
     'cloudinary',
     'BurhaniApp',
     'django.contrib.sites',
