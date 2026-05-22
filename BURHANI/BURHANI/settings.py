@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'burhani-hardware-machinery.onrender.com 127.0.0.1 localhost').split()
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'burhani-hardware-machinery.onrender.com burhani.store www.burhani.store 127.0.0.1 localhost').split()
 
 
 # Application definition
@@ -60,7 +60,7 @@ STORAGES = {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
