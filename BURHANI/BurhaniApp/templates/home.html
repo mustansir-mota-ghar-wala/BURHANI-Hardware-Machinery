@@ -452,53 +452,6 @@
             margin-bottom: 0.35rem;
         }
 
-        .popular-searches {
-            background: white;
-            border-top: 1px solid var(--gg-border);
-            border-bottom: 1px solid var(--gg-border);
-        }
-
-        .popular-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 0.85rem;
-        }
-
-        .popular-item {
-            border: 1px solid var(--gg-border);
-            border-radius: 8px;
-            padding: 1rem;
-            background: #fff;
-            min-height: 100px;
-        }
-
-        .popular-item h3 {
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            font-weight: 800;
-            margin-bottom: 0.35rem;
-            color: var(--gg-header);
-        }
-
-        .popular-item p {
-            margin: 0;
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.45;
-        }
-
-        @media (max-width: 992px) {
-            .popular-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 576px) {
-            .popular-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         /* Product Cards */
         .prod-card {
             background: white;
@@ -792,47 +745,6 @@
             {% endfor %}
         </div>
     </div>
-    {% if not query %}
-    <section class="popular-searches py-4 py-md-5">
-        <div class="container">
-            <h2 class="section-title">Top Selling Items</h2>
-            <div class="popular-grid">
-                <div class="popular-item">
-                    <h3>Chainsaw Machine</h3>
-                    <p>Lakdi kaatne ki machine and chain saw for wood cutting work.</p>
-                </div>
-                <div class="popular-item">
-                    <h3>Welding Machine</h3>
-                    <p>Reliable welding machines and accessories for workshop use.</p>
-                </div>
-                <div class="popular-item">
-                    <h3>Power Tools</h3>
-                    <p>Drills, cutters, grinders and other daily-use power tools.</p>
-                </div>
-                <div class="popular-item">
-                    <h3>Agricultural Equipment</h3>
-                    <p>Farm tools, spray pumps and dava chirakne ki tanki.</p>
-                </div>
-                <div class="popular-item">
-                    <h3>Spray Pump</h3>
-                    <p>Manual and power spray pumps for agriculture and garden use.</p>
-                </div>
-                <div class="popular-item">
-                    <h3>LD Pipe</h3>
-                    <p>LD pipe for water supply, farming and hardware needs.</p>
-                </div>
-                <div class="popular-item">
-                    <h3>Openwell Motor</h3>
-                    <p>Paani ki motor and openwell motors for water lifting.</p>
-                </div>
-                <div class="popular-item">
-                    <h3>Burhani Hardware</h3>
-                    <p>Your hardware and machinery shop for tools, motors and equipment.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    {% endif %}
     <div class="container pb-4 pb-md-5 mt-1 pt-1 border-top border-2 border-light">
         {% if query %}
         <h2 class="section-title">Products Found ({{ products|length }})</h2>
