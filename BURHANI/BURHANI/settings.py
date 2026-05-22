@@ -31,6 +31,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-change-me')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'burhani-hardware-machinery.onrender.com burhani.store www.burhani.store 127.0.0.1 localhost').split()
+SITE_URL = os.environ.get('SITE_URL', 'https://burhani.store').rstrip('/')
 
 
 # Application definition

@@ -14,7 +14,49 @@ import time
 import requests
 import random
 import json
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
+from django.utils import timezone
+
+
+def robots_txt(request):
+    content = f"""User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /your_orders/
+Disallow: /payment-callback/
+
+Sitemap: {settings.SITE_URL}/sitemap.xml
+"""
+    return HttpResponse(content, content_type='text/plain')
+
+
+def sitemap_xml(request):
+    today = timezone.now().date().isoformat()
+    urls = [
+        (f"{settings.SITE_URL}/", "daily", "1.0"),
+    ]
+
+    for category in Category.objects.all().order_by('id'):
+        urls.append((f"{settings.SITE_URL}/product/{category.id}/", "weekly", "0.8"))
+
+    xml_urls = "\n".join(
+        f"""    <url>
+        <loc>{loc}</loc>
+        <lastmod>{today}</lastmod>
+        <changefreq>{changefreq}</changefreq>
+        <priority>{priority}</priority>
+    </url>"""
+        for loc, changefreq, priority in urls
+    )
+
+    content = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{xml_urls}
+</urlset>
+"""
+    return HttpResponse(content, content_type='application/xml')
 
 
 def register(request):

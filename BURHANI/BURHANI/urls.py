@@ -6,12 +6,15 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from BurhaniApp.views import (
     home, product, register, Login, Logout, cart, add_to_cart,
     remove_from_cart, decrease_product, checkout, place_order,
-    your_orders, payment_callback, send_otp, verify_otp
+    your_orders, payment_callback, send_otp, verify_otp,
+    robots_txt, sitemap_xml
 )
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('robots.txt', robots_txt, name='robots_txt'),
+    path('sitemap.xml', sitemap_xml, name='sitemap_xml'),
     path('register/', register, name='register'),
     path('login/', Login, name='login'),
     path('logout/', Logout, name='logout'),

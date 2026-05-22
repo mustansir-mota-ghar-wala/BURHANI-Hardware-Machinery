@@ -6,4 +6,4 @@ Disallow: /checkout/
 Disallow: /your_orders/
 Disallow: /payment-callback/
 
-Sitemap: https://burhani-hardware-machinery.onrender.com/static/sitemap.xml
+Sitemap: https://burhani.store/sitemap.xml
