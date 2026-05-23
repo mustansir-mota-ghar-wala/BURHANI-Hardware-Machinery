@@ -1,0 +1,870 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Burhani Hardware | {{ product.name }} Details{% endblock %}
+
+{% block meta_description %}Buy {{ product.name }} at Burhani Hardware & Machinery. Price: ₹{{ product.price }}. {{ product.description|truncatewords:20 }}{% endblock %}
+
+{% block extra_css %}
+:root {
+    --gg-header: #0a110f;
+    --gg-bg: #f8f9fa;
+    --gg-accent: #e67e22;
+    --gg-card: #ffffff;
+    --gg-text: #1a1a1a;
+    --gg-white: #ffffff;
+    --gg-yellow: #ffc107;
+    --gg-glass: rgba(255, 255, 255, 0.95);
+    --gg-border: rgba(0, 0, 0, 0.08);
+    --whatsapp-green: #25D366;
+}
+
+.text-accent {
+    color: var(--gg-accent) !important;
+}
+
+body {
+    background-color: var(--gg-bg);
+    color: var(--gg-text);
+    padding-bottom: 20px;
+}
+
+/* Custom Breadcrumb */
+.custom-breadcrumb {
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+}
+.custom-breadcrumb a {
+    color: #777;
+    text-decoration: none;
+    transition: 0.3s;
+}
+.custom-breadcrumb a:hover {
+    color: var(--gg-accent);
+}
+.custom-breadcrumb span {
+    color: #999;
+}
+.custom-breadcrumb .active {
+    color: #333;
+    font-weight: 600;
+}
+
+/* Product Detail Card Container */
+.detail-card {
+    background: white;
+    border-radius: 30px;
+    border: 1px solid var(--gg-border);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.03);
+    padding: 2.5rem;
+    overflow: hidden;
+}
+
+/* Premium Image Showcase */
+.image-showcase {
+    background: #fdfdfd;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: 24px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.01);
+}
+
+.image-showcase img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.image-showcase:hover img {
+    transform: scale(1.05);
+}
+
+/* Premium Custom Carousel Control Arrows */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 38px !important;
+    height: 38px !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(4px);
+    border-radius: 50% !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    opacity: 0.95 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    background: #ffffff !important;
+    opacity: 1 !important;
+    transform: translateY(-50%) scale(1.08) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16) !important;
+}
+
+#productCarouselMobile .carousel-control-prev {
+    left: 12px !important;
+}
+#productCarouselMobile .carousel-control-next {
+    right: 12px !important;
+}
+
+#productCarouselDesktop .carousel-control-prev {
+    left: 16px !important;
+}
+#productCarouselDesktop .carousel-control-next {
+    right: 16px !important;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    width: 15px !important;
+    height: 15px !important;
+    filter: invert(1) !important;
+}
+
+/* Product Meta Info */
+.category-badge {
+    display: inline-block;
+    background: rgba(230, 126, 34, 0.08);
+    color: var(--gg-accent);
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+}
+
+.detail-price {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--gg-accent);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.detail-price .price-tax-label {
+    font-size: 0.85rem;
+    color: #888;
+    font-weight: 500;
+    background: #f1f3f5;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+.product-description-container {
+    background: #fafafa;
+    border-radius: 18px;
+    padding: 1.25rem 1.5rem;
+    border: 1px dashed rgba(0, 0, 0, 0.06);
+    margin-bottom: 2rem;
+}
+
+.product-description-container h5 {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gg-header);
+    margin-bottom: 0.75rem;
+}
+
+.product-description-container p {
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+/* CTA Button Styles */
+.btn-cta-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 1rem;
+}
+
+.btn-detail-add {
+    background-color: var(--gg-header);
+    color: white;
+    border-radius: 14px;
+    padding: 0.9rem 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid var(--gg-header);
+    transition: all 0.3s ease;
+    flex-grow: 1;
+    font-size: 0.9rem;
+}
+
+.btn-detail-add:hover {
+    background-color: white;
+    color: var(--gg-header);
+}
+
+.btn-detail-buy {
+    background-color: var(--gg-accent);
+    color: white;
+    border-radius: 14px;
+    padding: 0.9rem 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid var(--gg-accent);
+    transition: all 0.3s ease;
+    flex-grow: 1;
+    font-size: 0.9rem;
+    box-shadow: 0 8px 20px rgba(230, 126, 34, 0.15);
+}
+
+.btn-detail-buy:hover {
+    background-color: #d35400;
+    border-color: #d35400;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(230, 126, 34, 0.25);
+}
+
+/* WhatsApp Enquiry Button */
+.btn-whatsapp-enquiry {
+    background-color: var(--whatsapp-green);
+    color: white;
+    width: 100%;
+    border-radius: 14px;
+    padding: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    text-decoration: none !important;
+    box-shadow: 0 8px 20px rgba(37, 211, 102, 0.15);
+}
+
+.btn-whatsapp-enquiry:hover {
+    background-color: #1eb855;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(37, 211, 102, 0.25);
+}
+
+/* Related Products Header */
+.section-title {
+    text-align: center;
+    margin: 3.5rem 0 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 900;
+    position: relative;
+    padding-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: var(--gg-accent);
+    border-radius: 2px;
+}
+
+/* Related Cards */
+.prod-card {
+    background: white;
+    border-radius: 26px;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 1px solid var(--gg-border);
+    height: 360px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    text-decoration: none;
+}
+
+.prod-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.12);
+}
+
+.prod-img {
+    height: 50%;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    background: #f8f9fa;
+}
+
+.prod-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s ease;
+}
+
+.prod-card:hover .prod-img img {
+    transform: scale(1.1);
+}
+
+.prod-info {
+    height: 50%;
+    padding: 0.8rem 1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: white;
+}
+
+.prod-info h4 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    color: var(--gg-header);
+}
+
+.prod-price {
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--gg-accent);
+    margin-bottom: 1rem;
+}
+
+.btn-add {
+    background-color: var(--gg-header);
+    color: white;
+    width: 100%;
+    border-radius: 12px;
+    padding: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-add:hover {
+    background-color: var(--gg-accent);
+}
+
+/* ==========================================================================
+   MOBILE-FIRST OPTIMIZATIONS (Max Width 767px)
+   ========================================================================== */
+@media (max-width: 767.98px) {
+    body {
+        padding-bottom: 180px !important; /* Extra padding to prevent content overlap with sticky CTAs and nav */
+    }
+    
+    .custom-breadcrumb {
+        font-size: 0.78rem;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .detail-card {
+        padding: 1.25rem;
+        border-radius: 20px;
+        border: 1px solid rgba(0,0,0,0.06) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
+        background: white !important;
+    }
+    
+    /* Hide default action button group on mobile since we have the sticky bottom bar */
+    .desktop-cta-actions {
+        display: none !important;
+    }
+    
+    /* Mobile Sticky Bottom Action Bar */
+    .mobile-sticky-bar {
+        position: fixed;
+        bottom: 72px;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 0.75rem 1rem;
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.08);
+        z-index: 1010;
+        display: flex;
+        gap: 8px;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(10px);
+    }
+    
+    .mobile-sticky-bar .btn-sticky-add {
+        background-color: var(--gg-header);
+        color: white;
+        border-radius: 10px;
+        padding: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        border: 1px solid var(--gg-header);
+        flex: 1;
+        text-align: center;
+        text-decoration: none;
+    }
+    
+    .mobile-sticky-bar .btn-sticky-buy {
+        background-color: var(--gg-accent);
+        color: white;
+        border-radius: 10px;
+        padding: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        border: 1px solid var(--gg-accent);
+        flex: 1.2;
+        text-align: center;
+        text-decoration: none;
+        box-shadow: 0 4px 12px rgba(230, 126, 34, 0.2);
+    }
+    
+    .mobile-sticky-bar .btn-sticky-buy:active,
+    .mobile-sticky-bar .btn-sticky-add:active {
+        transform: scale(0.97);
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        margin: 2rem 0 1.25rem;
+    }
+}
+
+    }
+}
+
+/* Desktop Hide Mobile Elements */
+@media (min-width: 768px) {
+    .mobile-sticky-bar {
+        display: none !important;
+    }
+}
+
+/* Lightbox Overlay Styles */
+.lightbox-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 17, 15, 0.95);
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(12px);
+    transition: opacity 0.3s ease;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: white;
+    font-size: 2.2rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 3010;
+}
+
+.lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--gg-accent);
+    transform: rotate(90deg);
+}
+
+.lightbox-content {
+    width: 90vw;
+    height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    cursor: grab;
+}
+
+.lightbox-content img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.1s ease-out;
+    user-select: none;
+    pointer-events: auto;
+}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-2 mt-md-4">
+    <!-- Breadcrumb for Desktop (Hidden on Mobile) -->
+    <div class="custom-breadcrumb mb-3 px-3 px-md-0 d-none d-md-flex">
+        <a href="{% url 'home' %}">Home</a>
+        <span class="mx-2"><i class="bi bi-chevron-right fs-10"></i></span>
+        <a href="{% url 'product' product.category.id %}">{{ product.category.name }}</a>
+        <span class="mx-2"><i class="bi bi-chevron-right fs-10"></i></span>
+        <span class="active text-truncate d-inline-block" style="max-width: 180px;">{{ product.name }}</span>
+    </div>
+
+    <!-- Mobile view: Image Carousel on top + Details beneath (Hidden on Desktop) -->
+    <div class="mobile-layout d-md-none">
+        <!-- 1. Swipeable Product Image Carousel on Top -->
+        <div class="mobile-image-carousel-card bg-white p-0 mb-3" style="border-radius: 20px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 15px rgba(0,0,0,0.02); height: 250px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative;">
+            <div id="productCarouselMobile" class="carousel slide w-100 h-100" data-bs-ride="carousel">
+                <!-- Indicators -->
+                {% if additional_images %}
+                <div class="carousel-indicators" style="margin-bottom: 12px; z-index: 5;">
+                    <button type="button" data-bs-target="#productCarouselMobile" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1" style="background-color: var(--gg-accent); width: 8px; height: 8px; border-radius: 50%; border: none;"></button>
+                    {% for img in additional_images %}
+                    <button type="button" data-bs-target="#productCarouselMobile" data-bs-slide-to="{{ forloop.counter }}" aria-label="Slide {{ forloop.counter|add:1 }}" style="background-color: var(--gg-accent); width: 8px; height: 8px; border-radius: 50%; border: none;"></button>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <!-- Inner Slides -->
+                <div class="carousel-inner h-100">
+                    <div class="carousel-item active h-100">
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: cover; cursor: zoom-in;" onclick="openLightbox('{{ product.image.url }}')">
+                            {% else %}
+                            <img src="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=800&auto=format&fit=crop" alt="Premium Tool" style="width: 100%; height: 100%; object-fit: cover; cursor: zoom-in;" onclick="openLightbox('https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=800&auto=format&fit=crop')">
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% for img in additional_images %}
+                    <div class="carousel-item h-100">
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <img src="{{ img.image.url }}" alt="Photo of {{ product.name }}" style="width: 100%; height: 100%; object-fit: cover; cursor: zoom-in;" onclick="openLightbox('{{ img.image.url }}')">
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Controls -->
+                {% if additional_images %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#productCarouselMobile" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productCarouselMobile" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 2. Product Name, Price, Description, WhatsApp -->
+        <div class="mobile-details-card p-3 bg-white mb-3" style="border-radius: 20px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+            <span class="category-badge mb-1" style="font-size: 0.65rem; padding: 2px 10px; background: rgba(230,126,34,0.08); color: var(--gg-accent); font-weight: 700; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block;">{{ product.category.name }}</span>
+            <h1 class="heading-font text-dark mb-1" style="font-size: 1.25rem !important; font-weight: 800; text-align: left; line-height: 1.2;">{{ product.name }}</h1>
+            <div class="d-flex align-items-center gap-2 mt-1 mb-3" style="background: rgba(230, 126, 34, 0.05); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(230, 126, 34, 0.1); width: fit-content;">
+                <span class="fw-bold text-accent" style="font-size: 1.25rem; font-weight: 800;">₹{{ product.price }}</span>
+                <span class="price-tax-label px-2 py-0.5 text-uppercase" style="font-size: 0.65rem; color: #d35400; background: rgba(230, 126, 34, 0.08); border-radius: 4px; font-weight: 700; letter-spacing: 0.5px;">Incl. GST</span>
+            </div>
+
+            <!-- Description Block -->
+            <div class="product-description-container" style="border: 1px dashed rgba(0, 0, 0, 0.08); background: #fafafa; border-radius: 14px; padding: 1rem; margin-bottom: 0.5rem;">
+                <h5 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gg-header); margin-bottom: 0.5rem; font-weight: 700;">Specifications & Description</h5>
+                <p style="color: #444; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0; text-align: left;">{{ product.description|linebreaksbr }}</p>
+            </div>
+            
+            <!-- WhatsApp Chat Button -->
+            <div class="mt-3">
+                <a href="https://wa.me/917742752753?text=Hi+Huzaifa+Bhai%2C+I+am+interested+in+buying+*{{ product.name|urlencode }}*+(Price%3A+₹{{ product.price }}).+Please+share+more+details." 
+                   target="_blank" 
+                   rel="noopener" 
+                   class="btn-whatsapp-enquiry py-2.5">
+                    <i class="bi bi-whatsapp"></i> Chat on WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop View Details Card (Hidden on Mobile) -->
+    <div class="detail-card d-none d-md-block">
+        <div class="row g-4 g-lg-5">
+            <!-- Left Side: Product Image Carousel -->
+            <div class="col-md-6">
+                <div class="image-showcase p-0" style="position: relative;">
+                    <div id="productCarouselDesktop" class="carousel slide w-100 h-100" data-bs-ride="carousel">
+                        <!-- Indicators -->
+                        {% if additional_images %}
+                        <div class="carousel-indicators" style="margin-bottom: 15px; z-index: 5;">
+                            <button type="button" data-bs-target="#productCarouselDesktop" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1" style="background-color: var(--gg-accent); width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
+                            {% for img in additional_images %}
+                            <button type="button" data-bs-target="#productCarouselDesktop" data-bs-slide-to="{{ forloop.counter }}" aria-label="Slide {{ forloop.counter|add:1 }}" style="background-color: var(--gg-accent); width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Inner Slides -->
+                        <div class="carousel-inner h-100">
+                            <div class="carousel-item active h-100">
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                                    {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: cover; cursor: zoom-in;" onclick="openLightbox('{{ product.image.url }}')">
+                                    {% else %}
+                                    <img src="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=800&auto=format&fit=crop" alt="Premium Tool" style="width: 100%; height: 100%; object-fit: cover; cursor: zoom-in;" onclick="openLightbox('https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=800&auto=format&fit=crop')">
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% for img in additional_images %}
+                            <div class="carousel-item h-100">
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                                    <img src="{{ img.image.url }}" alt="Photo of {{ product.name }}" style="width: 100%; height: 100%; object-fit: cover; cursor: zoom-in;" onclick="openLightbox('{{ img.image.url }}')">
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Controls -->
+                        {% if additional_images %}
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarouselDesktop" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#productCarouselDesktop" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Product Details -->
+            <div class="col-md-6 d-flex flex-column justify-content-center">
+                <div class="px-md-2">
+                    <span class="category-badge">{{ product.category.name }}</span>
+                    <h1 class="heading-font text-dark mb-2 fs-2 fs-md-1">{{ product.name }}</h1>
+                    
+                    <div class="detail-price">
+                        <span>₹{{ product.price }}</span>
+                        <span class="price-tax-label">Inclusive of GST</span>
+                    </div>
+
+                    <!-- Description Block -->
+                    <div class="product-description-container" style="border: 1px dashed rgba(0, 0, 0, 0.08); background: #fafafa; border-radius: 14px; padding: 1rem; margin-bottom: 1.5rem;">
+                        <h5 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gg-header); margin-bottom: 0.5rem; font-weight: 700;">Specifications & Description</h5>
+                        <p style="color: #444; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0; text-align: left;">{{ product.description|linebreaksbr }}</p>
+                    </div>
+
+                    <!-- Desktop Actions -->
+                    <div class="desktop-cta-actions d-flex flex-column gap-3">
+                        <div class="btn-cta-group">
+                            <a href="{% url 'add_to_cart' product.id %}" class="flex-grow-1 text-decoration-none d-flex">
+                                <button class="btn-detail-add w-100"><i class="bi bi-cart-plus me-2"></i>Add to Cart</button>
+                            </a>
+                            <a href="{% url 'buy_now' product.id %}" class="flex-grow-1 text-decoration-none d-flex">
+                                <button class="btn-detail-buy w-100"><i class="bi bi-lightning-charge me-2"></i>Buy Now</button>
+                            </a>
+                        </div>
+                        
+                        <a href="https://wa.me/917742752753?text=Hi+Huzaifa+Bhai%2C+I+am+interested+in+buying+*{{ product.name|urlencode }}*+(Price%3A+₹{{ product.price }}).+Please+share+more+details." 
+                           target="_blank" 
+                           rel="noopener" 
+                           class="btn-whatsapp-enquiry">
+                            <i class="bi bi-whatsapp"></i> Enquire on WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products Section -->
+    {% if related_products %}
+    <h2 class="section-title">You May Also Like</h2>
+    <div class="row g-3 px-2 px-md-0">
+        {% for p in related_products %}
+        <div class="col-6 col-md-3 col-lg-3">
+            <a href="{% url 'product_detail' p.id %}" class="prod-card touch-feedback">
+                <div class="prod-img">
+                    {% if p.image %}
+                    <img src="{{ p.image.url }}" alt="{{ p.name }}">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=800&auto=format&fit=crop" alt="Premium Tool">
+                    {% endif %}
+                </div>
+                <div class="prod-info">
+                    <h4>{{ p.name }}</h4>
+                    <div class="prod-price">₹{{ p.price }}</div>
+                    <button class="btn-add" onclick="event.preventDefault(); window.location.href='{% url 'add_to_cart' p.id %}';">
+                        Add to Cart
+                    </button>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Mobile Sticky Bottom Bar -->
+<div class="mobile-sticky-bar d-md-none">
+    <a href="{% url 'add_to_cart' product.id %}" class="btn-sticky-add"><i class="bi bi-cart-plus me-1"></i>Add to Cart</a>
+    <a href="{% url 'buy_now' product.id %}" class="btn-sticky-buy"><i class="bi bi-lightning-charge-fill me-1"></i>Buy Now</a>
+</div>
+
+<!-- Premium Image Zoom Lightbox Overlay -->
+<div id="imageLightbox" class="lightbox-overlay" style="display: none;">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    
+    <!-- Scroll & Gesture Area -->
+    <div class="lightbox-content" id="lightboxContent">
+        <img id="lightboxImg" src="" alt="Zoomable Product Image">
+    </div>
+</div>
+
+<script>
+    let zoomLevel = 1;
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let translateX = 0, translateY = 0;
+    const minZoom = 0.5;
+    const maxZoom = 4;
+
+    function openLightbox(imgUrl) {
+        const lightbox = document.getElementById('imageLightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        lightboxImg.src = imgUrl;
+        lightbox.style.display = 'flex';
+        resetZoom();
+        document.body.style.overflow = 'hidden'; // Lock main scroll
+    }
+
+    function closeLightbox() {
+        const lightbox = document.getElementById('imageLightbox');
+        lightbox.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Unlock main scroll
+    }
+
+    function zoomImage(amount) {
+        zoomLevel = Math.min(Math.max(zoomLevel + amount, minZoom), maxZoom);
+        updateImageTransform();
+    }
+
+    function resetZoom() {
+        zoomLevel = 1;
+        translateX = 0;
+        translateY = 0;
+        updateImageTransform();
+    }
+
+    function updateImageTransform() {
+        const lightboxImg = document.getElementById('lightboxImg');
+        lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const content = document.getElementById('lightboxContent');
+        
+        if (content) {
+            // Mouse Drag-to-Pan (Desktop)
+            content.addEventListener('mousedown', (e) => {
+                if (zoomLevel > 1) {
+                    isDragging = true;
+                    startX = e.clientX - translateX;
+                    startY = e.clientY - translateY;
+                    content.style.cursor = 'grabbing';
+                }
+            });
+
+            // Double click/tap zoom toggle
+            content.addEventListener('dblclick', () => {
+                if (zoomLevel > 1) {
+                    resetZoom();
+                } else {
+                    zoomLevel = 2;
+                    translateX = 0;
+                    translateY = 0;
+                    updateImageTransform();
+                }
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    translateX = e.clientX - startX;
+                    translateY = e.clientY - startY;
+                    updateImageTransform();
+                }
+            });
+
+            window.addEventListener('mouseup', () => {
+                isDragging = false;
+                if (content) content.style.cursor = 'grab';
+            });
+
+            // Touch Support (Mobile Pan + Pinch-to-Zoom)
+            let initialDistance = 0;
+
+            content.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 2) {
+                    initialDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                } else if (zoomLevel > 1 && e.touches.length === 1) {
+                    isDragging = true;
+                    startX = e.touches[0].clientX - translateX;
+                    startY = e.touches[0].clientY - translateY;
+                }
+            });
+
+            content.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 2 && initialDistance > 0) {
+                    e.preventDefault();
+                    const currentDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    const factor = currentDistance / initialDistance;
+                    zoomLevel = Math.min(Math.max(zoomLevel * factor, minZoom), maxZoom);
+                    initialDistance = currentDistance;
+                    updateImageTransform();
+                } else if (isDragging && e.touches.length === 1) {
+                    translateX = e.touches[0].clientX - startX;
+                    translateY = e.touches[0].clientY - startY;
+                    updateImageTransform();
+                }
+            });
+
+            content.addEventListener('touchend', (e) => {
+                if (e.touches.length < 2) {
+                    initialDistance = 0;
+                }
+                isDragging = false;
+            });
+        }
+    });
+</script>
+{% endblock %}

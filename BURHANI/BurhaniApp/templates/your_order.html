@@ -6,20 +6,38 @@
 {% block extra_css %}
     .order-card {
         background: white;
-        border-radius: 16px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-        border: 1px solid var(--gg-border);
+        border-radius: 20px;
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(0,0,0,0.06);
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .order-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07);
     }
 
     .order-header-compact {
         display: grid;
         grid-template-columns: 1fr auto;
         gap: 0.5rem;
-        border-bottom: 1px solid #f0f0f0;
-        padding-bottom: 0.75rem;
-        margin-bottom: 0.75rem;
+        padding: 1rem 1.25rem;
+        margin: -1.25rem -1.25rem 1.25rem -1.25rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    /* Alternating visual styles for distinct orders */
+    .order-theme-green .order-header-compact {
+        background: #f4fcf6;
+        border-top: 4px solid #198754;
+    }
+    
+    .order-theme-orange .order-header-compact {
+        background: #fff8f2;
+        border-top: 4px solid var(--gg-accent);
     }
 
     .status-badge-small {
@@ -129,7 +147,7 @@
 
     {% if orders %}
         {% for order in orders %}
-        <div class="order-card">
+        <div class="order-card {% if forloop.counter|divisibleby:2 %}order-theme-orange{% else %}order-theme-green{% endif %}">
             <div class="order-header-compact">
                 <div>
                     <div class="text-muted" style="font-size: 0.7rem;">Order #{{ order.id|stringformat:"05d" }}</div>
@@ -198,23 +216,4 @@
     {% endif %}
 </div>
 
-<!-- Bottom App Bar (Keep as is since it's already app-like) -->
-<nav class="bottom-app-bar">
-    <a href="{% url 'home' %}" class="bottom-app-bar-item">
-        <i class="bi bi-house-door"></i>
-        <span>Home</span>
-    </a>
-    <a href="{% url 'cart' %}" class="bottom-app-bar-item">
-        <i class="bi bi-cart"></i>
-        <span>Cart</span>
-    </a>
-    <a href="{% url 'your_orders' %}" class="bottom-app-bar-item active">
-        <i class="bi bi-box-seam-fill"></i>
-        <span>Orders</span>
-    </a>
-    <a href="#" class="bottom-app-bar-item" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
-        <i class="bi bi-person"></i>
-        <span>Menu</span>
-    </a>
-</nav>
 {% endblock %}

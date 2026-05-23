@@ -27,6 +27,7 @@
             color: var(--gg-text);
             font-family: 'Inter', sans-serif;
             margin: 0;
+            padding-bottom: 100px !important;
         }
 
         h1,
@@ -187,6 +188,63 @@
             color: rgba(255, 255, 255, 0.4);
             font-size: 0.9rem;
         }
+
+        /* Mobile Form Optimization */
+        @media (max-width: 767.98px) {
+            .checkout-form-section {
+                padding: 1rem 0.85rem !important;
+                border-radius: 16px !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            .checkout-summary-section {
+                padding: 1rem 0.85rem !important;
+                border-radius: 16px !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            .btn-place-order {
+                padding: 0.5rem 1rem !important;
+                font-size: 0.8rem !important;
+            }
+
+            .form-control {
+                padding: 0.55rem 0.75rem !important;
+                font-size: 0.85rem !important;
+                border-radius: 8px !important;
+            }
+
+            .form-label {
+                font-size: 0.7rem !important;
+                margin-bottom: 0.2rem !important;
+            }
+
+            .payment-methods {
+                margin-top: 0.5rem !important;
+                gap: 8px !important;
+            }
+
+            .payment-option {
+                padding: 0.6rem 0.4rem !important;
+                font-size: 0.75rem !important;
+                border-radius: 10px !important;
+            }
+
+            .payment-option i {
+                font-size: 1.4rem !important;
+                margin-bottom: 0.2rem !important;
+            }
+
+            h3 {
+                font-size: 0.95rem !important;
+                margin-bottom: 0.75rem !important;
+            }
+
+            .container {
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+            }
+        }
     </style>
 </head>
 
@@ -203,6 +261,10 @@
                     style="letter-spacing: 1px;">BURHANI</span>
             </a>
             <div class="d-flex align-items-center gap-3">
+                <a href="tel:+917742752753" class="d-flex align-items-center gap-2 text-decoration-none fw-bold text-dark bg-warning px-3 py-2"
+                    style="border-radius: 12px; font-size: 0.78rem; letter-spacing: 0.8px; text-transform: uppercase; white-space: nowrap;">
+                    <i class="bi bi-telephone-fill"></i><span class="d-none d-sm-inline">Contact</span><span class="d-none d-xl-inline">+91 77427 52753</span>
+                </a>
                 <a href="{% url 'cart' %}" class="text-white text-decoration-none fs-6 fw-bold d-none d-md-inline">
                     <i class="bi bi-arrow-left me-2"></i>RETURN TO CART
                 </a>
@@ -215,179 +277,245 @@
     </header>
 
     <!-- Mobile Offcanvas Menu (Bottom Sheet) -->
-    <div class="offcanvas offcanvas-bottom-sheet text-bg-dark" tabindex="-1" id="mobileMenu">
-        <div class="offcanvas-header border-bottom border-secondary">
-            <h5 class="offcanvas-title heading-font">Menu</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    <div class="offcanvas offcanvas-bottom-sheet" tabindex="-1" id="mobileMenu" 
+        style="height: auto; max-height: 85vh; border-radius: 28px 28px 0 0 !important; background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(245, 247, 246, 0.98) 100%) !important; border: none; border-top: 1px solid rgba(0, 0, 0, 0.08) !important; box-shadow: 0 -10px 40px rgba(0,0,0,0.12); backdrop-filter: blur(20px);">
+        
+        <!-- Drag Handle like native iOS/Android sheet -->
+        <div class="d-flex justify-content-center" style="padding-top: 12px; padding-bottom: 6px;">
+            <div style="width: 36px; height: 4.5px; background: rgba(0, 0, 0, 0.15); border-radius: 10px;"></div>
         </div>
-        <div class="offcanvas-body">
-            <div class="d-flex flex-column gap-3 fs-5">
-                <a href="{% url 'home' %}" class="text-white text-decoration-none">Home</a>
-                <a href="{% url 'cart' %}" class="text-white text-decoration-none">Return to Cart</a>
-                <a href="{% url 'your_orders' %}" class="text-white text-decoration-none">My Orders</a>
-                <hr class="border-secondary">
+
+        <div class="offcanvas-header border-bottom border-light-subtle px-3" style="padding-top: 4px; padding-bottom: 12px;">
+            <h5 class="offcanvas-title heading-font text-dark d-flex align-items-center gap-2" style="font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 900; letter-spacing: 0.5px;">
+                <i class="bi bi-grid-fill text-warning fs-5"></i> Navigation Menu
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" style="font-size: 0.8rem; opacity: 0.75;"></button>
+        </div>
+        
+        <div class="offcanvas-body px-3 py-3">
+            <div class="d-flex flex-column" style="gap: 10px;">
+                
+                <!-- Menu Links with premium list item aesthetics -->
+                <a href="{% url 'home' %}" class="d-flex align-items-center justify-content-between text-decoration-none text-dark touch-feedback" 
+                    style="background: rgba(11, 34, 22, 0.04); border-radius: 12px; border: 1px solid rgba(11, 34, 22, 0.05); padding: 12px 16px; transition: all 0.2s ease;">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="d-flex align-items-center justify-content-center rounded-3" style="width: 34px; height: 34px; background: rgba(255, 193, 7, 0.15); color: #ffc107; flex-shrink: 0;"><i class="bi bi-house-door-fill fs-5"></i></span>
+                        <span class="fw-semibold text-dark" style="font-size: 0.92rem; font-family: 'Inter', sans-serif;">Home</span>
+                    </div>
+                    <i class="bi bi-chevron-right text-black-50 small"></i>
+                </a>
+
+                <a href="{% url 'cart' %}" class="d-flex align-items-center justify-content-between text-decoration-none text-dark touch-feedback" 
+                    style="background: rgba(11, 34, 22, 0.04); border-radius: 12px; border: 1px solid rgba(11, 34, 22, 0.05); padding: 12px 16px; transition: all 0.2s ease;">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="d-flex align-items-center justify-content-center rounded-3" style="width: 34px; height: 34px; background: rgba(255, 193, 7, 0.15); color: #ffc107; flex-shrink: 0;"><i class="bi bi-cart-fill fs-5"></i></span>
+                        <span class="fw-semibold text-dark" style="font-size: 0.92rem; font-family: 'Inter', sans-serif;">Return to Cart</span>
+                    </div>
+                    <i class="bi bi-chevron-right text-black-50 small"></i>
+                </a>
+
+                <a href="{% url 'your_orders' %}" class="d-flex align-items-center justify-content-between text-decoration-none text-dark touch-feedback" 
+                    style="background: rgba(11, 34, 22, 0.04); border-radius: 12px; border: 1px solid rgba(11, 34, 22, 0.05); padding: 12px 16px; transition: all 0.2s ease;">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="d-flex align-items-center justify-content-center rounded-3" style="width: 34px; height: 34px; background: rgba(25, 135, 84, 0.15); color: #198754; flex-shrink: 0;"><i class="bi bi-bag-check-fill fs-5"></i></span>
+                        <span class="fw-semibold text-dark" style="font-size: 0.92rem; font-family: 'Inter', sans-serif;">My Orders</span>
+                    </div>
+                    <i class="bi bi-chevron-right text-black-50 small"></i>
+                </a>
+
+                <div class="my-1 border-top border-light-subtle opacity-75"></div>
+
                 {% if user.is_authenticated %}
-                <span class="text-white-50 fs-6">Hi, {% firstof user.first_name user.username %}</span>
-                <a href="{% url 'logout' %}" class="text-danger text-decoration-none fw-bold">Logout</a>
+                <!-- High-End User Greeting Card / Profile Card -->
+                <div class="d-flex align-items-center justify-content-between" 
+                    style="background: linear-gradient(135deg, rgba(11, 34, 22, 0.04) 0%, rgba(11, 34, 22, 0.01) 100%); border-radius: 16px; border: 1px solid rgba(11, 34, 22, 0.06); padding: 14px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center justify-content-center rounded-circle fw-bold text-white shadow-sm" 
+                            style="width: 42px; height: 42px; background: linear-gradient(135deg, var(--gg-accent) 0%, #d35400 100%); font-size: 1.1rem; border: 1.5px solid rgba(255,255,255,0.15); flex-shrink: 0;">
+                            {{ user.username|slice:":1"|upper }}
+                        </div>
+                        <div>
+                            <div class="text-black-50 small fw-medium" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2;">Account</div>
+                            <h4 class="mb-0 fw-bold text-dark" style="font-size: 0.95rem; font-family: 'Inter', sans-serif; line-height: 1.2;">{% firstof user.first_name user.username %}</h4>
+                        </div>
+                    </div>
+                    <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-danger fw-bold touch-feedback d-flex align-items-center gap-1.5" 
+                        style="padding: 6px 12px; border-radius: 10px; font-size: 0.78rem; border-color: rgba(220, 53, 69, 0.4); background: rgba(220, 53, 69, 0.05); color: #dc3545;">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a>
+                </div>
                 {% else %}
-                <a href="{% url 'login' %}" class="text-warning text-decoration-none fw-bold">Login</a>
+                <a href="{% url 'login' %}" class="btn btn-warning w-100 py-2.5 fw-bold touch-feedback d-flex align-items-center justify-content-center gap-2" 
+                    style="border-radius: 12px; font-size: 0.88rem; box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);">
+                    <i class="bi bi-box-arrow-in-right fs-5"></i> Login to Your Account
+                </a>
                 {% endif %}
+
+                <!-- Quick Contact Info Section -->
+                <div class="my-1 border-top border-light-subtle opacity-75"></div>
+                <div class="d-flex flex-column" style="gap: 8px;">
+                    <div class="text-black-50 small fw-bold" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; padding-left: 4px;">Contact</div>
+                    <div class="d-flex gap-2">
+                        <a href="tel:+917742752753" class="d-flex align-items-center justify-content-center flex-grow-1 text-decoration-none text-dark touch-feedback" 
+                           style="background: rgba(11, 34, 22, 0.04); border-radius: 12px; border: 1px solid rgba(11, 34, 22, 0.05); padding: 10px; gap: 8px; transition: all 0.2s ease;">
+                           <span class="d-flex align-items-center justify-content-center rounded-circle" style="width: 28px; height: 28px; background: rgba(13, 110, 253, 0.15); color: #0d6efd;"><i class="bi bi-telephone-fill small"></i></span>
+                           <span class="fw-semibold text-dark" style="font-size: 0.8rem; font-family: 'Inter', sans-serif;">+91 77427 52753</span>
+                        </a>
+                        <a href="https://wa.me/917742752753" target="_blank" rel="noopener" class="d-flex align-items-center justify-content-center flex-grow-1 text-decoration-none text-dark touch-feedback" 
+                           style="background: rgba(11, 34, 22, 0.04); border-radius: 12px; border: 1px solid rgba(11, 34, 22, 0.05); padding: 10px; gap: 8px; transition: all 0.2s ease;">
+                           <span class="d-flex align-items-center justify-content-center rounded-circle" style="width: 28px; height: 28px; background: rgba(25, 135, 84, 0.15); color: #198754;"><i class="bi bi-whatsapp small"></i></span>
+                           <span class="fw-semibold text-dark" style="font-size: 0.8rem; font-family: 'Inter', sans-serif;">WhatsApp</span>
+                        </a>
+                    </div>
+                    <a href="mailto:mustansirmotagh786.88@gmail.com" class="d-flex align-items-center justify-content-between text-decoration-none text-dark touch-feedback" 
+                       style="background: rgba(11, 34, 22, 0.04); border-radius: 12px; border: 1px solid rgba(11, 34, 22, 0.05); padding: 10px 16px; transition: all 0.2s ease;">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="d-flex align-items-center justify-content-center rounded-circle" style="width: 28px; height: 28px; background: rgba(220, 53, 69, 0.15); color: #dc3545;"><i class="bi bi-envelope-fill small"></i></span>
+                            <span class="fw-semibold text-dark text-truncate" style="font-size: 0.8rem; font-family: 'Inter', sans-serif; max-width: 220px;">Email Us</span>
+                        </div>
+                        <i class="bi bi-chevron-right text-black-50 small"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-    <div class="container my-0 my-md-4 px-0 px-md-3">
-        <h1 class="mb-2 mb-md-4 fs-5 fw-bold px-3 pt-3"
-            style="font-family: 'Inter', sans-serif; text-transform: uppercase;">Complete Your Order</h1>
+        </div>
+    </div>
+    <div class="container my-0 my-md-3 px-0 px-md-3">
         <div class="row g-0 g-md-4">
-            <div class="col-lg-7">
+            <div class="col-lg-7 order-last order-lg-first">
                 <div class="checkout-form-section bg-white p-3 p-md-4"
-                    style="border-top: 1px solid rgba(0,0,0,0.05); border-bottom: 1px solid rgba(0,0,0,0.05);">
-                    <h3 class="mb-4 fs-5 fw-bold" style="font-family: 'Inter', sans-serif;"><i
-                            class="bi bi-geo-alt me-2 text-muted"></i>1. Shipping Details</h3>
+                    style="border-radius: 20px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 15px rgba(0,0,0,0.02); margin-bottom: 1rem;">
+
+                    <div class="d-flex justify-content-between align-items-center mb-2.5">
+                        <h3 class="mb-0 fs-6 fw-bold"
+                            style="font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 0.5px;">
+                            <i class="bi bi-geo-alt me-2 text-accent"></i>Shipping Details
+                        </h3>
+                        <!-- Edit Button (Compact outline style) -->
+                        <button type="button" class="btn btn-sm btn-outline-secondary px-2.5 py-1 touch-feedback" id="editShippingBtn"
+                            style="border-radius: 8px; font-weight: 600; font-size: 0.75rem; display: {% if last_address %}inline-block{% else %}none{% endif %};">
+                            <i class="bi bi-pencil-square me-1"></i> Edit
+                        </button>
+                    </div>
+
+                    <!-- 1. COMPACT READ-ONLY SUMMARY CARD (Shows ONLY name, phone, address) -->
+                    <div id="shippingSummaryCard" class="p-3 mb-2.5"
+                        style="background: #fafafa; border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; display: {% if last_address %}block{% else %}none{% endif %}; box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);">
+                        <div class="row g-2" style="font-size: 0.8rem; font-family: 'Inter', sans-serif;">
+                            <div class="col-6 d-flex align-items-center gap-2">
+                                <span class="d-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 24px; height: 24px; color: var(--gg-accent); font-size: 0.72rem;"><i class="bi bi-person-fill"></i></span>
+                                <strong id="summaryName" class="text-dark text-truncate" style="max-width: 80%;">{% firstof user.first_name user.username %}</strong>
+                            </div>
+                            <div class="col-6 d-flex align-items-center gap-2">
+                                <span class="d-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 24px; height: 24px; color: var(--gg-accent); font-size: 0.72rem;"><i class="bi bi-telephone-fill"></i></span>
+                                <span id="summaryPhone" class="fw-medium text-dark text-truncate">{% firstof user.username '' %}</span>
+                            </div>
+                            <div class="col-12 d-flex align-items-start gap-2 mt-1 pt-1.5 border-top" style="border-top: 1px dashed rgba(0,0,0,0.05) !important;">
+                                <span class="d-flex align-items-center justify-content-center bg-light rounded-circle mt-0.5" style="width: 24px; height: 24px; color: var(--gg-accent); font-size: 0.72rem; flex-shrink: 0;"><i class="bi bi-geo-alt-fill"></i></span>
+                                <span class="text-muted fw-semibold" style="font-size: 0.78rem;">Address: <span id="summaryAddress" class="text-dark fw-medium">{% if last_address %}{{ last_address }}{% else %}-{% endif %}</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. EMPTY STATE CARD (Shows ONLY clean Add Address button) -->
+                    <div id="shippingEmptyCard" class="text-center p-3.5 mb-2.5"
+                        style="background: #fafafa; border: 1px dashed rgba(0,0,0,0.08); border-radius: 16px; display: {% if last_address %}none{% else %}block{% endif %};">
+                        <p class="text-muted small mb-2.5" style="font-size: 0.78rem;">No address added. Please enter your shipping address to complete the order.</p>
+                        <button type="button" class="btn btn-sm btn-accent text-white px-3 py-1.8 fw-bold touch-feedback"
+                            id="addShippingBtn"
+                            style="background-color: var(--gg-accent); border-radius: 50px; font-size: 0.78rem; border: none; box-shadow: 0 4px 10px rgba(230,126,34,0.15);">
+                            <i class="bi bi-plus-circle me-1"></i> Add Address
+                        </button>
+                    </div>
+
+                    <!-- The Real Form elements submitted to Django -->
                     <form id="checkoutForm" method="POST" action="{% url 'order' %}">
                         {% csrf_token %}
                         <input type="hidden" name="order_id" value="{{ order_instance.id }}">
                         <input type="hidden" id="rzp_key" value="{{ razorpay_key_id|default:''|escapejs }}">
                         <input type="hidden" id="rzp_order_id" value="{{ razorpay_order_id|default:''|escapejs }}">
                         <input type="hidden" id="rzp_amount" value="{{ amount|default:'0' }}">
-                        <div class="row g-3">
-                            <h5 class="mb-2 mt-4 text-muted"
-                                style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
-                                Contact
-                                Information</h5>
-                            <div class="col-6 col-md-6 mt-2">
-                                <label class="form-label mb-1">First Name</label>
-                                <input type="text" name="first_name" class="form-control" placeholder="John"
-                                    value="{% firstof user.first_name user.username %}" required>
-                            </div>
-                            <div class="col-6 col-md-6 mt-2">
-                                <label class="form-label mb-1">Last Name</label>
-                                <input type="text" name="last_name" class="form-control" placeholder="Doe" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Email Address</label>
-                                <input type="email" class="form-control bg-light" value="{{ user.email }}" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Phone Number</label>
-                                <input type="tel" id="phone_number" name="phone" class="form-control"
-                                    placeholder="+91 XXXXX XXXXX" value="" required>
-                            </div>
 
-                            <div class="col-12 mt-4">
-                                <div class="d-flex justify-content-between align-items-end mb-2 border-bottom pb-2">
-                                    <h5 class="mb-0 text-muted"
-                                        style="font-size: 0.95rem; font-weight: 700; text-transform: uppercase;">
-                                        Shipping Address</h5>
-                                    <button type="button"
-                                        class="btn btn-sm btn-outline-secondary d-flex align-items-center"
-                                        id="getLocationBtn"
-                                        style="border-radius: 8px; font-weight: 600; font-size: 0.8rem;">
-                                        <i class="bi bi-geo-alt-fill me-1"></i> Auto-Detect Location
-                                    </button>
-                                </div>
-                                <div id="locationStatus" class="form-text text-muted mb-2" style="display: none;"></div>
-                            </div>
-
-                            <div class="col-12 mt-2">
-                                <label class="form-label">Street Address</label>
-                                <input type="text" id="streetAddress" class="form-control address-field"
-                                    placeholder="House number and street name" required>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Apartment, suite, etc. <span
-                                        class="text-muted fw-normal text-lowercase">(optional)</span></label>
-                                <input type="text" id="apartment" class="form-control address-field"
-                                    placeholder="Apartment, suite, unit, etc.">
-                            </div>
-                            <div class="col-6 col-md-4">
-                                <label class="form-label mb-1">City</label>
-                                <input type="text" id="city" class="form-control address-field" placeholder="City"
-                                    required>
-                            </div>
-                            <div class="col-6 col-md-4">
-                                <label class="form-label mb-1">State</label>
-                                <input type="text" id="state" class="form-control address-field" placeholder="State"
-                                    required>
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <label class="form-label mb-1">PIN Code</label>
-                                <input type="text" id="pincode" class="form-control address-field"
-                                    placeholder="PIN Code" required>
-                            </div>
-
-                            <!-- Hidden field to send combined address to Django backend -->
-                            <textarea name="address" id="shippingAddress" style="display: none;" required></textarea>
-                        </div>
+                        <!-- These hidden elements are loaded with the actual submitted values -->
+                        <input type="hidden" name="first_name" id="real_first_name"
+                            value="{% firstof user.first_name user.username %}">
+                        <input type="hidden" name="last_name" id="real_last_name" value="Doe">
+                        <input type="hidden" name="phone" id="real_phone" value="{% firstof user.username '' %}">
+                        <textarea name="address" id="shippingAddress" style="display: none;"
+                            required>{% if last_address %}{{ last_address }}{% endif %}</textarea>
                     </form>
-                    <h3 class="mt-5 mb-4">2. Payment Method</h3>
+
+                    <h3 class="mt-4 mb-2 fs-6 fw-bold"
+                        style="font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 0.5px;"><i
+                            class="bi bi-credit-card me-2 text-accent"></i>Payment Method</h3>
                     <div class="payment-methods">
                         <div class="payment-option active" data-method="COD">
-                            <i class="bi bi-cash-stack d-block fs-3 mb-2"></i>
+                            <i class="bi bi-cash-stack d-block fs-4 mb-1"></i>
                             <span>Cash on Delivery</span>
                         </div>
                         <div class="payment-option" data-method="ONLINE">
-                            <i class="bi bi-credit-card d-block fs-3 mb-2"></i>
+                            <i class="bi bi-credit-card d-block fs-4 mb-1"></i>
                             <span>Online Payment</span>
                         </div>
                     </div>
-
                 </div>
             </div>
-            <div class="col-lg-5 mt-2 mt-lg-0">
-                <div class="checkout-summary-section bg-white p-3" style="border-bottom: 1px solid rgba(0,0,0,0.05);">
-                    <h3 class="mb-4 fs-4" style="font-family: 'Inter', sans-serif;">Order Summary</h3>
-                    <div class="order-summary-box mb-4">
+            <div class="col-lg-5 order-first order-lg-last mt-2 mt-lg-0">
+                <div class="checkout-summary-section bg-white p-3" style="border-radius: 24px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.02); margin-bottom: 1rem;">
+                    <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                        <h3 class="mb-0 fs-6 fw-bold" style="font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gg-header);">
+                            <i class="bi bi-cart-check me-2 text-accent"></i>ORDER SUMMARY
+                        </h3>
+                        <span class="badge bg-light text-dark border small fw-bold px-2 py-1" style="font-size: 0.7rem; border-radius: 6px;">{{ cart|length }} Item(s)</span>
+                    </div>
+                    
+                    <!-- Vertical Cart Items List -->
+                    <div class="checkout-cart-items-list mb-3" style="max-height: 240px; overflow-y: auto; padding-right: 4px;">
                         {% for item in cart %}
-                        <div class="summary-item">
-                            <div class="d-flex align-items-center flex-grow-1">
-                                <div class="me-3 flex-shrink-0"
-                                    style="width: 50px; height: 50px; background: #f8f9fa; border-radius: 6px; padding: 4px; border: 1px solid rgba(0,0,0,0.05);">
-                                    {% if item.product.image %}
-                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
-                                        style="width:100%; height:100%; object-fit:contain;">
-                                    {% else %}
-                                    <img src="https://images.unsplash.com/photo-1581147036324-c17ac41dfa6c?q=80&w=400&auto=format&fit=crop"
-                                        alt="Tool" style="width:100%; height:100%; object-fit:contain;">
-                                    {% endif %}
-                                </div>
-                                <div>
-                                    <h6 class="fw-bold mb-1" style="font-size: 0.9rem;">{{ item.product.name }}</h6>
-                                    <span class="text-muted small">Qty: {{ item.product_quantity }}</span>
+                        <div class="d-flex align-items-center justify-content-between py-2.5 border-bottom {% if forloop.last %}border-bottom-0{% endif %}">
+                            <div class="d-flex align-items-center gap-3" style="max-width: 80%;">
+                                <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}https://images.unsplash.com/photo-1581147036324-c17ac41dfa6c?q=80&w=400&auto=format&fit=crop{% endif %}" 
+                                     alt="{{ item.product.name }}" 
+                                     style="width: 72px; height: 72px; object-fit: cover; background: #f8f9fa; border-radius: 16px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 2px 6px rgba(0,0,0,0.03); padding: 0; flex-shrink: 0;">
+                                <div style="min-width: 0;">
+                                    <h4 class="mb-0 fw-semibold text-truncate" style="font-size: 0.85rem; color: var(--gg-header); font-family: 'Inter', sans-serif;">{{ item.product.name }}</h4>
+                                    <div class="text-muted small fw-medium mt-1.5" style="font-size: 0.72rem; display: flex; align-items: center; gap: 6px;">
+                                        <span class="badge bg-light text-dark border px-2 py-0.5" style="font-size: 0.65rem; border-radius: 4px;">Qty: {{ item.product_quantity }}</span>
+                                        <span class="text-muted-50">&bull;</span>
+                                        <span class="fw-semibold">₹{{ item.product.price }}</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="fw-bold">₹{{ item.product_total }}</div>
+                            <div class="text-end">
+                                <span class="fw-bold" style="font-size: 0.88rem; color: var(--gg-header);">₹{{ item.product_total }}</span>
+                            </div>
                         </div>
                         {% endfor %}
                     </div>
-                    <div class="px-2">
+                    
+                    <div class="px-1 pt-2 border-top" style="font-size: 0.8rem;">
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-muted">Subtotal</span>
-                            <span class="fw-bold">₹{{ grand_total }}</span>
+                            <span class="fw-semibold">₹{{ grand_total }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Shipping Fee</span>
+                            <span class="text-muted">Delivery</span>
                             <span class="text-success fw-bold">FREE</span>
                         </div>
-                        <hr>
-                        <div class="d-flex justify-content-between mb-3 align-items-center bg-light p-3 rounded-3 mt-3">
-                            <span class="fs-6 fw-bold">Total Bill</span>
-                            <span class="fs-5 fw-bold" style="color: var(--gg-header);">₹{{ grand_total }}</span>
+                        <div class="d-flex justify-content-between mb-2 align-items-center bg-light p-2.5 rounded-3 mt-3" style="border: 1px solid rgba(0,0,0,0.02);">
+                            <span class="fw-bold" style="font-size: 0.85rem; color: var(--gg-header);">Total Amount</span>
+                            <span class="fw-bold text-accent" style="font-size: 1.1rem;">₹{{ grand_total }}</span>
                         </div>
                     </div>
-
-                    <div class="mt-4 mb-2">
+                    <div class="mt-2.5 mb-1">
                         <button type="submit" id="place-order-btn" form="checkoutForm"
                             class="btn-place-order touch-feedback w-100 fw-bold d-flex align-items-center justify-content-center"
-                            style="padding: 1rem; font-size: 1rem; border-radius: 12px; letter-spacing: 0.5px; background: var(--gg-header); color: white;">
-                            <span>CONFIRM & PLACE ORDER</span>
-                            <i class="bi bi-arrow-right ms-2 fs-5"></i>
+                            style="padding: 0.6rem 1.2rem; font-size: 0.85rem; border-radius: 50px; letter-spacing: 0.5px; background: var(--gg-header); color: white; border: none; box-shadow: 0 5px 15px rgba(10,17,15,0.12); transition: all 0.3s ease;">
+                            <span>CONFIRM & PLACE ORDER &bull; ₹{{ grand_total }}</span>
+                            <i class="bi bi-arrow-right ms-2 fs-6"></i>
                         </button>
                     </div>
-                    <p class="text-center text-muted small mt-3 opacity-75">
-                        <i class="bi bi-shield-lock-fill me-1 text-success"></i>
-                        Secured with 256-bit SSL encryption.
-                    </p>
                 </div>
             </div>
         </div>
@@ -406,6 +534,10 @@
                 </div>
                 <div class="col-lg-6 text-lg-end">
                     <p class="small text-white-50">SSL Certified Secure Checkout</p>
+                    <div class="d-flex flex-column flex-sm-row justify-content-lg-end gap-2 gap-sm-3 small">
+                        <a href="tel:+917742752753" class="text-white-50 text-decoration-none"><i class="bi bi-telephone me-1 text-warning"></i> +91 77427 52753</a>
+                        <a href="https://wa.me/917742752753" target="_blank" rel="noopener" class="text-white-50 text-decoration-none"><i class="bi bi-whatsapp me-1 text-success"></i> WhatsApp</a>
+                    </div>
                 </div>
             </div>
             <div class="copyright">
@@ -432,6 +564,80 @@
             <span>Menu</span>
         </a>
     </nav>
+
+    <!-- Premium Shipping Details Modal (Separate Window Overlay) -->
+    <div class="modal fade" id="shippingModal" tabindex="-1" aria-labelledby="shippingModalLabel" aria-hidden="true"
+        style="z-index: 2500;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 360px; width: 92%; margin: 1.75rem auto;">
+            <div class="modal-content"
+                style="border-radius: 24px; border: none; box-shadow: 0 15px 50px rgba(0,0,0,0.15); background: white;">
+                <div class="modal-header border-bottom-0 pb-0 pt-3 px-3">
+                    <h5 class="modal-title heading-font fs-5 fw-bold" id="shippingModalLabel"><i
+                            class="bi bi-geo-alt-fill text-accent me-2"></i>Shipping Address</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pt-2 px-3">
+                    <div class="row g-2">
+                        <!-- Compact Contact Badge -->
+                        <div class="col-12 d-flex align-items-center justify-content-between py-1.5 px-2.5 mb-2 bg-light rounded"
+                            style="font-size: 0.78rem; border: 1px solid rgba(0,0,0,0.03);">
+                            <span class="text-muted"><i class="bi bi-envelope-fill me-1 text-secondary"></i> {{ user.email }}</span>
+                            <span class="text-uppercase fw-bold text-accent"
+                                style="font-size: 0.62rem; letter-spacing: 0.5px;">Account Linked</span>
+                        </div>
+
+                        <div class="col-12 mt-1">
+                            <label class="form-label mb-0.5" style="font-size: 0.65rem; font-weight: 700; color: #888; text-transform: uppercase;">Full Name</label>
+                            <input type="text" id="fullNameInput" class="form-control form-control-sm py-1 px-2.5" placeholder="First and Last Name"
+                                value="{% if user.first_name %}{{ user.first_name }}{% if user.last_name %} {{ user.last_name }}{% endif %}{% else %}{{ user.username }}{% endif %}" required style="font-size: 0.8rem; height: 32px; border-radius: 8px;">
+                        </div>
+                        <div class="col-12 mt-1.5">
+                            <label class="form-label mb-0.5" style="font-size: 0.65rem; font-weight: 700; color: #888; text-transform: uppercase;">Phone Number</label>
+                            <input type="tel" id="phoneInput" class="form-control form-control-sm py-1 px-2.5" placeholder="10-digit mobile number"
+                                value="{% firstof user.username '' %}" required pattern="[0-9]{10}" maxlength="10" style="font-size: 0.8rem; height: 32px; border-radius: 8px;">
+                        </div>
+
+                        <div class="col-12 mt-2 mb-0.5 d-flex justify-content-between align-items-center">
+                            <label class="form-label mb-0" style="font-size: 0.65rem; font-weight: 700; color: #888; text-transform: uppercase;">Shipping Address</label>
+                            <button type="button" class="btn btn-sm btn-link text-accent p-0 fw-bold d-flex align-items-center"
+                                id="getLocationBtn" style="font-size: 0.68rem; text-decoration: none;">
+                                <i class="bi bi-geo-alt-fill me-1"></i> Auto-Detect
+                            </button>
+                        </div>
+                        <div id="locationStatus" class="form-text text-muted my-0.5" style="display: none; font-size: 0.65rem;"></div>
+
+                        <div class="col-12 mt-1">
+                            <input type="text" id="streetAddress" class="form-control form-control-sm py-1 px-2.5 address-field"
+                                placeholder="House No., Street Name, Landmark" required style="font-size: 0.8rem; height: 32px; border-radius: 8px;">
+                        </div>
+                        <div class="col-6 mt-1.5">
+                            <input type="text" id="city" class="form-control form-control-sm py-1 px-2.5 address-field" placeholder="City" required style="font-size: 0.8rem; height: 32px; border-radius: 8px;">
+                        </div>
+                        <div class="col-6 mt-1.5">
+                            <input type="text" id="pincode" class="form-control form-control-sm py-1 px-2.5 address-field" placeholder="6-digit PIN Code" required pattern="[0-9]{6}" maxlength="6" style="font-size: 0.8rem; height: 32px; border-radius: 8px;">
+                        </div>
+
+                        <!-- Hidden elements for backward compatibility -->
+                        <input type="hidden" id="apartment" class="address-field" value="">
+                        <input type="hidden" id="state" class="address-field" value="">
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0 pb-3 px-3">
+                    <div class="row w-100 g-2 m-0">
+                        <div class="col-6 p-0 pe-1">
+                            <button type="button" class="btn btn-outline-secondary w-100 py-2.5 touch-feedback" data-bs-dismiss="modal"
+                                style="border-radius: 12px; font-weight: 600; font-size: 0.82rem;">Cancel</button>
+                        </div>
+                        <div class="col-6 p-0 ps-1">
+                            <button type="button" class="btn btn-accent text-white w-100 py-2.5 touch-feedback" id="saveShippingBtn"
+                                style="background-color: var(--gg-accent); border: none; border-radius: 12px; font-weight: 700; font-size: 0.82rem; box-shadow: 0 4px 12px rgba(230,126,34,0.15);">Save Address</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
@@ -440,6 +646,251 @@
             const paymentOptions = document.querySelectorAll('.payment-option');
             const checkoutForm = document.getElementById('checkoutForm');
             const placeOrderBtn = document.querySelector('.btn-place-order');
+
+            // Modal Elements
+            const shippingModalEl = document.getElementById('shippingModal');
+            const shippingModal = new bootstrap.Modal(shippingModalEl);
+
+            const editShippingBtn = document.getElementById('editShippingBtn');
+            const addShippingBtn = document.getElementById('addShippingBtn');
+            const saveShippingBtn = document.getElementById('saveShippingBtn');
+
+            const shippingSummaryCard = document.getElementById('shippingSummaryCard');
+            const shippingEmptyCard = document.getElementById('shippingEmptyCard');
+
+            const fullNameInput = document.getElementById('fullNameInput');
+            const phoneInput = document.getElementById('phoneInput');
+
+            const realFirstName = document.getElementById('real_first_name');
+            const realLastName = document.getElementById('real_last_name');
+            const realPhone = document.getElementById('real_phone');
+            const shippingAddressField = document.getElementById('shippingAddress');
+            const summaryName = document.getElementById('summaryName');
+            const summaryPhone = document.getElementById('summaryPhone');
+            const summaryAddress = document.getElementById('summaryAddress');
+
+            // Strict address and phone format validator
+            function validateAddressString(addrStr) {
+                if (!addrStr || !addrStr.trim()) return null;
+                
+                const match = addrStr.trim().match(/^\[CONTACT:\s*([^|]+)\s*\|\s*([0-9]{10})\]\s*(.+)$/i);
+                if (!match) return null;
+
+                const name = match[1].trim();
+                const phone = match[2].trim();
+                const actualAddress = match[3].trim();
+
+                if (name.length < 2 || !/^[a-zA-Z\s]+$/.test(name)) return null;
+                if (phone.length !== 10 || !/^[0-9]{10}$/.test(phone)) return null;
+
+                const parts = actualAddress.split(',').map(p => p.trim()).filter(Boolean);
+                if (parts.length < 3) return null;
+
+                const pin = parts[parts.length - 1];
+                if (!/^[0-9]{6}$/.test(pin)) return null;
+
+                return {
+                    name: name,
+                    phone: phone,
+                    street: parts.slice(0, parts.length - 2).join(', '),
+                    city: parts[parts.length - 2],
+                    pincode: pin
+                };
+            }
+
+            let hasSavedAddress = false;
+
+            function showForm() {
+                shippingModal.show();
+            }
+
+            function hideForm() {
+                shippingModal.hide();
+                if (hasSavedAddress) {
+                    shippingSummaryCard.style.display = 'block';
+                    shippingEmptyCard.style.display = 'none';
+                    if (editShippingBtn) editShippingBtn.style.display = 'inline-block';
+                } else {
+                    shippingSummaryCard.style.display = 'none';
+                    shippingEmptyCard.style.display = 'block';
+                    if (editShippingBtn) editShippingBtn.style.display = 'none';
+                }
+            }
+
+            if (editShippingBtn) {
+                editShippingBtn.addEventListener('click', showForm);
+            }
+            if (addShippingBtn) {
+                addShippingBtn.addEventListener('click', showForm);
+            }
+
+            // Real-time numeric-only filtering for Phone Number input field with prefix stripping
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function () {
+                    let digits = this.value.replace(/\D/g, '');
+                    if (digits.length === 12 && digits.startsWith('91')) {
+                        digits = digits.slice(2);
+                    } else if (digits.length === 11 && digits.startsWith('0')) {
+                        digits = digits.slice(1);
+                    }
+                    if (digits.length > 10) {
+                        digits = digits.slice(-10);
+                    }
+                    this.value = digits;
+                });
+            }
+
+            // Real-time filtering for PIN code
+            const pincodeInput = document.getElementById('pincode');
+            if (pincodeInput) {
+                pincodeInput.addEventListener('input', function () {
+                    this.value = this.value.replace(/\D/g, '');
+                    if (this.value.length > 6) {
+                        this.value = this.value.slice(0, 6);
+                    }
+                });
+            }
+
+            // On load: parse and validate last_address
+            const lastAddressStr = `{{ last_address|default:''|escapejs }}`;
+            const parsedAddr = validateAddressString(lastAddressStr);
+
+            if (parsedAddr) {
+                hasSavedAddress = true;
+                
+                if (fullNameInput) fullNameInput.value = parsedAddr.name;
+                if (phoneInput) phoneInput.value = parsedAddr.phone;
+                document.getElementById('streetAddress').value = parsedAddr.street;
+                document.getElementById('city').value = parsedAddr.city;
+                document.getElementById('pincode').value = parsedAddr.pincode;
+
+                if (summaryName) summaryName.innerText = parsedAddr.name;
+                if (summaryPhone) summaryPhone.innerText = parsedAddr.phone;
+                if (summaryAddress) summaryAddress.innerText = parsedAddr.street + ", " + parsedAddr.city;
+
+                realFirstName.value = parsedAddr.name.split(/\s+/)[0] || '';
+                realLastName.value = parsedAddr.name.split(/\s+/).slice(1).join(' ') || 'Doe';
+                realPhone.value = parsedAddr.phone;
+                shippingAddressField.value = lastAddressStr;
+
+                shippingSummaryCard.style.display = 'block';
+                shippingEmptyCard.style.display = 'none';
+                if (editShippingBtn) editShippingBtn.style.display = 'inline-block';
+                updateHiddenAddress();
+            } else {
+                hasSavedAddress = false;
+                shippingAddressField.value = ''; // Clear out invalid address
+                shippingSummaryCard.style.display = 'none';
+                shippingEmptyCard.style.display = 'block';
+                if (editShippingBtn) editShippingBtn.style.display = 'none';
+            }
+
+            // Modal Save Address Button
+            if (saveShippingBtn) {
+                saveShippingBtn.addEventListener('click', function () {
+                    const street = document.getElementById('streetAddress');
+                    const city = document.getElementById('city');
+                    const pin = document.getElementById('pincode');
+
+                    const requiredFields = [fullNameInput, phoneInput, street, city, pin];
+
+                    let allValid = true;
+                    requiredFields.forEach(field => {
+                        if (field) {
+                            field.setCustomValidity(""); // Reset errors
+                            if (!field.reportValidity()) {
+                                allValid = false;
+                            }
+                        }
+                    });
+
+                    // Strict Name validation
+                    if (allValid && fullNameInput) {
+                        const nameVal = fullNameInput.value.trim();
+                        if (nameVal.length < 2) {
+                            fullNameInput.setCustomValidity("Please enter a valid recipient name (at least 2 characters).");
+                            fullNameInput.reportValidity();
+                            allValid = false;
+                        } else if (!/^[a-zA-Z\s]+$/.test(nameVal)) {
+                            fullNameInput.setCustomValidity("Name can only contain letters and spaces.");
+                            fullNameInput.reportValidity();
+                            allValid = false;
+                        }
+                    }
+
+                    // Strict Phone validation - must be exactly 10 digits
+                    if (allValid && phoneInput) {
+                        const phoneVal = phoneInput.value.trim();
+                        if (!/^[0-9]{10}$/.test(phoneVal)) {
+                            phoneInput.setCustomValidity("Please enter a valid 10-digit numeric phone number.");
+                            phoneInput.reportValidity();
+                            allValid = false;
+                        }
+                    }
+
+                    // Strict PIN Code validation - must be exactly 6 digits
+                    if (allValid && pin) {
+                        const pinVal = pin.value.trim();
+                        if (!/^[0-9]{6}$/.test(pinVal)) {
+                            pin.setCustomValidity("Please enter a valid 6-digit PIN code.");
+                            pin.reportValidity();
+                            allValid = false;
+                        }
+                    }
+
+                    if (allValid) {
+                        updateHiddenAddress();
+                        
+                        const fullName = fullNameInput.value.trim();
+                        const nameParts = fullName.split(/\s+/);
+                        const firstName = nameParts[0] || '';
+                        const lastName = nameParts.slice(1).join(' ') || 'Doe';
+
+                        realFirstName.value = firstName;
+                        realLastName.value = lastName;
+                        realPhone.value = phoneInput.value;
+
+                        // Save address to database immediately via AJAX so it becomes their default address!
+                        saveShippingBtn.disabled = true;
+                        const originalBtnText = saveShippingBtn.innerText;
+                        saveShippingBtn.innerText = "Saving...";
+
+                        fetch('/save-address/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            },
+                            body: JSON.stringify({
+                                order_id: document.querySelector('input[name="order_id"]').value,
+                                address: shippingAddressField.value.trim()
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                if (summaryName) summaryName.innerText = fullName;
+                                if (summaryPhone) summaryPhone.innerText = phoneInput.value;
+                                if (summaryAddress) summaryAddress.innerText = street.value.trim() + ", " + city.value.trim();
+
+                                hasSavedAddress = true;
+                                hideForm();
+                            } else {
+                                alert(data.message || 'Failed to save address details.');
+                            }
+                        })
+                        .catch(err => {
+                            console.error("Save address error:", err);
+                            alert('A connection error occurred while saving address.');
+                        })
+                        .finally(() => {
+                            saveShippingBtn.disabled = false;
+                            saveShippingBtn.innerText = originalBtnText;
+                        });
+                    }
+                });
+            }
+
             paymentOptions.forEach(function (option) {
                 option.addEventListener('click', function () {
                     paymentOptions.forEach(function (opt) {
@@ -449,42 +900,85 @@
                     selectedMethod = this.dataset.method;
                 });
             });
+
             placeOrderBtn.addEventListener('click', function (e) {
                 e.preventDefault();
+
+                // Strictly validate address format before any submission
+                const addrVal = shippingAddressField.value.trim();
+                const parsed = validateAddressString(addrVal);
+
+                if (!parsed) {
+                    alert('Please add a valid shipping address with a 10-digit phone number first.');
+                    showForm();
+                    return;
+                }
+
                 if (!checkoutForm.reportValidity()) return;
+
                 if (selectedMethod === 'ONLINE') {
-                    const razorpayKey = document.getElementById('rzp_key').value.trim();
-                    const razorpayOrderId = document.getElementById('rzp_order_id').value.trim();
-                    const razorpayAmount = parseInt(document.getElementById('rzp_amount').value || '0');
-                    if (!razorpayKey || !razorpayOrderId || !razorpayOrderId.startsWith('order_') || razorpayAmount <= 0) {
-                        alert('Payment initialization failed.');
-                        return;
-                    }
-                    const callbackUrl = window.location.origin + "{% url 'payment_callback' %}";
-                    console.log("Callback URL:", callbackUrl);
-                    const options = {
-                        key: razorpayKey,
-                        amount: razorpayAmount,
-                        currency: 'INR',
-                        name: 'Burhani Hardware',
-                        description: 'Order Payment',
-                        order_id: razorpayOrderId,
-                        redirect: true,
-                        callback_url: callbackUrl,
-                        prefill: {
-                            name: checkoutForm.first_name.value + " " + checkoutForm.last_name.value,
-                            email: "{{ user.email|default:''|escapejs }}",
-                            contact: checkoutForm.phone.value
+                    // Save address to database order via AJAX before opening Razorpay
+                    placeOrderBtn.disabled = true;
+                    const originalBtnContent = placeOrderBtn.innerHTML;
+                    placeOrderBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Initializing Secure Payment...';
+
+                    fetch('/save-address/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
                         },
-                        notes: {
-                            address: checkoutForm.address.value
-                        },
-                        theme: {
-                            color: '#e67e22'
+                        body: JSON.stringify({
+                            order_id: document.querySelector('input[name="order_id"]').value,
+                            address: addrVal
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            const razorpayKey = document.getElementById('rzp_key').value.trim();
+                            const razorpayOrderId = document.getElementById('rzp_order_id').value.trim();
+                            const razorpayAmount = parseInt(document.getElementById('rzp_amount').value || '0');
+                            if (!razorpayKey || !razorpayOrderId || !razorpayOrderId.startsWith('order_') || razorpayAmount <= 0) {
+                                alert('Payment initialization failed. Order could not be created.');
+                                return;
+                            }
+                            const callbackUrl = window.location.origin + "{% url 'payment_callback' %}";
+                            const options = {
+                                key: razorpayKey,
+                                amount: razorpayAmount,
+                                currency: 'INR',
+                                name: 'Burhani Hardware',
+                                description: 'Order Payment',
+                                order_id: razorpayOrderId,
+                                redirect: true,
+                                callback_url: callbackUrl,
+                                prefill: {
+                                    name: realFirstName.value + " " + realLastName.value,
+                                    email: "{{ user.email|default:''|escapejs }}",
+                                    contact: realPhone.value
+                                },
+                                notes: {
+                                    address: addrVal
+                                },
+                                theme: {
+                                    color: '#e67e22'
+                                }
+                            };
+                            const rzp1 = new Razorpay(options);
+                            rzp1.open();
+                        } else {
+                            alert(data.message || 'Failed to save address details. Please try again.');
                         }
-                    };
-                    const rzp1 = new Razorpay(options);
-                    rzp1.open();
+                    })
+                    .catch(err => {
+                        console.error("AJAX address save error:", err);
+                        alert('A connection error occurred while saving your address. Please try again.');
+                    })
+                    .finally(() => {
+                        placeOrderBtn.disabled = false;
+                        placeOrderBtn.innerHTML = originalBtnContent;
+                    });
                 } else {
                     checkoutForm.submit();
                 }
@@ -503,6 +997,9 @@
                 const state = document.getElementById('state').value.trim();
                 const pin = document.getElementById('pincode').value.trim();
 
+                const fullName = fullNameInput ? fullNameInput.value.trim() : '';
+                const phone = phoneInput ? phoneInput.value.trim() : '';
+
                 let parts = [];
                 if (street) parts.push(street);
                 if (apt) parts.push(apt);
@@ -510,8 +1007,13 @@
                 if (state) parts.push(state);
                 if (pin) parts.push(pin);
 
+                let compiledAddress = parts.join(', ');
+                if (fullName && phone) {
+                    compiledAddress = `[CONTACT: ${fullName} | ${phone}] ` + compiledAddress;
+                }
+
                 if (shippingAddress) {
-                    shippingAddress.value = parts.join(', ');
+                    shippingAddress.value = compiledAddress;
                 }
             }
 

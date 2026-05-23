@@ -265,13 +265,17 @@ def checkout(request):
         payment_status='Pending'
     )
 
+    last_order = Order.objects.filter(user=user).exclude(address='').order_by('-id').first()
+    last_address = last_order.address if last_order else ''
+
     context = {
         'cart': cart_items,
         'grand_total': grand_total,
         'razorpay_order_id': razorpay_order_id,
         'razorpay_key_id': settings.RAZORPAY_KEY_ID,
         'amount': order_amount,
-        'order_instance': new_order
+        'order_instance': new_order,
+        'last_address': last_address
     }
 
     return render(request, 'checkout.html', context)
@@ -339,17 +343,74 @@ def payment_callback(request):
     return redirect("home")
 
 
+import re
+
+def validate_shipping_address(address):
+    if not address or not address.strip():
+        return False, "Shipping address is required."
+
+    contact_match = re.match(r'^\[CONTACT:\s*([^|]+)\s*\|\s*([0-9]{10})\]\s*(.+)$', address, re.IGNORECASE)
+    if not contact_match:
+        return False, "Please provide a valid shipping address with a 10-digit mobile number."
+
+    name = contact_match.group(1).strip()
+    phone = contact_match.group(2).strip()
+    actual_address = contact_match.group(3).strip()
+
+    if len(name) < 2 or not re.match(r'^[a-zA-Z\s]+$', name):
+        return False, "Recipient name must be at least 2 characters and contain only letters and spaces."
+
+    if len(phone) != 10 or not phone.isdigit():
+        return False, "Phone number must be exactly 10 numeric digits."
+
+    # Flexible PIN code search: find a 6-digit number anywhere in the actual address
+    pin_match = re.search(r'\b[0-9]{6}\b', actual_address)
+    if not pin_match:
+        return False, "Address must contain a valid 6-digit PIN code."
+
+    return True, ""
+
+
+@login_required(login_url='login')
+def save_address(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            address = data.get('address', '').strip()
+            order_id = data.get('order_id')
+            
+            is_valid, err_msg = validate_shipping_address(address)
+            if not is_valid:
+                return JsonResponse({'status': 'error', 'message': err_msg})
+
+            order = Order.objects.get(id=order_id, user=request.user)
+            order.address = address
+            order.save()
+            return JsonResponse({'status': 'success'})
+        except Order.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Order not found.'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+
+
 @login_required(login_url='login')
 def place_order(request):
     if request.method == "POST":
         user = request.user
-        address = request.POST.get('address')
+        address = request.POST.get('address', '').strip()
         order_id = request.POST.get('order_id')
         user_cart = Cart.objects.filter(user=user)
 
         if not user_cart.exists():
             messages.warning(request, "Your cart is empty.")
             return redirect('cart')
+
+        # Strict Backend Validation
+        is_valid, err_msg = validate_shipping_address(address)
+        if not is_valid:
+            messages.error(request, err_msg)
+            return redirect('checkout')
 
         if order_id:
             try:
@@ -448,3 +509,39 @@ def verify_otp(request):
                 return JsonResponse({'status': 'failed'})
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
+
+
+def product_detail(request, id):
+    product = get_object_or_404(Product, id=id)
+    related_products = Product.objects.filter(category=product.category).exclude(id=id)[:4]
+    categories = Category.objects.all().order_by('name')
+    additional_images = product.images.all()
+    
+    context = {
+        'product': product,
+        'additional_images': additional_images,
+        'related_products': related_products,
+        'categories': categories,
+    }
+    return render(request, 'product_detail.html', context)
+
+
+@login_required(login_url='login')
+def buy_now(request, id):
+    product = get_object_or_404(Product, id=id)
+    
+    cart_item, created = Cart.objects.get_or_create(
+        user=request.user,
+        product=product,
+        defaults={
+            'product_quantity': 1,
+            'product_total': product.price
+        }
+    )
+    
+    if not created:
+        cart_item.product_quantity += 1
+        cart_item.product_total = cart_item.product_quantity * product.price
+        cart_item.save()
+        
+    return redirect('checkout')

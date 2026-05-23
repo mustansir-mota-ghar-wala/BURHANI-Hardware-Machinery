@@ -213,6 +213,10 @@
                     style="letter-spacing: 1px;">BURHANI</span>
             </a>
             <div class="d-flex align-items-center gap-3">
+                <a href="tel:+917742752753" class="d-flex align-items-center gap-2 text-decoration-none fw-bold text-dark bg-warning px-3 py-2"
+                    style="border-radius: 12px; font-size: 0.78rem; letter-spacing: 0.8px; text-transform: uppercase; white-space: nowrap;">
+                    <i class="bi bi-telephone-fill"></i><span class="d-none d-sm-inline">Contact</span><span class="d-none d-xl-inline">+91 77427 52753</span>
+                </a>
                 <a href="{% url 'home' %}"
                     class="text-white text-decoration-none fs-6 fw-bold d-none d-md-inline">CONTINUE SHOPPING</a>
                 <button class="btn btn-link text-white d-md-none fs-4 p-0 ms-2" data-bs-toggle="offcanvas"
@@ -224,24 +228,108 @@
     </header>
 
     <!-- Mobile Offcanvas Menu (Bottom Sheet) -->
-    <div class="offcanvas offcanvas-bottom-sheet text-bg-dark" tabindex="-1" id="mobileMenu">
-        <div class="offcanvas-header border-bottom border-secondary">
-            <h5 class="offcanvas-title heading-font">Menu</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    <div class="offcanvas offcanvas-bottom-sheet" tabindex="-1" id="mobileMenu" 
+        style="height: auto; max-height: 85vh; border-radius: 28px 28px 0 0 !important; background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(245, 247, 246, 0.98) 100%) !important; border: none; border-top: 1px solid rgba(0, 0, 0, 0.08) !important; box-shadow: 0 -10px 40px rgba(0,0,0,0.12); backdrop-filter: blur(20px);">
+        
+        <!-- Drag Handle like native iOS/Android sheet -->
+        <div class="d-flex justify-content-center" style="padding-top: 12px; padding-bottom: 6px;">
+            <div style="width: 36px; height: 4.5px; background: rgba(0, 0, 0, 0.15); border-radius: 10px;"></div>
         </div>
-        <div class="offcanvas-body">
-            <div class="d-flex flex-column gap-3 fs-5">
-                <a href="{% url 'home' %}" class="text-white text-decoration-none">Home</a>
-                <a href="{% url 'home' %}" class="text-white text-decoration-none">Continue Shopping</a>
-                <a href="{% url 'your_orders' %}" class="text-white text-decoration-none">My Orders</a>
-                <hr class="border-secondary">
+
+        <div class="offcanvas-header border-bottom border-light-subtle px-3" style="padding-top: 4px; padding-bottom: 12px;">
+            <h5 class="offcanvas-title heading-font text-dark d-flex align-items-center gap-2" style="font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 900; letter-spacing: 0.5px;">
+                <i class="bi bi-grid-fill text-warning fs-5"></i> Navigation Menu
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" style="font-size: 0.8rem; opacity: 0.75;"></button>
+        </div>
+        
+        <div class="offcanvas-body px-3 py-3">
+            <div class="d-flex flex-column" style="gap: 10px;">
+                
+                <!-- Menu Links with premium list item aesthetics -->
+                <a href="{% url 'home' %}" class="d-flex align-items-center justify-content-between text-decoration-none text-dark touch-feedback" 
+                    style="background: rgba(11, 34, 22, 0.04); border-radius: 12px; border: 1px solid rgba(11, 34, 22, 0.05); padding: 12px 16px; transition: all 0.2s ease;">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="d-flex align-items-center justify-content-center rounded-3" style="width: 34px; height: 34px; background: rgba(255, 193, 7, 0.15); color: #ffc107; flex-shrink: 0;"><i class="bi bi-house-door-fill fs-5"></i></span>
+                        <span class="fw-semibold text-dark" style="font-size: 0.92rem; font-family: 'Inter', sans-serif;">Home</span>
+                    </div>
+                    <i class="bi bi-chevron-right text-black-50 small"></i>
+                </a>
+
+                <a href="{% url 'home' %}" class="d-flex align-items-center justify-content-between text-decoration-none text-dark touch-feedback" 
+                    style="background: rgba(11, 34, 22, 0.04); border-radius: 12px; border: 1px solid rgba(11, 34, 22, 0.05); padding: 12px 16px; transition: all 0.2s ease;">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="d-flex align-items-center justify-content-center rounded-3" style="width: 34px; height: 34px; background: rgba(255, 193, 7, 0.15); color: #ffc107; flex-shrink: 0;"><i class="bi bi-tools fs-5"></i></span>
+                        <span class="fw-semibold text-dark" style="font-size: 0.92rem; font-family: 'Inter', sans-serif;">Continue Shopping</span>
+                    </div>
+                    <i class="bi bi-chevron-right text-black-50 small"></i>
+                </a>
+
+                <a href="{% url 'your_orders' %}" class="d-flex align-items-center justify-content-between text-decoration-none text-dark touch-feedback" 
+                    style="background: rgba(11, 34, 22, 0.04); border-radius: 12px; border: 1px solid rgba(11, 34, 22, 0.05); padding: 12px 16px; transition: all 0.2s ease;">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="d-flex align-items-center justify-content-center rounded-3" style="width: 34px; height: 34px; background: rgba(25, 135, 84, 0.15); color: #198754; flex-shrink: 0;"><i class="bi bi-bag-check-fill fs-5"></i></span>
+                        <span class="fw-semibold text-dark" style="font-size: 0.92rem; font-family: 'Inter', sans-serif;">My Orders</span>
+                    </div>
+                    <i class="bi bi-chevron-right text-black-50 small"></i>
+                </a>
+
+                <div class="my-1 border-top border-light-subtle opacity-75"></div>
+
                 {% if user.is_authenticated %}
-                <span class="text-white-50 fs-6">Hi, {% firstof user.first_name user.username %}</span>
-                <a href="{% url 'logout' %}" class="text-danger text-decoration-none fw-bold">Logout</a>
+                <!-- High-End User Greeting Card / Profile Card -->
+                <div class="d-flex align-items-center justify-content-between" 
+                    style="background: linear-gradient(135deg, rgba(11, 34, 22, 0.04) 0%, rgba(11, 34, 22, 0.01) 100%); border-radius: 16px; border: 1px solid rgba(11, 34, 22, 0.06); padding: 14px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center justify-content-center rounded-circle fw-bold text-white shadow-sm" 
+                            style="width: 42px; height: 42px; background: linear-gradient(135deg, var(--gg-accent) 0%, #d35400 100%); font-size: 1.1rem; border: 1.5px solid rgba(255,255,255,0.15); flex-shrink: 0;">
+                            {{ user.username|slice:":1"|upper }}
+                        </div>
+                        <div>
+                            <div class="text-black-50 small fw-medium" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2;">Account</div>
+                            <h4 class="mb-0 fw-bold text-dark" style="font-size: 0.95rem; font-family: 'Inter', sans-serif; line-height: 1.2;">{% firstof user.first_name user.username %}</h4>
+                        </div>
+                    </div>
+                    <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-danger fw-bold touch-feedback d-flex align-items-center gap-1.5" 
+                        style="padding: 6px 12px; border-radius: 10px; font-size: 0.78rem; border-color: rgba(220, 53, 69, 0.4); background: rgba(220, 53, 69, 0.05); color: #dc3545;">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a>
+                </div>
                 {% else %}
-                <a href="{% url 'login' %}" class="text-warning text-decoration-none fw-bold">Login</a>
+                <a href="{% url 'login' %}" class="btn btn-warning w-100 py-2.5 fw-bold touch-feedback d-flex align-items-center justify-content-center gap-2" 
+                    style="border-radius: 12px; font-size: 0.88rem; box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);">
+                    <i class="bi bi-box-arrow-in-right fs-5"></i> Login to Your Account
+                </a>
                 {% endif %}
+
+                <!-- Quick Contact Info Section -->
+                <div class="my-1 border-top border-light-subtle opacity-75"></div>
+                <div class="d-flex flex-column" style="gap: 8px;">
+                    <div class="text-black-50 small fw-bold" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; padding-left: 4px;">Contact</div>
+                    <div class="d-flex gap-2">
+                        <a href="tel:+917742752753" class="d-flex align-items-center justify-content-center flex-grow-1 text-decoration-none text-dark touch-feedback" 
+                           style="background: rgba(11, 34, 22, 0.04); border-radius: 12px; border: 1px solid rgba(11, 34, 22, 0.05); padding: 10px; gap: 8px; transition: all 0.2s ease;">
+                           <span class="d-flex align-items-center justify-content-center rounded-circle" style="width: 28px; height: 28px; background: rgba(13, 110, 253, 0.15); color: #0d6efd;"><i class="bi bi-telephone-fill small"></i></span>
+                           <span class="fw-semibold text-dark" style="font-size: 0.8rem; font-family: 'Inter', sans-serif;">+91 77427 52753</span>
+                        </a>
+                        <a href="https://wa.me/917742752753" target="_blank" rel="noopener" class="d-flex align-items-center justify-content-center flex-grow-1 text-decoration-none text-dark touch-feedback" 
+                           style="background: rgba(11, 34, 22, 0.04); border-radius: 12px; border: 1px solid rgba(11, 34, 22, 0.05); padding: 10px; gap: 8px; transition: all 0.2s ease;">
+                           <span class="d-flex align-items-center justify-content-center rounded-circle" style="width: 28px; height: 28px; background: rgba(25, 135, 84, 0.15); color: #198754;"><i class="bi bi-whatsapp small"></i></span>
+                           <span class="fw-semibold text-dark" style="font-size: 0.8rem; font-family: 'Inter', sans-serif;">WhatsApp</span>
+                        </a>
+                    </div>
+                    <a href="mailto:mustansirmotagh786.88@gmail.com" class="d-flex align-items-center justify-content-between text-decoration-none text-dark touch-feedback" 
+                       style="background: rgba(11, 34, 22, 0.04); border-radius: 12px; border: 1px solid rgba(11, 34, 22, 0.05); padding: 10px 16px; transition: all 0.2s ease;">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="d-flex align-items-center justify-content-center rounded-circle" style="width: 28px; height: 28px; background: rgba(220, 53, 69, 0.15); color: #dc3545;"><i class="bi bi-envelope-fill small"></i></span>
+                            <span class="fw-semibold text-dark text-truncate" style="font-size: 0.8rem; font-family: 'Inter', sans-serif; max-width: 220px;">Email Us</span>
+                        </div>
+                        <i class="bi bi-chevron-right text-black-50 small"></i>
+                    </a>
+                </div>
             </div>
+        </div>
+    </div>
         </div>
     </div>
     <div class="container my-0 my-md-4 px-0 px-md-3">
@@ -253,18 +341,20 @@
                     {% for item in cart %}
                     <div class="d-flex p-3 border-bottom position-relative bg-white">
                         <!-- Image Container -->
-                        <div class="me-3 flex-shrink-0" style="width: 70px; height: 70px; background: #f8f9fa; border-radius: 6px; padding: 4px; border: 1px solid rgba(0,0,0,0.05);">
+                        <a href="{% url 'product_detail' item.product.id %}" class="me-3 flex-shrink-0 d-block text-decoration-none" style="width: 96px; height: 96px; background: #f8f9fa; border-radius: 16px; padding: 0; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 8px rgba(0,0,0,0.02); overflow: hidden;">
                             {% if item.product.image %}
-                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width:100%; height:100%; object-fit:contain;">
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width:100%; height:100%; object-fit:cover;">
                             {% else %}
-                            <img src="https://images.unsplash.com/photo-1581147036324-c17ac41dfa6c?q=80&w=400&auto=format&fit=crop" alt="Tool" style="width:100%; height:100%; object-fit:contain;">
+                            <img src="https://images.unsplash.com/photo-1581147036324-c17ac41dfa6c?q=80&w=400&auto=format&fit=crop" alt="Tool" style="width:100%; height:100%; object-fit:cover;">
                             {% endif %}
-                        </div>
+                        </a>
                         
                         <!-- Middle Details -->
                         <div class="flex-grow-1 d-flex flex-column justify-content-between">
                             <div class="d-flex justify-content-between align-items-start">
-                                <h5 class="fw-bold mb-1 pe-2" style="font-size: 0.95rem; color: var(--gg-header); font-family: 'Inter', sans-serif; line-height: 1.2;">{{ item.product.name }}</h5>
+                                <a href="{% url 'product_detail' item.product.id %}" class="text-decoration-none text-dark flex-grow-1">
+                                    <h5 class="fw-bold mb-1 pe-2" style="font-size: 0.95rem; color: var(--gg-header); font-family: 'Inter', sans-serif; line-height: 1.2;">{{ item.product.name }}</h5>
+                                </a>
                                 <a href="{% url 'remove_from_cart' item.id %}" class="text-danger p-1">
                                     <i class="bi bi-trash3" style="font-size: 1.1rem;"></i>
                                 </a>
@@ -333,6 +423,10 @@
                 </div>
                 <div class="col-lg-6 text-lg-end">
                     <p class="small text-white-50">Secure Checkout & SSL Protection Enabled</p>
+                    <div class="d-flex flex-column flex-sm-row justify-content-lg-end gap-2 gap-sm-3 small">
+                        <a href="tel:+917742752753" class="text-white-50 text-decoration-none"><i class="bi bi-telephone me-1 text-warning"></i> +91 77427 52753</a>
+                        <a href="https://wa.me/917742752753" target="_blank" rel="noopener" class="text-white-50 text-decoration-none"><i class="bi bi-whatsapp me-1 text-success"></i> WhatsApp</a>
+                    </div>
                 </div>
             </div>
             <div class="copyright">

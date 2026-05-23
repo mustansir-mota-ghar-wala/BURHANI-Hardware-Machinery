@@ -3,40 +3,50 @@
 /* 1. Bottom App Bar */
 .bottom-app-bar {
     position: fixed;
-    bottom: 15px;
-    /* Floating above the bottom */
+    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 92%;
-    /* Small width instead of 100% */
-    max-width: 400px;
+    width: calc(100% - 24px);
+    max-width: 360px;
     background-color: var(--gg-header, #0a110f);
     display: flex;
-    justify-content: space-around;
-    padding: 0.6rem 0;
+    justify-content: space-between;
+    padding: 0.45rem 0.35rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     z-index: 1040;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 40px;
-    /* Pill shape */
+    border-radius: 34px;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    overflow: hidden;
 }
 
 .bottom-app-bar-item {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    flex: 1 1 0;
+    min-width: 0;
     text-decoration: none;
     color: rgba(255, 255, 255, 0.6);
-    font-size: 0.7rem;
+    font-size: 0.64rem;
     font-weight: 600;
     transition: 0.2s ease-in-out;
+    line-height: 1.15;
+    padding: 0.2rem 0;
 }
 
 .bottom-app-bar-item i {
-    font-size: 1.4rem;
-    margin-bottom: 2px;
+    font-size: 1.18rem;
+    margin-bottom: 1px;
+}
+
+.bottom-app-bar-item span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .bottom-app-bar-item.active,
@@ -74,7 +84,7 @@
         left: 0 !important;
         bottom: 0 !important;
         height: auto !important;
-        max-height: 85vh;
+        max-height: 96vh !important;
         border-top-left-radius: 24px;
         border-top-right-radius: 24px;
         transform: translateY(100%) !important;
@@ -83,6 +93,101 @@
 
     .offcanvas-bottom-sheet.show {
         transform: translateY(0) !important;
+    }
+
+    .offcanvas-bottom-sheet .offcanvas-header {
+        padding: 0.35rem 0.9rem 0.55rem !important;
+    }
+
+    .offcanvas-bottom-sheet .offcanvas-title {
+        font-size: 1rem !important;
+    }
+
+    .offcanvas-bottom-sheet .offcanvas-body {
+        padding: 0.55rem 0.75rem 0.8rem !important;
+    }
+
+    .offcanvas-bottom-sheet .offcanvas-body > .d-flex {
+        gap: 6px !important;
+    }
+
+    .offcanvas-bottom-sheet .touch-feedback {
+        padding: 7px 10px !important;
+        border-radius: 10px !important;
+    }
+
+    .offcanvas-bottom-sheet .touch-feedback .gap-3,
+    .offcanvas-bottom-sheet .gap-3 {
+        gap: 0.55rem !important;
+    }
+
+    .offcanvas-bottom-sheet .touch-feedback span[style*="width: 34px"],
+    .offcanvas-bottom-sheet .touch-feedback span[style*="width: 28px"] {
+        width: 28px !important;
+        height: 28px !important;
+        border-radius: 9px !important;
+    }
+
+    .offcanvas-bottom-sheet .fw-semibold {
+        font-size: 0.78rem !important;
+    }
+
+    .offcanvas-bottom-sheet .my-1 {
+        margin-top: 0.15rem !important;
+        margin-bottom: 0.15rem !important;
+    }
+
+    .offcanvas-bottom-sheet .rounded-circle[style*="width: 42px"] {
+        width: 34px !important;
+        height: 34px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .offcanvas-bottom-sheet .offcanvas-body > .d-flex > .d-flex.align-items-center.justify-content-between {
+        padding: 9px 10px !important;
+        border-radius: 12px !important;
+    }
+
+    .offcanvas-bottom-sheet .btn-sm {
+        padding: 4px 8px !important;
+        font-size: 0.68rem !important;
+        border-radius: 8px !important;
+    }
+
+    .offcanvas-bottom-sheet .d-flex.flex-column[style*="gap: 8px"] {
+        gap: 5px !important;
+    }
+
+    .offcanvas-bottom-sheet .offcanvas-body > .d-flex > .d-flex.flex-column[style*="gap: 8px"] {
+        order: -2;
+        background: rgba(255, 193, 7, 0.08);
+        border: 1px solid rgba(255, 193, 7, 0.18);
+        border-radius: 12px;
+        padding: 7px !important;
+    }
+
+    .offcanvas-bottom-sheet .offcanvas-body > .d-flex > .d-flex.flex-column[style*="gap: 8px"] > .text-black-50 {
+        display: none !important;
+    }
+
+    .offcanvas-bottom-sheet .offcanvas-body > .d-flex > .d-flex.flex-column[style*="gap: 8px"] .d-flex.gap-2 {
+        gap: 5px !important;
+    }
+
+    .offcanvas-bottom-sheet .offcanvas-body > .d-flex > .d-flex.flex-column[style*="gap: 8px"] a {
+        min-height: 34px !important;
+    }
+
+    .offcanvas-bottom-sheet a[href^="mailto:"] {
+        display: none !important;
+    }
+
+    .offcanvas-bottom-sheet h4 {
+        font-size: 0.82rem !important;
+    }
+
+    .offcanvas-bottom-sheet .small {
+        font-size: 0.66rem !important;
     }
 
     /* Small grab handle indicator */
