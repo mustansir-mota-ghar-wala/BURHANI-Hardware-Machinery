@@ -395,20 +395,19 @@
     .mobile-search-bar input {
         pointer-events: auto;
         /* Re-enable clicks */
-        border: none;
+        border: 1px solid var(--gg-accent);
         border-radius: 50px;
         padding: 0.8rem 1.5rem;
         padding-right: 3rem;
         /* Space for the button */
         flex-grow: 1;
         outline: none;
-        background: rgba(241, 245, 249, 0.95);
-        /* Premium soft gray with glass effect */
+        background: #ffffff;
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
         font-size: 0.95rem;
         color: var(--gg-header);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
         /* Soft floating shadow */
     }
 
@@ -437,8 +436,8 @@
         display: flex !important;
         overflow-x: auto;
         gap: 10px;
-        padding: 10px 15px 5px !important;
-        /* Minimized vertical padding */
+        padding: 12px 15px 4px !important;
+        /* Adjusted vertical padding */
         scrollbar-width: none;
         /* Firefox */
         -webkit-overflow-scrolling: touch;
@@ -450,23 +449,19 @@
     }
 
     .cat-pill {
-        background: white;
-        border: 1px solid var(--gg-border);
-        padding: 8px 18px;
+        background: rgba(211, 84, 0, 0.1);
+        border: none;
+        padding: 6px 16px;
         border-radius: 20px;
         white-space: nowrap;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         font-weight: 700;
-        color: var(--gg-text);
+        color: var(--gg-accent);
         text-decoration: none;
         transition: 0.3s;
     }
 
-    .cat-pill.active {
-        background: var(--gg-header);
-        color: var(--gg-yellow);
-        border-color: var(--gg-header);
-    }
+    /* Removed distinct active styling so all pills look identical */
 
     /* Sleek 2-Column Product Grid */
     .prod-card {
@@ -539,16 +534,12 @@
 }
 
 /* Hide Phase 2 mobile elements on desktop */
-.mobile-search-bar {
-    display: none;
-}
-
-.cat-pill-container {
-    display: none;
-}
-
-.floating-cart-btn {
-    display: none;
+@media (min-width: 769px) {
+    .mobile-search-bar,
+    .cat-pill-container,
+    .floating-cart-btn {
+        display: none !important;
+    }
 }
 
 /* =========================================
@@ -634,7 +625,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8));
+        background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3));
         z-index: 1;
     }
 
@@ -644,9 +635,9 @@
         left: 12px !important;
         right: 12px !important;
         margin: 0 !important;
-        color: #FFFFFF !important;
+        color: rgba(255, 255, 255, 0.85) !important;
         z-index: 2 !important;
-        font-size: 1.1rem !important;
+        font-size: 0.85rem !important;
         font-family: 'Inter', sans-serif !important;
         font-weight: 800 !important;
         text-align: left !important;

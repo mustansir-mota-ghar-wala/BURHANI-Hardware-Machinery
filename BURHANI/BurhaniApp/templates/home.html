@@ -186,7 +186,7 @@
             object-fit: cover;
             position: absolute;
             inset: 0;
-            opacity: 0.72;
+            opacity: 1; /* Brighten image */
             transition: transform 0.4s ease;
         }
 
@@ -202,7 +202,14 @@
             z-index: 1;
             font-weight: 800;
             text-transform: capitalize;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
+            color: rgba(255, 255, 255, 0.85); /* Slightly transparent */
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        @media (max-width: 768px) {
+            .hero-category-card span {
+                font-size: 0.85rem;
+            }
         }
 
         @media (min-width: 769px) {
@@ -231,7 +238,7 @@
         @media (max-width: 768px) {
             .hero-container {
                 display: block;
-                padding-top: 0.5rem !important;
+                padding-top: 0 !important;
                 padding-bottom: 0 !important;
             }
 
@@ -740,13 +747,35 @@
 
     <!-- Mobile Search Bar (Phase 2) -->
     <form action="{% url 'home' %}" method="GET" class="mobile-search-bar">
-        <input type="text" name="q" placeholder="Search for tools, machinery..." value="{{ query|default:'' }}">
+        <input type="text" name="q" placeholder="Search for tools, machinery..." value="{{ query|default:'' }}" style="padding-right: 4.5rem;">
+        <button type="button" onclick="document.getElementById('cameraInput').click()" style="pointer-events: auto; background: rgba(211, 84, 0, 0.1); border-radius: 8px; border: none; position: absolute; right: 48px; top: 50%; transform: translateY(-50%); font-size: 1.15rem; color: var(--gg-accent); opacity: 1; padding: 6px 8px; box-shadow: 0 2px 8px rgba(211, 84, 0, 0.2);"><i class="bi bi-camera-fill"></i></button>
         <button type="submit"><i class="bi bi-search"></i></button>
     </form>
+    <input type="file" accept="image/*" capture="environment" class="d-none" id="cameraInput" onchange="handleVisualSearch(event)">
+    
+    <!-- Visual Search Loading Modal -->
+    <div class="modal fade" id="visualSearchModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen-md-down">
+            <div class="modal-content text-center p-4">
+                <div id="vsLoading">
+                    <div class="spinner-border text-warning mb-3" role="status"></div>
+                    <h5>Analyzing your photo...</h5>
+                    <p class="text-muted">Our AI is looking for matching tools in our inventory.</p>
+                </div>
+                <div id="vsResults" class="d-none text-start">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold m-0">Similar Items Found</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <p class="text-muted small" id="vsKeywords"></p>
+                    <div id="vsProductList" class="row g-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Mobile Category Pills (Phase 2) -->
     <div class="cat-pill-container">
-        <a href="{% url 'home' %}" class="cat-pill active">All Tools</a>
         {% for category in categories %}
         <a href="{% url 'product' category.id %}" class="cat-pill">{{ category.name }}</a>
         {% endfor %}
@@ -942,5 +971,65 @@
                 });
             }
         });
+        // Visual Search Logic
+        async function handleVisualSearch(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const modal = new bootstrap.Modal(document.getElementById('visualSearchModal'));
+            modal.show();
+            
+            document.getElementById('vsLoading').classList.remove('d-none');
+            document.getElementById('vsResults').classList.add('d-none');
+            document.getElementById('vsProductList').innerHTML = '';
+            document.getElementById('vsKeywords').textContent = '';
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const response = await fetch('/api/visual-search/', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                document.getElementById('vsLoading').classList.add('d-none');
+                
+                if (data.status === 'success') {
+                    document.getElementById('vsResults').classList.remove('d-none');
+                    document.getElementById('vsKeywords').textContent = "Keywords identified: " + data.keywords.join(', ');
+                    
+                    const list = document.getElementById('vsProductList');
+                    if (data.products.length === 0) {
+                        list.innerHTML = '<div class="col-12 text-center py-3"><p class="text-muted mb-0">No matching tools found in our inventory.</p></div>';
+                    } else {
+                        data.products.forEach(p => {
+                            const imgHtml = p.image ? `<img src="${p.image}" class="img-fluid rounded" style="height:80px; object-fit:cover; width:100%;">` : '<div class="bg-light h-100 rounded d-flex align-items-center justify-content-center"><i class="bi bi-image text-muted"></i></div>';
+                            list.innerHTML += `
+                                <div class="col-6 col-md-3 mb-2">
+                                    <a href="/product/${p.id}/" class="text-decoration-none">
+                                        <div class="card h-100 border-0 shadow-sm">
+                                            <div class="card-body p-2 text-center">
+                                                ${imgHtml}
+                                                <h6 class="mt-2 mb-1 text-dark text-truncate" style="font-size:0.8rem;">${p.name}</h6>
+                                                <p class="mb-0 fw-bold text-accent" style="font-size:0.9rem;">₹${p.price}</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            `;
+                        });
+                    }
+                } else {
+                    document.getElementById('vsLoading').innerHTML = `<div class="alert alert-danger">Error: ${data.message}</div>`;
+                }
+            } catch (err) {
+                document.getElementById('vsLoading').innerHTML = `<div class="alert alert-danger">Connection error. Please try again.</div>`;
+            }
+            
+            // Reset input so the same file can be selected again
+            event.target.value = '';
+        }
 </script>
 {% endblock %}

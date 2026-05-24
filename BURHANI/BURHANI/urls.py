@@ -7,7 +7,8 @@ from BurhaniApp.views import (
     home, product, register, Login, Logout, cart, add_to_cart,
     remove_from_cart, decrease_product, checkout, place_order,
     your_orders, payment_callback, send_otp, verify_otp,
-    robots_txt, sitemap_xml, product_detail, buy_now, save_address
+    robots_txt, sitemap_xml, product_detail, buy_now, save_address,
+    chat_api, visual_search_api
 )
 
 
@@ -33,6 +34,8 @@ urlpatterns = [
     path('verify-otp/', verify_otp, name='verify_otp'),
     path('payment-callback/', payment_callback, name='payment_callback'),
     path('save-address/', save_address, name='save_address'),
+    path('api/chat/', chat_api, name='chat_api'),
+    path('api/visual-search/', visual_search_api, name='visual_search_api'),
 
     path('accounts/', include('allauth.urls')),
 ]

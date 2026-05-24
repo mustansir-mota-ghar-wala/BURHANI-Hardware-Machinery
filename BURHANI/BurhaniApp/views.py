@@ -16,6 +16,12 @@ import random
 import json
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
+from google import genai
+from google.genai import types
+import os
+import base64
+from PIL import Image
+from io import BytesIO
 
 
 def robots_txt(request):
@@ -545,3 +551,72 @@ def buy_now(request, id):
         cart_item.save()
         
     return redirect('checkout')
+
+@csrf_exempt
+def chat_api(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user_message = data.get('message', '')
+            
+            client = genai.Client(api_key=os.environ.get('GEMINI_API_KEY'))
+            
+            prompt = f"You are a helpful assistant for Burhani Hardware and Machinery, owned by Huzaifa Bhai Boraji. You supply tools, machinery, motors, pipes, agricultural equipment, chainsaws, welding machines in Bhawani Mandi. Be polite, concise, and help the user with their queries. Here is the user's message: {user_message}"
+            
+            response = client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt,
+            )
+            
+            return JsonResponse({'status': 'success', 'reply': response.text})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'})
+
+@csrf_exempt
+def visual_search_api(request):
+    if request.method == 'POST':
+        try:
+            image_file = request.FILES.get('image')
+            if not image_file:
+                return JsonResponse({'status': 'error', 'message': 'No image provided'})
+                
+            image = Image.open(image_file)
+            
+            client = genai.Client(api_key=os.environ.get('GEMINI_API_KEY'))
+            
+            prompt = "Identify the hardware tool, machinery, or equipment in this image. Respond with only a comma-separated list of 2-3 most relevant keywords (e.g. chainsaw, drill, pump)."
+            
+            response = client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=[image, prompt],
+            )
+            
+            keywords = response.text.strip().split(',')
+            
+            # Search products using keywords
+            q_objects = Q()
+            for keyword in keywords:
+                keyword = keyword.strip()
+                if keyword:
+                    q_objects |= Q(name__icontains=keyword) | Q(description__icontains=keyword)
+                    
+            matching_products = Product.objects.filter(q_objects).distinct()[:4]
+            
+            results = []
+            for prod in matching_products:
+                results.append({
+                    'id': prod.id,
+                    'name': prod.name,
+                    'price': prod.price,
+                    'image': prod.image.url if prod.image else None
+                })
+                
+            return JsonResponse({
+                'status': 'success',
+                'keywords': keywords,
+                'products': results
+            })
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'})

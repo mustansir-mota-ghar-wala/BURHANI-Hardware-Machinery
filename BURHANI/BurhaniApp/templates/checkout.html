@@ -547,21 +547,21 @@
     </footer>
     <!-- Bottom App Bar -->
     <nav class="bottom-app-bar">
+        <a href="#" class="bottom-app-bar-item" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+            <i class="bi bi-person"></i>
+            <span>Menu</span>
+        </a>
         <a href="{% url 'home' %}" class="bottom-app-bar-item">
             <i class="bi bi-house-door"></i>
             <span>Home</span>
-        </a>
-        <a href="{% url 'cart' %}" class="bottom-app-bar-item">
-            <i class="bi bi-cart"></i>
-            <span>Cart</span>
         </a>
         <a href="{% url 'your_orders' %}" class="bottom-app-bar-item">
             <i class="bi bi-box-seam"></i>
             <span>Orders</span>
         </a>
-        <a href="#" class="bottom-app-bar-item" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
-            <i class="bi bi-person"></i>
-            <span>Menu</span>
+        <a href="{% url 'cart' %}" class="bottom-app-bar-item">
+            <i class="bi bi-cart"></i>
+            <span>Cart</span>
         </a>
     </nav>
 
