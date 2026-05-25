@@ -11,21 +11,8 @@ from BurhaniApp.views import (
     chat_api, visual_search_api
 )
 
-from django.contrib.auth.models import User
-from django.http import HttpResponse
-
-def create_emergency_admin(request):
-    if not User.objects.filter(username='admin_recovery').exists():
-        User.objects.create_superuser('admin_recovery', 'admin@example.com', 'Burhani@123')
-        return HttpResponse("<h1>Success!</h1> <p>Recovery admin created.</p> <p>Username: <b>admin_recovery</b></p> <p>Password: <b>Burhani@123</b></p> <a href='/admin/'>Click here to login</a>")
-    else:
-        user = User.objects.get(username='admin_recovery')
-        user.set_password('Burhani@123')
-        user.save()
-        return HttpResponse("<h1>Success!</h1> <p>Recovery admin password reset.</p> <p>Username: <b>admin_recovery</b></p> <p>Password: <b>Burhani@123</b></p> <a href='/admin/'>Click here to login</a>")
 
 urlpatterns = [
-    path('emergency-admin-reset/', create_emergency_admin),
     path('admin/', admin.site.urls),
     path('robots.txt', robots_txt, name='robots_txt'),
     path('sitemap.xml', sitemap_xml, name='sitemap_xml'),
