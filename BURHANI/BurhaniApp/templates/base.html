@@ -100,7 +100,8 @@
             font-size: 0.8rem;
             font-weight: 700;
             letter-spacing: 1px;
-            margin-right: 2rem;
+            margin-right: 1.2rem;
+            white-space: nowrap;
             transition: 0.3s;
         }
 
@@ -386,9 +387,10 @@
                 <div class="logo-circle">
                     <i class="bi bi-tools fs-5"></i>
                 </div>
-                <span class="heading-font fs-4 text-white d-none d-sm-inline" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
-                <span class="heading-font fs-4 text-white d-inline d-sm-none" style="letter-spacing: 1px;">BURHANI</span>
+                <span class="heading-font fs-5 text-white d-none d-sm-inline" style="letter-spacing: 0.5px;">BURHANI HARDWARE</span>
+                <span class="heading-font fs-5 text-white d-inline d-sm-none" style="letter-spacing: 0.5px;">BURHANI</span>
             </a>
+            
             <div class="d-none d-lg-flex nav-links">
                 <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
                 <a href="/#categories">Shop Tools</a>
@@ -423,6 +425,18 @@
             </div>
         </div>
     </header>
+
+    <!-- Floating Desktop Search Bar -->
+    <div class="d-none d-lg-block position-fixed" style="bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1045;">
+        <form action="{% url 'home' %}" method="GET" class="d-flex align-items-center bg-white rounded-pill px-4 py-2 shadow-lg" style="width: 520px; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;">
+            <i class="bi bi-search text-muted me-3 fs-5"></i>
+            <input type="text" name="q" placeholder="Search for any tool or machinery..." value="{{ query|default:'' }}" class="border-0 bg-transparent text-dark w-100" style="outline: none; font-size: 1.05rem;">
+            <button type="button" onclick="document.getElementById('cameraInput') ? document.getElementById('cameraInput').click() : alert('Visual search is only available on the Home page.')" title="Visual Search" class="btn btn-light rounded-circle p-2 mx-2 d-flex align-items-center justify-content-center border-0 touch-feedback" style="width: 42px; height: 42px; color: var(--gg-accent); background: rgba(230, 126, 34, 0.15); box-shadow: 0 4px 10px rgba(230, 126, 34, 0.2);">
+                <i class="bi bi-camera-fill fs-5"></i>
+            </button>
+            <button type="submit" class="btn btn-warning rounded-pill px-4 fw-bold" style="font-size: 0.9rem;">Search</button>
+        </form>
+    </div>
 
     <!-- Mobile Offcanvas Menu (Bottom Sheet) -->
     <div class="offcanvas offcanvas-bottom-sheet" tabindex="-1" id="mobileMenu" 
