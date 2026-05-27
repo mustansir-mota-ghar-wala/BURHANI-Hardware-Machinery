@@ -527,7 +527,7 @@
         }
 
         .btn-add {
-            background-color: var(--gg-header);
+            background-color: #198754;
             color: white;
             width: 100%;
             border-radius: 12px;
@@ -734,10 +734,8 @@
     {% if messages %}
     <div class="message-container">
         {% for message in messages %}
-        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show"
-            role="alert">
-            <i
-                class="bi {% if message.tags == 'error' %}bi-exclamation-octagon{% else %}bi-check-circle{% endif %} me-2"></i>
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'warning' %}warning{% elif message.tags == 'success' %}success{% elif message.tags == 'info' %}info{% else %}primary{% endif %} alert-dismissible fade show" role="alert">
+            <i class="bi {% if message.tags == 'error' %}bi-exclamation-octagon{% elif message.tags == 'warning' %}bi-exclamation-triangle{% elif message.tags == 'success' %}bi-check-circle{% else %}bi-info-circle{% endif %} me-2"></i>
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -775,11 +773,13 @@
     </div>
 
     <!-- Mobile Category Pills (Phase 2) -->
+    {% if not query %}
     <div class="cat-pill-container">
         {% for category in categories %}
         <a href="{% url 'product' category.id %}" class="cat-pill">{{ category.name }}</a>
         {% endfor %}
     </div>
+    {% endif %}
 
     {% if not query %}
         <div class="container hero-container">
@@ -805,18 +805,8 @@
             </div>
         </div>
     {% else %}
-    <div class="container py-4 mt-2">
-        <div class="d-flex justify-content-between align-items-end mb-4">
-            <div>
-                <h1 class="heading-font display-4 mb-2">Search Results</h1>
-                <p class="text-muted lead">Showing results for "<span class="text-accent fw-bold">{{ query }}</span>"
-                </p>
-            </div>
-            <a href="{% url 'home' %}" class="btn btn-outline-dark rounded-pill px-4">Clear Search</a>
-        </div>
-        <hr class="opacity-10 mb-3">
-    </div>
     {% endif %}
+    {% if not query %}
     <div class="container pb-2" id="categories">
         <h2 class="section-title">Shop By Category</h2>
         
@@ -866,9 +856,10 @@
             {% endfor %}
         </div>
     </div>
+    {% endif %}
     <div class="container pb-4 pb-md-5 mt-1 pt-1 border-top border-2 border-light">
         {% if query %}
-        <h2 class="section-title">Products Found ({{ products|length }})</h2>
+        <!-- Hidden on search -->
         {% else %}
         <div class="d-flex justify-content-center align-items-center gap-2 flex-nowrap" style="margin: 0.5rem 0 1.5rem;">
             <h2 class="section-title m-0 text-nowrap" style="margin: 0 !important; font-size: clamp(1.2rem, 5vw, 2rem);">New Arrivals</h2>

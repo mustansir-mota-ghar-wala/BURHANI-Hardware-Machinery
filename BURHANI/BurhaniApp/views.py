@@ -16,8 +16,7 @@ import random
 import json
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
-from google import genai
-from google.genai import types
+from groq import Groq
 import os
 import base64
 from PIL import Image
@@ -558,17 +557,67 @@ def chat_api(request):
         try:
             data = json.loads(request.body)
             user_message = data.get('message', '')
+            language = data.get('language', 'english')
             
-            client = genai.Client(api_key=os.environ.get('GEMINI_API_KEY'))
+            client = Groq(api_key=os.environ.get('GROQ_API_KEY'))
             
-            prompt = f"You are a helpful assistant for Burhani Hardware and Machinery, owned by Huzaifa Bhai Boraji. You supply tools, machinery, motors, pipes, agricultural equipment, chainsaws, welding machines in Bhawani Mandi. Be polite, concise, and help the user with their queries. Here is the user's message: {user_message}"
+            lang_instruction = "Respond entirely in Hindi (using Devanagari script)." if language == 'hindi' else "Respond in English."
             
-            response = client.models.generate_content(
-                model='gemini-2.5-flash',
-                contents=prompt,
+            system_prompt = f"""You are the friendly and expert sales assistant for Burhani Hardware and Machinery (owned by Huzaifa Bhai Boraji), located in Bhawani Mandi.
+You supply tools, machinery, motors, pipes, agricultural equipment, chainsaws, welding machines, and spare parts.
+Your goal is to assist customers, answer their questions accurately, and act as a persuasive salesperson. Keep your answers concise, helpful, and polite.
+
+CRITICAL INSTRUCTION FOR PRODUCT NAVIGATION:
+If the user explicitly asks to see, buy, or find a specific product (e.g. "show me chainsaws", "drill machine dikhao", "i want a welding machine"), you MUST include the tag [SEARCH: product_keyword] at the end of your message. 
+For example:
+User: "Show me some 200A welding machines"
+You: "Here are some excellent 200A welding machines we have in stock! [SEARCH: welding machine]"
+
+CRITICAL: {lang_instruction}"""
+            
+            chat_completion = client.chat.completions.create(
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_message}
+                ],
+                model="llama-3.3-70b-versatile",
             )
             
-            return JsonResponse({'status': 'success', 'reply': response.text})
+            reply_text = chat_completion.choices[0].message.content
+            
+            # Parse for [SEARCH: keyword]
+            products_html = ""
+            search_match = re.search(r'\[SEARCH:\s*(.*?)\]', reply_text, re.IGNORECASE)
+            if search_match:
+                keyword = search_match.group(1).strip()
+                # Remove the tag from the reply shown to user
+                reply_text = re.sub(r'\[SEARCH:\s*.*?\]', '', reply_text, flags=re.IGNORECASE).strip()
+                
+                # Query database
+                matching_products = Product.objects.filter(
+                    Q(name__icontains=keyword) | Q(description__icontains=keyword) | Q(category__name__icontains=keyword)
+                ).distinct()[:2]
+                
+                if matching_products.exists():
+                    products_html += "<div class='d-flex flex-column gap-2 mt-2'>"
+                    for prod in matching_products:
+                        img_url = prod.image.url if prod.image else ""
+                        prod_url = f"/item/{prod.id}/"
+                        products_html += f"""
+                        <div class="card bg-white border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                            <div class="d-flex align-items-center p-2 gap-3">
+                                <img src="{img_url}" alt="{prod.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 text-dark fw-bold" style="font-size: 0.85rem; line-height: 1.2;">{prod.name}</h6>
+                                    <div class="text-success fw-bold" style="font-size: 0.8rem;">₹{prod.price}</div>
+                                </div>
+                                <a href="{prod_url}" class="btn btn-sm text-white" style="background: var(--gg-accent); border-radius: 8px; font-size: 0.75rem; padding: 4px 10px;">View</a>
+                            </div>
+                        </div>
+                        """
+                    products_html += "</div>"
+            
+            return JsonResponse({'status': 'success', 'reply': reply_text, 'products_html': products_html})
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
     return JsonResponse({'status': 'error', 'message': 'Invalid request'})
@@ -583,16 +632,37 @@ def visual_search_api(request):
                 
             image = Image.open(image_file)
             
-            client = genai.Client(api_key=os.environ.get('GEMINI_API_KEY'))
+            # Convert image to base64
+            buffered = BytesIO()
+            if image.mode != 'RGB':
+                image = image.convert('RGB')
+            image.save(buffered, format="JPEG")
+            img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+            image_url = f"data:image/jpeg;base64,{img_str}"
+            
+            client = Groq(api_key=os.environ.get('GROQ_API_KEY'))
             
             prompt = "Identify the hardware tool, machinery, or equipment in this image. Respond with only a comma-separated list of 2-3 most relevant keywords (e.g. chainsaw, drill, pump)."
             
-            response = client.models.generate_content(
-                model='gemini-2.5-flash',
-                contents=[image, prompt],
+            chat_completion = client.chat.completions.create(
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": prompt},
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": image_url,
+                                },
+                            },
+                        ],
+                    }
+                ],
+                model="llama-3.2-11b-vision-preview",
             )
             
-            keywords = response.text.strip().split(',')
+            keywords = chat_completion.choices[0].message.content.strip().split(',')
             
             # Search products using keywords
             q_objects = Q()

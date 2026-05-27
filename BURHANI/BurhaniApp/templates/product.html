@@ -263,7 +263,7 @@
             margin-bottom: 1rem;
         }
         .btn-add {
-            background-color: var(--gg-header);
+            background-color: #198754;
             color: white;
             width: 100%;
             border-radius: 12px;
@@ -501,10 +501,8 @@
     {% if messages %}
     <div class="message-container">
         {% for message in messages %}
-        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show"
-            role="alert">
-            <i
-                class="bi {% if message.tags == 'error' %}bi-exclamation-octagon{% else %}bi-check-circle{% endif %} me-2"></i>
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'warning' %}warning{% elif message.tags == 'success' %}success{% elif message.tags == 'info' %}info{% else %}primary{% endif %} alert-dismissible fade show" role="alert">
+            <i class="bi {% if message.tags == 'error' %}bi-exclamation-octagon{% elif message.tags == 'warning' %}bi-exclamation-triangle{% elif message.tags == 'success' %}bi-check-circle{% else %}bi-info-circle{% endif %} me-2"></i>
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>

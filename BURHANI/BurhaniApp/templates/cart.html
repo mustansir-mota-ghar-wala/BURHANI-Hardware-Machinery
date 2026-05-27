@@ -132,8 +132,8 @@
         }
 
         .btn-checkout {
-            background-color: var(--gg-yellow);
-            color: var(--gg-header);
+            background-color: #198754;
+            color: white;
             width: 100%;
             border-radius: 12px;
             padding: 0.8rem 1rem;
@@ -339,7 +339,7 @@
             <div class="col-lg-8">
                 <div class="cart-list bg-white" style="border-top: 1px solid rgba(0,0,0,0.05); border-bottom: 1px solid rgba(0,0,0,0.05);">
                     {% for item in cart %}
-                    <div class="d-flex p-3 border-bottom position-relative bg-white">
+                    <div class="d-flex p-3 border-bottom position-relative bg-white touch-feedback" onclick="window.location.href='{% url 'product_detail' item.product.id %}'" style="cursor: pointer;">
                         <!-- Image Container -->
                         <a href="{% url 'product_detail' item.product.id %}" class="me-3 flex-shrink-0 d-block text-decoration-none" style="width: 96px; height: 96px; background: #f8f9fa; border-radius: 16px; padding: 0; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 8px rgba(0,0,0,0.02); overflow: hidden;">
                             {% if item.product.image %}
@@ -355,14 +355,14 @@
                                 <a href="{% url 'product_detail' item.product.id %}" class="text-decoration-none text-dark flex-grow-1">
                                     <h5 class="fw-bold mb-1 pe-2" style="font-size: 0.95rem; color: var(--gg-header); font-family: 'Inter', sans-serif; line-height: 1.2;">{{ item.product.name }}</h5>
                                 </a>
-                                <a href="{% url 'remove_from_cart' item.id %}" class="text-danger p-1">
+                                <a href="{% url 'remove_from_cart' item.id %}" class="text-danger p-1" onclick="event.stopPropagation();">
                                     <i class="bi bi-trash3" style="font-size: 1.1rem;"></i>
                                 </a>
                             </div>
                             
                             <div class="d-flex justify-content-between align-items-end mt-1">
                                 <div class="fw-bold text-accent" style="font-size: 1rem;">₹{{ item.product_total }}</div>
-                                <div class="qty-controls d-inline-flex align-items-center bg-light rounded" style="padding: 2px 6px; border: 1px solid rgba(0,0,0,0.1);">
+                                <div class="qty-controls d-inline-flex align-items-center bg-light rounded" style="padding: 2px 6px; border: 1px solid rgba(0,0,0,0.1);" onclick="event.stopPropagation();">
                                     <a href="{% url 'decrease_product' item.product.id %}" class="text-dark text-decoration-none px-2 fw-bold" style="font-size: 1rem;"><i class="bi bi-dash"></i></a>
                                     <span class="fw-bold px-2" style="font-size: 0.85rem;">{{ item.product_quantity }}</span>
                                     <a href="{% url 'add_to_cart' item.product.id %}" class="text-dark text-decoration-none px-2 fw-bold" style="font-size: 1rem;"><i class="bi bi-plus"></i></a>
@@ -454,11 +454,13 @@
         </a>
     </nav>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'chatbot_component.html' %}
 </body>
 
 </html> </a>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'chatbot_component.html' %}
 </body>
 
 </html>

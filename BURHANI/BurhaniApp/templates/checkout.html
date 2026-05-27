@@ -124,8 +124,8 @@
         }
 
         .btn-place-order {
-            background-color: var(--gg-yellow);
-            color: var(--gg-header);
+            background-color: #198754;
+            color: white;
             width: 100%;
             border-radius: 8px;
             padding: 0.6rem 1rem;
@@ -459,6 +459,15 @@
                             <span>Online Payment</span>
                         </div>
                     </div>
+                    
+                    <div class="mt-4 mb-1">
+                        <button type="submit" id="place-order-btn" form="checkoutForm"
+                            class="btn-place-order touch-feedback w-100 fw-bold d-flex align-items-center justify-content-center"
+                            style="padding: 0.8rem 1.2rem; font-size: 0.95rem; border-radius: 50px; letter-spacing: 0.5px; background: var(--gg-header); color: white; border: none; box-shadow: 0 5px 15px rgba(10,17,15,0.12); transition: all 0.3s ease;">
+                            <span>CONFIRM & PLACE ORDER &bull; ₹{{ grand_total }}</span>
+                            <i class="bi bi-arrow-right ms-2 fs-6"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-5 order-first order-lg-last mt-2 mt-lg-0">
@@ -473,7 +482,7 @@
                     <!-- Vertical Cart Items List -->
                     <div class="checkout-cart-items-list mb-3" style="max-height: 240px; overflow-y: auto; padding-right: 4px;">
                         {% for item in cart %}
-                        <div class="d-flex align-items-center justify-content-between py-2.5 border-bottom {% if forloop.last %}border-bottom-0{% endif %}">
+                        <div class="d-flex align-items-center justify-content-between py-2.5 border-bottom {% if forloop.last %}border-bottom-0{% endif %}" onclick="window.location.href='{% url 'product_detail' item.product.id %}'" style="cursor: pointer;">
                             <div class="d-flex align-items-center gap-3" style="max-width: 80%;">
                                 <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}https://images.unsplash.com/photo-1581147036324-c17ac41dfa6c?q=80&w=400&auto=format&fit=crop{% endif %}" 
                                      alt="{{ item.product.name }}" 
@@ -507,14 +516,6 @@
                             <span class="fw-bold" style="font-size: 0.85rem; color: var(--gg-header);">Total Amount</span>
                             <span class="fw-bold text-accent" style="font-size: 1.1rem;">₹{{ grand_total }}</span>
                         </div>
-                    </div>
-                    <div class="mt-2.5 mb-1">
-                        <button type="submit" id="place-order-btn" form="checkoutForm"
-                            class="btn-place-order touch-feedback w-100 fw-bold d-flex align-items-center justify-content-center"
-                            style="padding: 0.6rem 1.2rem; font-size: 0.85rem; border-radius: 50px; letter-spacing: 0.5px; background: var(--gg-header); color: white; border: none; box-shadow: 0 5px 15px rgba(10,17,15,0.12); transition: all 0.3s ease;">
-                            <span>CONFIRM & PLACE ORDER &bull; ₹{{ grand_total }}</span>
-                            <i class="bi bi-arrow-right ms-2 fs-6"></i>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -1090,6 +1091,7 @@
             }
         });
     </script>
+    {% include 'chatbot_component.html' %}
 </body>
 
 </html>

@@ -235,8 +235,8 @@
             <p class="text-muted small mb-2">Enter details to login.</p>
             {% if messages %}
             {% for message in messages %}
-            <div class="alert alert-danger border-0 rounded-3 py-1 px-2 small mb-2">
-                <i class="bi bi-exclamation-circle me-2"></i> {{ message }}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'warning' %}warning{% elif message.tags == 'success' %}success{% elif message.tags == 'info' %}info{% else %}primary{% endif %} border-0 rounded-3 py-1 px-2 small mb-2">
+                <i class="bi {% if message.tags == 'error' %}bi-exclamation-octagon{% elif message.tags == 'warning' %}bi-exclamation-triangle{% elif message.tags == 'success' %}bi-check-circle{% else %}bi-info-circle{% endif %} me-2"></i> {{ message }}
             </div>
             {% endfor %}
             {% endif %}
@@ -313,5 +313,6 @@
         </a>
     </nav>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'chatbot_component.html' %}
 </body>
 </html>

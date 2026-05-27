@@ -238,144 +238,6 @@
             font-size: 0.9rem;
         }
 
-        /* Chat Widget Styles */
-        .chat-fab {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background: #111111; /* Deep Black */
-            color: white;
-            width: auto;
-            padding: 0 16px;
-            height: 45px;
-            border-radius: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            cursor: pointer;
-            z-index: 1040;
-            transition: 0.3s;
-        }
-        .chat-fab:hover {
-            transform: scale(1.1);
-        }
-        .chat-widget {
-            position: fixed;
-            bottom: 150px;
-            right: 20px;
-            width: 350px;
-            height: 500px;
-            max-width: calc(100vw - 40px);
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-            z-index: 1040;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border: 1px solid var(--gg-border);
-            animation: slideUp 0.3s ease-out;
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .chat-header {
-            background: var(--gg-header);
-            color: white;
-            padding: 1rem;
-        }
-        .chat-body {
-            flex-grow: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            background: #f8f9fa;
-        }
-        .chat-message {
-            display: flex;
-            max-width: 80%;
-        }
-        .chat-message.bot {
-            align-self: flex-start;
-        }
-        .chat-message.user {
-            align-self: flex-end;
-        }
-        .message-content {
-            padding: 0.8rem 1rem;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-        .bot .message-content {
-            background: white;
-            color: var(--gg-text);
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .user .message-content {
-            background: var(--gg-accent);
-            color: white;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 2px 5px rgba(230, 126, 34, 0.2);
-        }
-        .chat-footer {
-            padding: 1rem;
-            background: white;
-            border-top: 1px solid var(--gg-border);
-            display: flex;
-            gap: 0.5rem;
-        }
-        .chat-footer input {
-            flex-grow: 1;
-            border: 1px solid var(--gg-border);
-            border-radius: 20px;
-            padding: 0.5rem 1rem;
-            outline: none;
-        }
-        .chat-footer button {
-            background: var(--gg-header);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .chat-footer button:hover {
-            background: var(--gg-accent);
-        }
-
-        @media (max-width: 768px) {
-            .chat-widget {
-                bottom: 0;
-                right: 0;
-                width: 100vw;
-                height: 100vh;
-                max-width: 100vw;
-                border-radius: 0;
-                z-index: 1100;
-            }
-            .chat-fab {
-                bottom: 80px;
-                right: 15px;
-                width: auto;
-                padding: 0 12px;
-                height: 40px;
-                font-size: 1rem;
-            }
-        }
-
         {% block extra_css %}{% endblock %}
     </style>
 </head>
@@ -430,8 +292,11 @@
     <div class="d-none d-lg-block position-fixed" style="bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1045;">
         <form action="{% url 'home' %}" method="GET" class="d-flex align-items-center bg-white rounded-pill px-4 py-2 shadow-lg" style="width: 520px; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;">
             <i class="bi bi-search text-muted me-3 fs-5"></i>
-            <input type="text" name="q" placeholder="Search for any tool or machinery..." value="{{ query|default:'' }}" class="border-0 bg-transparent text-dark w-100" style="outline: none; font-size: 1.05rem;">
-            <button type="button" onclick="document.getElementById('cameraInput') ? document.getElementById('cameraInput').click() : alert('Visual search is only available on the Home page.')" title="Visual Search" class="btn btn-light rounded-circle p-2 mx-2 d-flex align-items-center justify-content-center border-0 touch-feedback" style="width: 42px; height: 42px; color: var(--gg-accent); background: rgba(230, 126, 34, 0.15); box-shadow: 0 4px 10px rgba(230, 126, 34, 0.2);">
+            <input type="text" id="desktopSearchInput" name="q" placeholder="Search for any tool or machinery..." value="{{ query|default:'' }}" class="border-0 bg-transparent text-dark w-100" style="outline: none; font-size: 1.05rem;">
+            <button type="button" onclick="startSearchVoiceInput()" title="Voice Search" class="btn btn-light rounded-circle p-2 mx-1 d-flex align-items-center justify-content-center border-0 touch-feedback" style="width: 42px; height: 42px; color: #dc3545; background: rgba(220, 53, 69, 0.15); box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);">
+                <i class="bi bi-mic-fill fs-5" id="searchMicIcon"></i>
+            </button>
+            <button type="button" onclick="document.getElementById('cameraInput') ? document.getElementById('cameraInput').click() : alert('Visual search is only available on the Home page.')" title="Visual Search" class="btn btn-light rounded-circle p-2 mx-1 d-flex align-items-center justify-content-center border-0 touch-feedback" style="width: 42px; height: 42px; color: var(--gg-accent); background: rgba(230, 126, 34, 0.15); box-shadow: 0 4px 10px rgba(230, 126, 34, 0.2);">
                 <i class="bi bi-camera-fill fs-5"></i>
             </button>
             <button type="submit" class="btn btn-warning rounded-pill px-4 fw-bold" style="font-size: 0.9rem;">Search</button>
@@ -556,9 +421,8 @@
     {% if messages %}
     <div class="message-container">
         {% for message in messages %}
-        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show"
-            role="alert">
-            <i class="bi {% if message.tags == 'error' %}bi-exclamation-octagon{% else %}bi-check-circle{% endif %} me-2"></i>
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'warning' %}warning{% elif message.tags == 'success' %}success{% elif message.tags == 'info' %}info{% else %}primary{% endif %} alert-dismissible fade show" role="alert">
+            <i class="bi {% if message.tags == 'error' %}bi-exclamation-octagon{% elif message.tags == 'warning' %}bi-exclamation-triangle{% elif message.tags == 'success' %}bi-check-circle{% else %}bi-info-circle{% endif %} me-2"></i>
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -640,78 +504,46 @@
         </a>
     </nav>
 
-    <!-- Chat Widget -->
-    <div id="chatWidget" class="chat-widget d-none">
-        <div class="chat-header d-flex justify-content-between align-items-center">
-            <h5 class="m-0 fs-6 fw-bold"><i class="bi bi-robot me-2 text-warning"></i>Burhani Assistant</h5>
-            <button class="btn btn-sm text-white p-0 fs-5" onclick="toggleChat()"><i class="bi bi-x-lg"></i></button>
-        </div>
-        <div class="chat-body" id="chatBody">
-            <div class="chat-message bot">
-                <div class="message-content fw-medium">Hello! I am your Burhani Hardware Assistant. How can I help you find tools or machinery today?</div>
-            </div>
-        </div>
-        <div class="chat-footer">
-            <input type="text" id="chatInput" placeholder="Ask about tools, products..." onkeypress="handleChatEnter(event)">
-            <button onclick="sendChatMessage()"><i class="bi bi-send-fill"></i></button>
-        </div>
-    </div>
-    
-    <button class="chat-fab" onclick="toggleChat()">
-        <i class="bi bi-chat-dots-fill text-warning"></i> <span class="ms-2 fw-semibold" style="font-size: 0.9rem;">Ask AI</span>
-    </button>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function toggleChat() {
-            const widget = document.getElementById('chatWidget');
-            if (widget.classList.contains('d-none')) {
-                widget.classList.remove('d-none');
-                document.getElementById('chatInput').focus();
-            } else {
-                widget.classList.add('d-none');
+
+        function startSearchVoiceInput() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Your browser does not support voice input.");
+                return;
             }
-        }
-
-        function handleChatEnter(e) {
-            if (e.key === 'Enter') sendChatMessage();
-        }
-
-        async function sendChatMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            if (!message) return;
-
-            input.value = '';
-            appendMessage('user', message);
-
-            try {
-                const response = await fetch('/api/chat/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: message })
-                });
-                const data = await response.json();
-                
-                if (data.status === 'success') {
-                    appendMessage('bot', data.reply);
-                } else {
-                    appendMessage('bot', "Sorry, I'm having trouble right now.");
+            
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-IN';
+            recognition.interimResults = false;
+            
+            const micBtn = document.getElementById('searchMicIcon');
+            if(micBtn) micBtn.className = 'spinner-grow spinner-grow-sm';
+            
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                const searchInput = document.getElementById('desktopSearchInput');
+                if(searchInput) {
+                    searchInput.value = transcript;
+                    searchInput.closest('form').submit();
                 }
-            } catch (err) {
-                appendMessage('bot', "Connection error.");
-            }
-        }
-
-        function appendMessage(sender, text) {
-            const chatBody = document.getElementById('chatBody');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `chat-message ${sender}`;
-            msgDiv.innerHTML = `<div class="message-content fw-medium">${text.replace(/\\n/g, '<br>')}</div>`;
-            chatBody.appendChild(msgDiv);
-            chatBody.scrollTop = chatBody.scrollHeight;
+            };
+            
+            recognition.onerror = (event) => {
+                console.error("Voice recognition error", event.error);
+                if(micBtn) micBtn.className = 'bi bi-mic-fill fs-5';
+            };
+            
+            recognition.onend = () => {
+                if(micBtn) micBtn.className = 'bi bi-mic-fill fs-5';
+            };
+            
+            recognition.start();
         }
     </script>
     {% block extra_js %}{% endblock %}
+    {% include 'chatbot_component.html' %}
 </body>
 </html>
