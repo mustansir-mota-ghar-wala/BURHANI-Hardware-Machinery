@@ -572,13 +572,13 @@ def chat_api(request):
             
             system_prompt = f"""You are the friendly and expert sales assistant for Burhani Hardware and Machinery (owned by Huzaifa Bhai Boraji), located in Bhawani Mandi.
 You supply tools, machinery, motors, pipes, agricultural equipment, chainsaws, welding machines, and spare parts.
-Your goal is to assist customers, answer their questions accurately, and act as a persuasive salesperson. Keep your answers concise, helpful, and polite.
+Your goal is to assist customers. DO NOT write long descriptions or paragraphs. Keep text extremely brief.
 
 CRITICAL INSTRUCTION FOR PRODUCT NAVIGATION:
-If the user explicitly asks to see, buy, or find a specific product (e.g. "show me chainsaws", "drill machine dikhao", "i want a welding machine"), you MUST include the tag [SEARCH: product_keyword] at the end of your message. 
+If the user asks to see, buy, or find a specific product (e.g. "show me chainsaws", "drill machine", "welding machine"), DO NOT describe the product in text. Keep your text reply to EXACTLY ONE SHORT SENTENCE and append the tag [SEARCH: product_keyword].
 For example:
 User: "Show me some 200A welding machines"
-You: "Here are some excellent 200A welding machines we have in stock! [SEARCH: welding machine]"
+You: "Here are our best 200A welding machines in stock: [SEARCH: welding machine]"
 
 CRITICAL: {lang_instruction}"""
             
@@ -603,22 +603,22 @@ CRITICAL: {lang_instruction}"""
                 # Query database
                 matching_products = Product.objects.filter(
                     Q(name__icontains=keyword) | Q(description__icontains=keyword) | Q(category__name__icontains=keyword)
-                ).distinct()[:2]
+                ).distinct()[:10]
                 
                 if matching_products.exists():
-                    products_html += "<div class='d-flex flex-column gap-2 mt-2'>"
+                    products_html += "<div class='d-flex flex-column gap-2 mt-2 custom-scrollbar' style='max-height: 280px; overflow-y: auto; padding-right: 4px;'>"
                     for prod in matching_products:
-                        img_url = prod.image.url if prod.image else ""
+                        img_url = prod.image.url if prod.image else "https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=150&auto=format&fit=crop"
                         prod_url = f"/item/{prod.id}/"
                         products_html += f"""
-                        <div class="card bg-white border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                        <div class="card bg-white border-0 shadow-sm mb-2" style="border-radius: 12px; overflow: hidden; min-height: 70px;">
                             <div class="d-flex align-items-center p-2 gap-3">
-                                <img src="{img_url}" alt="{prod.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1 text-dark fw-bold" style="font-size: 0.85rem; line-height: 1.2;">{prod.name}</h6>
+                                <img src="{img_url}" alt="{prod.name}" style="width: 50px; height: 50px; min-width: 50px; object-fit: cover; border-radius: 8px; background: #eee;">
+                                <div class="flex-grow-1" style="min-width: 0;">
+                                    <h6 class="mb-1 text-dark fw-bold text-truncate" style="font-size: 0.85rem; line-height: 1.2;">{prod.name}</h6>
                                     <div class="text-success fw-bold" style="font-size: 0.8rem;">₹{prod.price}</div>
                                 </div>
-                                <a href="{prod_url}" class="btn btn-sm text-white" style="background: var(--gg-accent); border-radius: 8px; font-size: 0.75rem; padding: 4px 10px;">View</a>
+                                <a href="{prod_url}" class="btn btn-sm text-white flex-shrink-0" style="background: var(--gg-accent); border-radius: 8px; font-size: 0.75rem; padding: 4px 10px;">View</a>
                             </div>
                         </div>
                         """
