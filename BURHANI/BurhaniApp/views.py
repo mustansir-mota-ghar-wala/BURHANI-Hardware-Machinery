@@ -525,7 +525,7 @@ def verify_otp(request):
 
 def product_detail(request, id):
     product = get_object_or_404(Product, id=id)
-    related_products = Product.objects.filter(category=product.category).exclude(id=id)[:4]
+    related_products = Product.objects.filter(category=product.category).exclude(id=id)
     categories = Category.objects.all().order_by('name')
     additional_images = product.images.all()
     
@@ -575,10 +575,13 @@ You supply tools, machinery, motors, pipes, agricultural equipment, chainsaws, w
 Your goal is to assist customers. DO NOT write long descriptions or paragraphs. Keep text extremely brief.
 
 CRITICAL INSTRUCTION FOR PRODUCT NAVIGATION:
-If the user asks to see, buy, or find a specific product (e.g. "show me chainsaws", "drill machine", "welding machine"), DO NOT describe the product in text. Keep your text reply to EXACTLY ONE SHORT SENTENCE and append the tag [SEARCH: product_keyword].
+WHENEVER the user types ANY message that mentions or implies a tool, machinery, or product, you MUST append the tag [SEARCH: product_keyword] to your response. Even if they just ask a question, if a product is mentioned, append the tag.
+Keep your text reply to EXACTLY ONE SHORT SENTENCE.
 For example:
 User: "Show me some 200A welding machines"
 You: "Here are our best 200A welding machines in stock: [SEARCH: welding machine]"
+User: "do you have chainsaws"
+You: "Yes, we have high-quality chainsaws available: [SEARCH: chainsaw]"
 
 CRITICAL: {lang_instruction}"""
             
@@ -595,6 +598,8 @@ CRITICAL: {lang_instruction}"""
             # Parse for [SEARCH: keyword]
             products_html = ""
             search_match = re.search(r'\[SEARCH:\s*(.*?)\]', reply_text, re.IGNORECASE)
+            matching_products = Product.objects.none()
+
             if search_match:
                 keyword = search_match.group(1).strip()
                 # Remove the tag from the reply shown to user
@@ -604,25 +609,35 @@ CRITICAL: {lang_instruction}"""
                 matching_products = Product.objects.filter(
                     Q(name__icontains=keyword) | Q(description__icontains=keyword) | Q(category__name__icontains=keyword)
                 ).distinct()[:10]
+            
+            # Fallback: if no search tag or no products found, do a keyword search on user_message
+            if not matching_products.exists():
+                ignore_words = {'what', 'is', 'the', 'a', 'an', 'show', 'me', 'some', 'do', 'you', 'have', 'price', 'of', 'for', 'in', 'and', 'or', 'to', 'how', 'much', 'can', 'get', 'i', 'want', 'buy', 'looking', 'any', 'are', 'there', 'please', 'hi', 'hello', 'hey'}
+                words = [w for w in re.findall(r'\b\w+\b', user_message.lower()) if w not in ignore_words and len(w) > 2]
+                if words:
+                    q_objects = Q()
+                    for w in words:
+                        q_objects |= Q(name__icontains=w) | Q(category__name__icontains=w)
+                    matching_products = Product.objects.filter(q_objects).distinct()[:10]
                 
-                if matching_products.exists():
-                    products_html += "<div class='d-flex flex-column gap-2 mt-2 custom-scrollbar' style='max-height: 280px; overflow-y: auto; padding-right: 4px;'>"
-                    for prod in matching_products:
-                        img_url = prod.image.url if prod.image else "https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=150&auto=format&fit=crop"
-                        prod_url = f"/item/{prod.id}/"
-                        products_html += f"""
-                        <div class="card bg-white border-0 shadow-sm mb-2" style="border-radius: 12px; overflow: hidden; min-height: 70px;">
-                            <div class="d-flex align-items-center p-2 gap-3">
-                                <img src="{img_url}" alt="{prod.name}" style="width: 50px; height: 50px; min-width: 50px; object-fit: cover; border-radius: 8px; background: #eee;">
-                                <div class="flex-grow-1" style="min-width: 0;">
-                                    <h6 class="mb-1 text-dark fw-bold text-truncate" style="font-size: 0.85rem; line-height: 1.2;">{prod.name}</h6>
-                                    <div class="text-success fw-bold" style="font-size: 0.8rem;">₹{prod.price}</div>
-                                </div>
-                                <a href="{prod_url}" class="btn btn-sm text-white flex-shrink-0" style="background: var(--gg-accent); border-radius: 8px; font-size: 0.75rem; padding: 4px 10px;">View</a>
+            if matching_products.exists():
+                products_html += "<div class='d-flex flex-column gap-2 mt-2 custom-scrollbar' style='max-height: 280px; overflow-y: auto; padding-right: 4px;'>"
+                for prod in matching_products:
+                    img_url = prod.image.url if prod.image else "https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=150&auto=format&fit=crop"
+                    prod_url = f"/item/{prod.id}/"
+                    products_html += f"""
+                    <div class="card bg-white border-0 shadow-sm mb-2" style="border-radius: 12px; overflow: hidden; min-height: 70px;">
+                        <div class="d-flex align-items-center p-2 gap-3">
+                            <img src="{img_url}" alt="{prod.name}" style="width: 50px; height: 50px; min-width: 50px; object-fit: cover; border-radius: 8px; background: #eee;">
+                            <div class="flex-grow-1" style="min-width: 0;">
+                                <h6 class="mb-1 text-dark fw-bold text-truncate" style="font-size: 0.85rem; line-height: 1.2;">{prod.name}</h6>
+                                <div class="text-success fw-bold" style="font-size: 0.8rem;">₹{prod.price}</div>
                             </div>
+                            <a href="#" class="btn btn-sm text-white flex-shrink-0" style="background: var(--gg-accent); border-radius: 8px; font-size: 0.75rem; padding: 4px 10px;" onclick="openQuickView({prod.id}); return false;">View</a>
                         </div>
-                        """
-                    products_html += "</div>"
+                    </div>
+                    """
+                products_html += "</div>"
             
             return JsonResponse({'status': 'success', 'reply': reply_text, 'products_html': products_html})
         except Exception as e:
@@ -649,7 +664,7 @@ def visual_search_api(request):
             
             client = Groq(api_key=settings.GROQ_API_KEY)
             
-            prompt = "Identify the hardware tool, machinery, or equipment in this image. Respond with only a comma-separated list of 2-3 most relevant keywords (e.g. chainsaw, drill, pump)."
+            prompt = "Identify the hardware tool, machinery, or equipment in this image. Respond STRICTLY with only a comma-separated list of 2-3 most relevant search keywords (e.g. chainsaw, drill, pump). Do NOT include any conversational text, explanation, or punctuation other than commas."
             
             chat_completion = client.chat.completions.create(
                 messages=[
@@ -666,10 +681,14 @@ def visual_search_api(request):
                         ],
                     }
                 ],
-                model="llama-3.2-11b-vision-preview",
+                model="meta-llama/llama-4-scout-17b-16e-instruct",
             )
             
-            keywords = chat_completion.choices[0].message.content.strip().split(',')
+            raw_keywords = chat_completion.choices[0].message.content.strip()
+            import re
+            # Remove any non-alphanumeric or comma characters that the model might mistakenly add
+            clean_keywords = re.sub(r'[^a-zA-Z0-9,\s]', '', raw_keywords)
+            keywords = [k.strip() for k in clean_keywords.split(',') if k.strip()]
             
             # Search products using keywords
             q_objects = Q()
@@ -697,3 +716,57 @@ def visual_search_api(request):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
     return JsonResponse({'status': 'error', 'message': 'Invalid request'})
+
+@csrf_exempt
+def transcribe_audio_api(request):
+    if request.method == 'POST':
+        try:
+            audio_file = request.FILES.get('audio')
+            language = request.POST.get('language', 'en')
+            if not audio_file:
+                return JsonResponse({'status': 'error', 'message': 'No audio provided'})
+            
+            # Save the blob to a temporary file since Groq expects a file object with a filename
+            import tempfile
+            import os
+            
+            with tempfile.NamedTemporaryFile(suffix='.webm', delete=False) as temp_audio:
+                for chunk in audio_file.chunks():
+                    temp_audio.write(chunk)
+                temp_audio_path = temp_audio.name
+
+            client = Groq(api_key=settings.GROQ_API_KEY)
+            
+            with open(temp_audio_path, "rb") as file:
+                # whisper-large-v3-turbo handles both english and hindi well
+                transcription = client.audio.transcriptions.create(
+                    file=(os.path.basename(temp_audio_path), file.read()),
+                    model="whisper-large-v3-turbo",
+                    prompt="The audio is about hardware tools, machinery, agriculture tools, or construction equipment."
+                )
+                
+            os.remove(temp_audio_path)
+            
+            return JsonResponse({
+                'status': 'success',
+                'text': transcription.text.strip()
+            })
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'})
+
+def product_quick_view_api(request, id):
+    try:
+        product = get_object_or_404(Product, id=id)
+        return JsonResponse({
+            'status': 'success',
+            'product': {
+                'id': product.id,
+                'name': product.name,
+                'price': product.price,
+                'description': product.description,
+                'image': product.image.url if product.image else None,
+            }
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})

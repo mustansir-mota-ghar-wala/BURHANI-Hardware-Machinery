@@ -400,7 +400,7 @@ body {
         left: 0;
         right: 0;
         background: white;
-        padding: 0.75rem 1rem;
+        padding: 0.5rem 0.8rem;
         box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.08);
         z-index: 1010;
         display: flex;
@@ -412,11 +412,11 @@ body {
     .mobile-sticky-bar .btn-sticky-add {
         background-color: #198754;
         color: white;
-        border-radius: 10px;
-        padding: 0.75rem;
+        border-radius: 8px;
+        padding: 0.6rem;
         font-weight: 700;
         text-transform: uppercase;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         border: 1px solid var(--gg-header);
         flex: 1;
         text-align: center;
@@ -426,11 +426,11 @@ body {
     .mobile-sticky-bar .btn-sticky-buy {
         background-color: var(--gg-accent);
         color: white;
-        border-radius: 10px;
-        padding: 0.75rem;
+        border-radius: 8px;
+        padding: 0.6rem;
         font-weight: 700;
         text-transform: uppercase;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         border: 1px solid var(--gg-accent);
         flex: 1.2;
         text-align: center;
@@ -723,26 +723,28 @@ body {
 
     <!-- Related Products Section -->
     {% if related_products %}
-    <h2 class="section-title">You May Also Like</h2>
-    <div class="row g-3 px-2 px-md-0">
+    <div class="row g-3 px-2 px-md-0 mt-4">
         {% for p in related_products %}
         <div class="col-6 col-md-3 col-lg-3">
-            <a href="{% url 'product_detail' p.id %}" class="prod-card touch-feedback">
-                <div class="prod-img">
+            <div class="prod-card touch-feedback">
+                <a href="{% url 'product_detail' p.id %}" class="prod-img d-block text-decoration-none">
                     {% if p.image %}
                     <img src="{{ p.image.url }}" alt="{{ p.name }}">
                     {% else %}
                     <img src="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=800&auto=format&fit=crop" alt="Premium Tool">
                     {% endif %}
-                </div>
+                </a>
                 <div class="prod-info">
-                    <h4>{{ p.name }}</h4>
+                    <a href="{% url 'product_detail' p.id %}" class="text-decoration-none text-dark">
+                        <h4>{{ p.name }}</h4>
+                    </a>
                     <div class="prod-price">₹{{ p.price }}</div>
                     <button class="btn-add" onclick="event.preventDefault(); window.location.href='{% url 'add_to_cart' p.id %}';">
                         Add to Cart
                     </button>
+                    <a href="{% url 'add_to_cart' p.id %}" class="floating-cart-btn"><i class="bi bi-plus-lg"></i></a>
                 </div>
-            </a>
+            </div>
         </div>
         {% endfor %}
     </div>

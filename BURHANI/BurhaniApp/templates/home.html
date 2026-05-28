@@ -941,58 +941,39 @@
 {% block extra_js %}
 <script>
     function startMobileVoiceSearch() {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-            alert("Your browser does not support voice input.");
-            return;
-        }
-        
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'en-IN';
-        recognition.interimResults = false;
-        
         const micIcon = document.getElementById('mobileSearchMicIcon');
         const searchInput = document.getElementById('mobileSearchInput');
         let originalPlaceholder = 'Search tools...';
         
-        recognition.onstart = () => {
-            if(micIcon) micIcon.className = 'spinner-grow spinner-grow-sm text-accent';
-            if(searchInput) {
-                originalPlaceholder = searchInput.placeholder;
-                searchInput.placeholder = 'Listening... Speak now';
-                searchInput.style.boxShadow = '0 0 0 3px rgba(230, 126, 34, 0.4)';
+        recordAndTranscribe({
+            onStart: () => {
+                if(micIcon) micIcon.className = 'spinner-grow spinner-grow-sm text-accent';
+                if(searchInput) {
+                    originalPlaceholder = searchInput.placeholder;
+                    searchInput.placeholder = 'Listening... Speak now';
+                    searchInput.style.boxShadow = '0 0 0 3px rgba(230, 126, 34, 0.4)';
+                }
+            },
+            onResult: (transcript) => {
+                transcript = transcript.replace(/[.,!?]+$/, "").trim();
+                if(searchInput && transcript) {
+                    searchInput.value = transcript;
+                    document.getElementById('mobileSearchForm').submit();
+                }
+            },
+            onError: (errorMsg) => {
+                alert("Voice error: " + errorMsg);
+            },
+            onEnd: () => {
+                if(micIcon && micIcon.className.includes('spinner')) {
+                    micIcon.className = 'bi bi-mic-fill';
+                }
+                if(searchInput) {
+                    searchInput.placeholder = originalPlaceholder;
+                    searchInput.style.boxShadow = 'none';
+                }
             }
-        };
-        
-        recognition.onresult = (event) => {
-            let transcript = event.results[0][0].transcript;
-            transcript = transcript.replace(/[.,!?]+$/, "").trim(); // Remove trailing punctuation
-            if(searchInput) {
-                searchInput.value = transcript;
-                document.getElementById('mobileSearchForm').submit();
-            }
-        };
-        
-        recognition.onerror = (event) => {
-            alert("Voice recognition error: " + event.error);
-            if(micIcon) micIcon.className = 'bi bi-mic-fill';
-            if(searchInput) {
-                searchInput.placeholder = originalPlaceholder;
-                searchInput.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.12)';
-            }
-        };
-        
-        recognition.onend = () => {
-            if(micIcon && micIcon.className.includes('spinner')) {
-                micIcon.className = 'bi bi-mic-fill';
-            }
-            if(searchInput) {
-                searchInput.placeholder = originalPlaceholder;
-                searchInput.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.12)';
-            }
-        };
-        
-        recognition.start();
+        });
     }
 </script>
 <script>
@@ -1046,9 +1027,8 @@
                 });
                 const data = await response.json();
 
-                document.getElementById('vsLoading').classList.add('d-none');
-                
                 if (data.status === 'success') {
+                    document.getElementById('vsLoading').classList.add('d-none');
                     document.getElementById('vsResults').classList.remove('d-none');
                     document.getElementById('vsKeywords').textContent = "Keywords identified: " + data.keywords.join(', ');
                     
@@ -1060,7 +1040,7 @@
                             const imgHtml = p.image ? `<img src="${p.image}" class="img-fluid rounded" style="height:80px; object-fit:cover; width:100%;">` : '<div class="bg-light h-100 rounded d-flex align-items-center justify-content-center"><i class="bi bi-image text-muted"></i></div>';
                             list.innerHTML += `
                                 <div class="col-6 col-md-3 mb-2">
-                                    <a href="/product/${p.id}/" class="text-decoration-none">
+                                    <a href="#" class="text-decoration-none" onclick="openQuickView(${p.id}); return false;">
                                         <div class="card h-100 border-0 shadow-sm">
                                             <div class="card-body p-2 text-center">
                                                 ${imgHtml}
@@ -1074,9 +1054,11 @@
                         });
                     }
                 } else {
+                    document.getElementById('vsLoading').classList.remove('d-none');
                     document.getElementById('vsLoading').innerHTML = `<div class="alert alert-danger">Error: ${data.message}</div>`;
                 }
             } catch (err) {
+                document.getElementById('vsLoading').classList.remove('d-none');
                 document.getElementById('vsLoading').innerHTML = `<div class="alert alert-danger">Connection error. Please try again.</div>`;
             }
             
