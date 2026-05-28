@@ -16,9 +16,10 @@ import dj_database_url
 from dotenv import load_dotenv
 
 # Load .env file for local development
-load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -223,3 +224,5 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS if not host.startswith(('127.', 'localhost'))]
+
+GROQ_API_KEY = os.environ.get('GROQ_API_KEY')

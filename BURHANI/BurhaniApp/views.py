@@ -566,7 +566,7 @@ def chat_api(request):
             user_message = data.get('message', '')
             language = data.get('language', 'english')
             
-            client = Groq(api_key=os.environ.get('GROQ_API_KEY'))
+            client = Groq(api_key=settings.GROQ_API_KEY)
             
             lang_instruction = "Respond entirely in Hindi (using Devanagari script)." if language == 'hindi' else "Respond in English."
             
@@ -647,7 +647,7 @@ def visual_search_api(request):
             img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
             image_url = f"data:image/jpeg;base64,{img_str}"
             
-            client = Groq(api_key=os.environ.get('GROQ_API_KEY'))
+            client = Groq(api_key=settings.GROQ_API_KEY)
             
             prompt = "Identify the hardware tool, machinery, or equipment in this image. Respond with only a comma-separated list of 2-3 most relevant keywords (e.g. chainsaw, drill, pump)."
             
