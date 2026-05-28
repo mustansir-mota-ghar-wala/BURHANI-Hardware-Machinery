@@ -539,11 +539,14 @@ body {
         <div class="mobile-image-carousel-card bg-white p-0 mb-3" style="border-radius: 20px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 15px rgba(0,0,0,0.02); height: 250px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative;">
             <div id="productCarouselMobile" class="carousel slide w-100 h-100" data-bs-ride="carousel">
                 <!-- Indicators -->
-                {% if additional_images %}
+                {% if additional_images or product.videos.all %}
                 <div class="carousel-indicators" style="margin-bottom: 12px; z-index: 5;">
                     <button type="button" data-bs-target="#productCarouselMobile" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1" style="background-color: var(--gg-accent); width: 8px; height: 8px; border-radius: 50%; border: none;"></button>
                     {% for img in additional_images %}
                     <button type="button" data-bs-target="#productCarouselMobile" data-bs-slide-to="{{ forloop.counter }}" aria-label="Slide {{ forloop.counter|add:1 }}" style="background-color: var(--gg-accent); width: 8px; height: 8px; border-radius: 50%; border: none;"></button>
+                    {% endfor %}
+                    {% for video in product.videos.all %}
+                    <button type="button" data-bs-target="#productCarouselMobile" data-bs-slide-to="{{ forloop.counter|add:additional_images.count }}" aria-label="Slide Video" style="background-color: var(--gg-accent); width: 8px; height: 8px; border-radius: 50%; border: none;"></button>
                     {% endfor %}
                 </div>
                 {% endif %}
@@ -566,10 +569,17 @@ body {
                         </div>
                     </div>
                     {% endfor %}
+                    {% for video in product.videos.all %}
+                    <div class="carousel-item h-100">
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000;">
+                            <video src="{{ video.video.url }}" controls style="width: 100%; height: 100%; object-fit: contain;"></video>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
                 
                 <!-- Controls -->
-                {% if additional_images %}
+                {% if additional_images or product.videos.all %}
                 <button class="carousel-control-prev" type="button" data-bs-target="#productCarouselMobile" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
@@ -617,11 +627,14 @@ body {
                 <div class="image-showcase p-0" style="position: relative;">
                     <div id="productCarouselDesktop" class="carousel slide w-100 h-100" data-bs-ride="carousel">
                         <!-- Indicators -->
-                        {% if additional_images %}
+                        {% if additional_images or product.videos.all %}
                         <div class="carousel-indicators" style="margin-bottom: 15px; z-index: 5;">
                             <button type="button" data-bs-target="#productCarouselDesktop" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1" style="background-color: var(--gg-accent); width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
                             {% for img in additional_images %}
                             <button type="button" data-bs-target="#productCarouselDesktop" data-bs-slide-to="{{ forloop.counter }}" aria-label="Slide {{ forloop.counter|add:1 }}" style="background-color: var(--gg-accent); width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
+                            {% endfor %}
+                            {% for video in product.videos.all %}
+                            <button type="button" data-bs-target="#productCarouselDesktop" data-bs-slide-to="{{ forloop.counter|add:additional_images.count }}" aria-label="Slide Video" style="background-color: var(--gg-accent); width: 10px; height: 10px; border-radius: 50%; border: none;"></button>
                             {% endfor %}
                         </div>
                         {% endif %}
@@ -644,10 +657,17 @@ body {
                                 </div>
                             </div>
                             {% endfor %}
+                            {% for video in product.videos.all %}
+                            <div class="carousel-item h-100">
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #000;">
+                                    <video src="{{ video.video.url }}" controls style="width: 100%; height: 100%; object-fit: contain;"></video>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
                         
                         <!-- Controls -->
-                        {% if additional_images %}
+                        {% if additional_images or product.videos.all %}
                         <button class="carousel-control-prev" type="button" data-bs-target="#productCarouselDesktop" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Previous</span>

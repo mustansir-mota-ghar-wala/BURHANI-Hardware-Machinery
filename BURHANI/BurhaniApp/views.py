@@ -141,11 +141,18 @@ def home(request):
     products = Product.objects.all()
 
     if query:
-        products = products.filter(
-            Q(name__icontains=query) |
-            Q(category__name__icontains=query)
-        )
-        categories = categories.filter(name__icontains=query)
+        from django.db.models import Q
+        query_words = query.split()
+        product_q = Q()
+        category_q = Q()
+        for word in query_words:
+            # Ignore extremely common filler words from voice search
+            if word.lower() not in ['show', 'me', 'a', 'the', 'some', 'for']:
+                product_q |= Q(name__icontains=word) | Q(category__name__icontains=word)
+                category_q |= Q(name__icontains=word)
+        
+        products = products.filter(product_q).distinct()
+        categories = categories.filter(category_q).distinct()
 
     if not query:
         products = products.order_by('-id')[:12]

@@ -151,6 +151,27 @@
             box-shadow: 0 8px 15px rgba(255, 193, 7, 0.2);
         }
 
+        .btn-terracotta {
+            background-color: var(--gg-accent);
+            color: white;
+            padding: 0.8rem 2.5rem;
+            border-radius: 14px;
+            font-weight: 800;
+            border: none;
+            transition: 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 20px rgba(230, 126, 34, 0.2);
+            display: inline-block;
+        }
+
+        .btn-terracotta:hover {
+            background-color: #d35400;
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(230, 126, 34, 0.3);
+            color: white;
+        }
+
         /* Footer */
         footer {
             background: var(--gg-header);
@@ -403,7 +424,7 @@
                     <i class="bi bi-cart-x fs-1 text-muted mb-3 d-block"></i>
                     <h2>Your cart is empty</h2>
                     <p class="text-muted mb-4">Looks like you haven't added any tools to your cart yet.</p>
-                    <a href="{% url 'home' %}" class="btn-checkout text-decoration-none px-5">Start Shopping</a>
+                    <a href="{% url 'home' %}" class="btn-terracotta text-decoration-none">Start Shopping</a>
                 </div>
             </div>
             {% endif %}

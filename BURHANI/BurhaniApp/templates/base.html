@@ -520,11 +520,20 @@
             recognition.interimResults = false;
             
             const micBtn = document.getElementById('searchMicIcon');
-            if(micBtn) micBtn.className = 'spinner-grow spinner-grow-sm';
+            const searchInput = document.getElementById('desktopSearchInput');
+            let originalPlaceholder = 'Search for tools, machinery...';
+            
+            recognition.onstart = () => {
+                if(micBtn) micBtn.className = 'spinner-grow spinner-grow-sm';
+                if(searchInput) {
+                    originalPlaceholder = searchInput.placeholder;
+                    searchInput.placeholder = 'Listening... Speak now';
+                }
+            };
             
             recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                const searchInput = document.getElementById('desktopSearchInput');
+                let transcript = event.results[0][0].transcript;
+                transcript = transcript.replace(/[.,!?]+$/, "").trim();
                 if(searchInput) {
                     searchInput.value = transcript;
                     searchInput.closest('form').submit();
@@ -532,12 +541,15 @@
             };
             
             recognition.onerror = (event) => {
+                alert("Voice recognition error: " + event.error);
                 console.error("Voice recognition error", event.error);
                 if(micBtn) micBtn.className = 'bi bi-mic-fill fs-5';
+                if(searchInput) searchInput.placeholder = originalPlaceholder;
             };
             
             recognition.onend = () => {
                 if(micBtn) micBtn.className = 'bi bi-mic-fill fs-5';
+                if(searchInput) searchInput.placeholder = originalPlaceholder;
             };
             
             recognition.start();

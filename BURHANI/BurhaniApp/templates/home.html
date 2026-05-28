@@ -744,10 +744,15 @@
     {% endif %}
 
     <!-- Mobile Search Bar (Phase 2) -->
-    <form action="{% url 'home' %}" method="GET" class="mobile-search-bar">
-        <input type="text" name="q" placeholder="Search for tools, machinery..." value="{{ query|default:'' }}" style="padding-right: 4.5rem;">
-        <button type="button" onclick="document.getElementById('cameraInput').click()" style="pointer-events: auto; background: rgba(211, 84, 0, 0.1); border-radius: 8px; border: none; position: absolute; right: 48px; top: 50%; transform: translateY(-50%); font-size: 1.15rem; color: var(--gg-accent); opacity: 1; padding: 6px 8px; box-shadow: 0 2px 8px rgba(211, 84, 0, 0.2);"><i class="bi bi-camera-fill"></i></button>
-        <button type="submit"><i class="bi bi-search"></i></button>
+    <form action="{% url 'home' %}" method="GET" class="mobile-search-bar" id="mobileSearchForm">
+        <div style="position: relative; width: 100%; display: flex; align-items: center; pointer-events: auto;">
+            <input type="text" name="q" id="mobileSearchInput" placeholder="Search tools..." value="{{ query|default:'' }}" style="width: 100%; padding-right: 105px;">
+            <div style="position: absolute; right: 10px; display: flex; gap: 4px; align-items: center;">
+                <button type="button" onclick="startMobileVoiceSearch()" id="mobileSearchMicBtn" style="position: static; transform: none; background: rgba(211, 84, 0, 0.1); border-radius: 8px; border: none; font-size: 1.05rem; color: var(--gg-accent); opacity: 1; padding: 5px 8px; box-shadow: 0 2px 5px rgba(211, 84, 0, 0.15); height: 32px; display: flex; align-items: center; justify-content: center;"><i id="mobileSearchMicIcon" class="bi bi-mic-fill"></i></button>
+                <button type="button" onclick="document.getElementById('cameraInput').click()" style="position: static; transform: none; background: rgba(211, 84, 0, 0.1); border-radius: 8px; border: none; font-size: 1.05rem; color: var(--gg-accent); opacity: 1; padding: 5px 8px; box-shadow: 0 2px 5px rgba(211, 84, 0, 0.15); height: 32px; display: flex; align-items: center; justify-content: center;"><i class="bi bi-camera-fill"></i></button>
+                <button type="submit" style="position: static; transform: none; padding: 5px; right: auto; margin-left: 2px; color: var(--gg-header);"><i class="bi bi-search"></i></button>
+            </div>
+        </div>
     </form>
     <input type="file" accept="image/*" capture="environment" class="d-none" id="cameraInput" onchange="handleVisualSearch(event)">
     
@@ -934,6 +939,62 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+    function startMobileVoiceSearch() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert("Your browser does not support voice input.");
+            return;
+        }
+        
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-IN';
+        recognition.interimResults = false;
+        
+        const micIcon = document.getElementById('mobileSearchMicIcon');
+        const searchInput = document.getElementById('mobileSearchInput');
+        let originalPlaceholder = 'Search tools...';
+        
+        recognition.onstart = () => {
+            if(micIcon) micIcon.className = 'spinner-grow spinner-grow-sm text-accent';
+            if(searchInput) {
+                originalPlaceholder = searchInput.placeholder;
+                searchInput.placeholder = 'Listening... Speak now';
+                searchInput.style.boxShadow = '0 0 0 3px rgba(230, 126, 34, 0.4)';
+            }
+        };
+        
+        recognition.onresult = (event) => {
+            let transcript = event.results[0][0].transcript;
+            transcript = transcript.replace(/[.,!?]+$/, "").trim(); // Remove trailing punctuation
+            if(searchInput) {
+                searchInput.value = transcript;
+                document.getElementById('mobileSearchForm').submit();
+            }
+        };
+        
+        recognition.onerror = (event) => {
+            alert("Voice recognition error: " + event.error);
+            if(micIcon) micIcon.className = 'bi bi-mic-fill';
+            if(searchInput) {
+                searchInput.placeholder = originalPlaceholder;
+                searchInput.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.12)';
+            }
+        };
+        
+        recognition.onend = () => {
+            if(micIcon && micIcon.className.includes('spinner')) {
+                micIcon.className = 'bi bi-mic-fill';
+            }
+            if(searchInput) {
+                searchInput.placeholder = originalPlaceholder;
+                searchInput.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.12)';
+            }
+        };
+        
+        recognition.start();
+    }
+</script>
 <script>
 // Auto-dismiss alerts
         setTimeout(function () {
