@@ -16,7 +16,7 @@
 
 ## 📸 Project Screenshots
 <div align="center">
-  <img src="screenshots/home.jpeg" alt="Home Page Preview" width="250" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
+  <img src="screenshots/home.jpeg" alt="Home Page Preview" width="800" height="450" style="object-fit: cover; object-position: top; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
 </div>
 
 <br/>
