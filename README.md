@@ -116,6 +116,6 @@ Visit `http://127.0.0.1:8000` to view the application!
 
 ## 👨‍💻 Author
 
-**Built by [Your Name]**
+**Built by [MUSTANSIR]**
 * **MCA Student** passionate about Full-Stack Development, AI Integration, and Cloud Architecture.
-* [LinkedIn](https://linkedin.com/in/yourprofile) | [GitHub](https://github.com/yourusername) | [Portfolio](https://yourportfolio.com)
+* [LinkedIn](https://www.linkedin.com/in/mustansir-mota-ghar-wala/) | [GitHub](https://github.com/mustansir-mota-ghar-wala) | [Portfolio](https://mustanir-mota-ghar-wala-portfolio.vercel.app/)
