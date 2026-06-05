@@ -83,6 +83,11 @@ SOCIALACCOUNT_PROVIDERS = {
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
+        'APP': {
+            'client_id': os.environ.get('GOOGLE_CLIENT_ID', 'placeholder'),
+            'secret': os.environ.get('GOOGLE_CLIENT_SECRET', 'placeholder'),
+            'key': ''
+        },
         'SCOPE': [
             'profile',
             'email',
