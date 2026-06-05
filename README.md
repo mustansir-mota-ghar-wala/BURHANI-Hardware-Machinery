@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="BURHANI/static/images/hero_powertools.png" alt="Burhani Logo" width="100"/>
   <h1>Burhani Hardware & Machinery Store</h1>
   <p><strong>A Production-Ready, Full-Stack E-Commerce Platform Built with Django </strong></p>
   
