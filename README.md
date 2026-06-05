@@ -15,15 +15,10 @@
 ---
 
 ## 📸 Project Screenshots
-<div align="center">
-  <img src="screenshots/home.jpeg" alt="Home Page Preview" width="800" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
-</div>
 
-<br/>
-
-| Advanced AI Chatbot | Checkout & Payments |
-| :---: | :---: |
-| <img src="screenshots/chatbot.jpeg" width="200"/> | <img src="screenshots/checkout.jpeg" width="200"/> |
+| Home Page | Advanced AI Chatbot | Checkout & Payments |
+| :---: | :---: | :---: |
+| <img src="screenshots/home.jpeg" width="250"/> | <img src="screenshots/chatbot.jpeg" width="250"/> | <img src="screenshots/checkout.jpeg" width="250"/> |
 
 ---
 
