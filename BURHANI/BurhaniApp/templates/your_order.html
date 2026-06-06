@@ -4,138 +4,172 @@
 {% block title %}My Orders | Burhani Hardware{% endblock %}
 
 {% block extra_css %}
-    .order-card {
-        background: white;
-        border-radius: 20px;
-        padding: 1.25rem;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-        border: 1px solid rgba(0,0,0,0.06);
-        overflow: hidden;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+.order-card {
+background: white;
+border-radius: 20px;
+padding: 1.25rem;
+margin-bottom: 1.5rem;
+box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+border: 1px solid rgba(0,0,0,0.06);
+overflow: hidden;
+transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-    .order-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07);
-    }
+.order-card:hover {
+transform: translateY(-2px);
+box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07);
+}
 
-    .order-header-compact {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 0.5rem;
-        padding: 1rem 1.25rem;
-        margin: -1.25rem -1.25rem 1.25rem -1.25rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    }
+.order-header-compact {
+display: grid;
+grid-template-columns: 1fr auto;
+gap: 0.5rem;
+padding: 1rem 1.25rem;
+margin: -1.25rem -1.25rem 1.25rem -1.25rem;
+border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
 
-    /* Alternating visual styles for distinct orders */
-    .order-theme-green .order-header-compact {
-        background: #f4fcf6;
-        border-top: 4px solid #198754;
-    }
-    
-    .order-theme-orange .order-header-compact {
-        background: #fff8f2;
-        border-top: 4px solid var(--gg-accent);
-    }
+/* Alternating visual styles for distinct orders */
+.order-theme-green .order-header-compact {
+background: #f4fcf6;
+border-top: 4px solid #198754;
+}
 
-    .status-badge-small {
-        padding: 0.25rem 0.75rem;
-        border-radius: 50px;
-        font-size: 0.65rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
+.order-theme-orange .order-header-compact {
+background: #fff8f2;
+border-top: 4px solid var(--gg-accent);
+}
 
-    .status-paid { background: #e8f5e9; color: #2e7d32; }
-    .status-pending { background: #fff8e1; color: #f57f17; }
-    .status-failed { background: #ffebee; color: #c62828; }
+/* Cancelled order theme */
+.order-theme-cancelled .order-header-compact {
+background: #fff5f5;
+border-top: 4px solid #dc3545;
+}
 
-    .track-stepper-compact {
-        display: flex;
-        justify-content: space-between;
-        margin: 1rem 0;
-        position: relative;
-    }
+.status-badge-small {
+padding: 0.25rem 0.75rem;
+border-radius: 50px;
+font-size: 0.65rem;
+font-weight: 800;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
 
-    .track-stepper-compact::before {
-        content: '';
-        position: absolute;
-        top: 12px;
-        left: 10%;
-        width: 80%;
-        height: 2px;
-        background: #eee;
-        z-index: 1;
-    }
+.status-paid { background: #e8f5e9; color: #2e7d32; }
+.status-pending { background: #fff8e1; color: #f57f17; }
+.status-failed { background: #ffebee; color: #c62828; }
+.status-refunded { background: #e3f2fd; color: #1565c0; }
+.status-cancelled { background: #ffebee; color: #c62828; }
 
-    .track-step-compact {
-        position: relative;
-        z-index: 2;
-        text-align: center;
-        flex: 1;
-    }
+/* Cancelled stepper styling */
+.track-cancelled {
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 1rem;
+margin: 1rem 0;
+background: #fff5f5;
+border-radius: 12px;
+border: 1px dashed #dc3545;
+}
 
-    .track-dot {
-        width: 24px;
-        height: 24px;
-        background: #eee;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        color: #999;
-        font-size: 0.7rem;
-        margin-bottom: 4px;
-        transition: 0.3s;
-    }
+.track-cancelled i {
+font-size: 1.5rem;
+color: #dc3545;
+margin-right: 0.5rem;
+}
 
-    .track-step-compact.active .track-dot {
-        background: var(--gg-accent);
-        color: white;
-    }
+.track-cancelled span {
+font-weight: 800;
+font-size: 0.85rem;
+color: #dc3545;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
 
-    .track-label-compact {
-        font-size: 0.6rem;
-        font-weight: 700;
-        color: #999;
-        text-transform: uppercase;
-    }
+.track-stepper-compact {
+display: flex;
+justify-content: space-between;
+margin: 1rem 0;
+position: relative;
+}
 
-    .track-step-compact.active .track-label-compact {
-        color: var(--gg-header);
-    }
+.track-stepper-compact::before {
+content: '';
+position: absolute;
+top: 12px;
+left: 10%;
+width: 80%;
+height: 2px;
+background: #eee;
+z-index: 1;
+}
 
-    .order-item-compact {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #f9f9f9;
-    }
+.track-step-compact {
+position: relative;
+z-index: 2;
+text-align: center;
+flex: 1;
+}
 
-    .order-item-compact:last-child { border-bottom: none; }
+.track-dot {
+width: 24px;
+height: 24px;
+background: #eee;
+border-radius: 50%;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+color: #999;
+font-size: 0.7rem;
+margin-bottom: 4px;
+transition: 0.3s;
+}
 
-    .product-thumb-small {
-        width: 45px;
-        height: 45px;
-        background: #f0f0f0;
-        border-radius: 8px;
-        object-fit: cover;
-    }
+.track-step-compact.active .track-dot {
+background: var(--gg-accent);
+color: white;
+}
 
-    .empty-state {
-        text-align: center;
-        padding: 4rem 1rem;
-    }
+.track-label-compact {
+font-size: 0.6rem;
+font-weight: 700;
+color: #999;
+text-transform: uppercase;
+}
 
-    .empty-icon {
-        font-size: 3rem;
-        color: #ddd;
-        margin-bottom: 1rem;
-    }
+.track-step-compact.active .track-label-compact {
+color: var(--gg-header);
+}
+
+.order-item-compact {
+display: flex;
+align-items: center;
+gap: 0.75rem;
+padding: 0.5rem 0;
+border-bottom: 1px solid #f9f9f9;
+}
+
+.order-item-compact:last-child { border-bottom: none; }
+
+.product-thumb-small {
+width: 45px;
+height: 45px;
+background: #f0f0f0;
+border-radius: 8px;
+object-fit: cover;
+}
+
+.empty-state {
+text-align: center;
+padding: 4rem 1rem;
+}
+
+.empty-icon {
+font-size: 3rem;
+color: #ddd;
+margin-bottom: 1rem;
+}
 {% endblock %}
 
 {% block content %}
@@ -146,73 +180,109 @@
     </div>
 
     {% if orders %}
-        {% for order in orders %}
-        <div class="order-card {% if forloop.counter|divisibleby:2 %}order-theme-orange{% else %}order-theme-green{% endif %}">
-            <div class="order-header-compact">
-                <div>
-                    <div class="text-muted" style="font-size: 0.7rem;">Order #{{ order.id|stringformat:"05d" }}</div>
-                    <div class="fw-bold" style="font-size: 0.9rem;">{{ order.created_at|date:"M d, Y" }}</div>
-                </div>
-                <div class="text-end">
-                    <div class="status-badge-small {% if order.payment_status == 'Paid' %}status-paid{% else %}status-pending{% endif %}">
-                        {{ order.payment_status }}
-                    </div>
-                    <div class="fw-bold text-accent mt-1">₹{{ order.bill }}</div>
-                </div>
+    {% for order in orders %}
+    <div
+        class="order-card {% if order.delivery_status == 'Cancelled' %}order-theme-cancelled{% elif forloop.counter|divisibleby:2 %}order-theme-orange{% else %}order-theme-green{% endif %}">
+        <div class="order-header-compact">
+            <div>
+                <div class="text-muted" style="font-size: 0.7rem;">Order #{{ order.id|stringformat:"05d" }}</div>
+                <div class="fw-bold" style="font-size: 0.9rem;">{{ order.created_at|date:"M d, Y" }}</div>
             </div>
+            <div class="text-end">
+                <div class="status-badge-small 
+                    {% if order.payment_status == 'Paid' %}status-paid
+                    {% elif order.payment_status == 'Refunded' %}status-refunded
+                    {% elif order.payment_status == 'Cancelled' %}status-cancelled
+                    {% else %}status-pending{% endif %}">
+                    {{ order.payment_status }}
+                </div>
+                <div class="fw-bold text-accent mt-1">₹{{ order.bill }}</div>
+            </div>
+        </div>
 
-            <div class="track-stepper-compact">
-                <div class="track-step-compact active">
-                    <div class="track-dot"><i class="bi bi-check"></i></div>
-                    <div class="track-label-compact">Placed</div>
-                </div>
-                <div class="track-step-compact {% if order.delivery_status != 'Placed' %}active{% endif %}">
-                    <div class="track-dot"><i class="bi bi-gear"></i></div>
-                    <div class="track-label-compact">Processing</div>
-                </div>
-                <div class="track-step-compact {% if order.delivery_status in 'Shipped,Out for Delivery,Delivered' %}active{% endif %}">
-                    <div class="track-dot"><i class="bi bi-truck"></i></div>
-                    <div class="track-label-compact">Shipped</div>
-                </div>
-                <div class="track-step-compact {% if order.delivery_status == 'Delivered' %}active{% endif %}">
-                    <div class="track-dot"><i class="bi bi-house"></i></div>
-                    <div class="track-label-compact">Done</div>
-                </div>
+        {% if order.delivery_status == 'Cancelled' %}
+        <!-- Cancelled Order - Show cancellation notice instead of tracking -->
+        <div class="track-cancelled">
+            <i class="bi bi-x-octagon-fill"></i>
+            <span>
+                Order Cancelled
+                {% if order.payment_status == 'Refunded' %}
+                — Refund of ₹{{ order.bill }} Initiated
+                {% endif %}
+            </span>
+        </div>
+        {% else %}
+        <!-- Active Order Tracking Stepper -->
+        <div class="track-stepper-compact">
+            <div class="track-step-compact active">
+                <div class="track-dot"><i class="bi bi-check"></i></div>
+                <div class="track-label-compact">Placed</div>
             </div>
+            <div class="track-step-compact {% if order.delivery_status != 'Placed' %}active{% endif %}">
+                <div class="track-dot"><i class="bi bi-gear"></i></div>
+                <div class="track-label-compact">Processing</div>
+            </div>
+            <div
+                class="track-step-compact {% if order.delivery_status in 'Shipped,Out for Delivery,Delivered' %}active{% endif %}">
+                <div class="track-dot"><i class="bi bi-truck"></i></div>
+                <div class="track-label-compact">Shipped</div>
+            </div>
+            <div class="track-step-compact {% if order.delivery_status == 'Delivered' %}active{% endif %}">
+                <div class="track-dot"><i class="bi bi-house"></i></div>
+                <div class="track-label-compact">Done</div>
+            </div>
+        </div>
+        {% endif %}
 
-            <div class="mt-3">
-                <h6 class="text-muted fw-bold" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px;">Items</h6>
-                {% for item in order.order_item_set.all %}
-                <div class="order-item-compact">
-                    {% if item.product.image %}
-                    <img src="{{ item.product.image.url }}" class="product-thumb-small" alt="{{ item.product.name }}">
-                    {% else %}
-                    <div class="product-thumb-small d-flex align-items-center justify-content-center bg-light">
-                        <i class="bi bi-box" style="font-size: 1rem;"></i>
-                    </div>
-                    {% endif %}
-                    <div class="flex-grow-1">
-                        <div class="fw-bold" style="font-size: 0.8rem; line-height: 1.2;">{{ item.product.name }}</div>
-                        <div class="text-muted" style="font-size: 0.7rem;">Qty: {{ item.product_quantity }} × ₹{{ item.product.price }}</div>
-                    </div>
-                    <div class="fw-bold" style="font-size: 0.8rem;">₹{{ item.product_total }}</div>
+        <div class="mt-3">
+            <h6 class="text-muted fw-bold"
+                style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px;">Items</h6>
+            {% for item in order.order_item_set.all %}
+            <div class="order-item-compact">
+                {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" class="product-thumb-small" alt="{{ item.product.name }}">
+                {% else %}
+                <div class="product-thumb-small d-flex align-items-center justify-content-center bg-light">
+                    <i class="bi bi-box" style="font-size: 1rem;"></i>
                 </div>
-                {% endfor %}
+                {% endif %}
+                <div class="flex-grow-1">
+                    <div class="fw-bold" style="font-size: 0.8rem; line-height: 1.2;">{{ item.product.name }}</div>
+                    <div class="text-muted" style="font-size: 0.7rem;">Qty: {{ item.product_quantity }} × ₹{{
+                        item.product.price }}</div>
+                </div>
+                <div class="fw-bold" style="font-size: 0.8rem;">₹{{ item.product_total }}</div>
             </div>
-            
-            <div class="mt-2 pt-2 border-top">
+            {% endfor %}
+        </div>
+
+        <div class="mt-2 pt-2 border-top d-flex justify-content-between align-items-center">
+            <div>
                 <div class="text-muted" style="font-size: 0.65rem; text-transform: uppercase;">Shipping To:</div>
                 <div style="font-size: 0.75rem; color: #555;">{{ order.address|truncatechars:60 }}</div>
             </div>
+            {% if order.delivery_status == 'Placed' or order.delivery_status == 'Processing' %}
+            <form method="POST" action="{% url 'cancel_order' order.id %}"
+                onsubmit="return confirm('Are you sure you want to cancel this order?');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger btn-sm fw-bold"
+                    style="border-radius: 10px; font-size: 0.7rem; padding: 6px 14px;">
+                    <i class="bi bi-x-circle me-1"></i> Cancel
+                </button>
+            </form>
+            {% elif order.delivery_status == 'Cancelled' %}
+            <span class="badge bg-danger rounded-pill" style="font-size: 0.7rem;">CANCELLED</span>
+            {% endif %}
         </div>
-        {% endfor %}
+    </div>
+    {% endfor %}
     {% else %}
-        <div class="empty-state">
-            <div class="empty-icon"><i class="bi bi-bag-x"></i></div>
-            <h3 class="heading-font">No Orders Yet</h3>
-            <p class="text-muted small mb-4">Your future tools will appear here once you place an order.</p>
-            <a href="{% url 'home' %}" class="btn-terracotta btn-sm text-decoration-none">Start Shopping</a>
-        </div>
+    <div class="empty-state">
+        <div class="empty-icon"><i class="bi bi-bag-x"></i></div>
+        <h3 class="heading-font">No Orders Yet</h3>
+        <p class="text-muted small mb-4">Your future tools will appear here once you place an order.</p>
+        <a href="{% url 'home' %}" class="btn-terracotta btn-sm text-decoration-none">Start Shopping</a>
+    </div>
     {% endif %}
 </div>
 

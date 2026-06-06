@@ -245,7 +245,14 @@ def checkout(request):
         messages.warning(request, "Your cart is empty.")
         return redirect('cart')
 
-    total = sum(item.product_total for item in cart_items)
+    # Server-side price recalculation: use DB product price × quantity, ignore stored product_total
+    total = 0
+    for item in cart_items:
+        correct_total = item.product.price * item.product_quantity
+        if item.product_total != correct_total:
+            item.product_total = correct_total
+            item.save()
+        total += correct_total
     grand_total = total
     order_amount = int(grand_total * 100)
     order_currency = 'INR'
@@ -424,15 +431,24 @@ def place_order(request):
             messages.error(request, err_msg)
             return redirect('checkout')
 
+        # Server-side price recalculation for COD
+        total = 0
+        for item in user_cart:
+            correct_total = item.product.price * item.product_quantity
+            if item.product_total != correct_total:
+                item.product_total = correct_total
+                item.save()
+            total += correct_total
+        grand_total = total
+
         if order_id:
             try:
                 new_order = Order.objects.get(id=order_id, user=user)
                 new_order.address = address
                 new_order.payment_status = 'Pending (COD)'
+                new_order.bill = grand_total
                 new_order.save()
             except Order.DoesNotExist:
-                total = sum(item.product_total for item in user_cart)
-                grand_total = total
                 new_order = Order.objects.create(
                     user=user,
                     address=address,
@@ -440,8 +456,6 @@ def place_order(request):
                     payment_status='Pending (COD)'
                 )
         else:
-            total = sum(item.product_total for item in user_cart)
-            grand_total = total
             new_order = Order.objects.create(
                 user=user,
                 address=address,
@@ -468,19 +482,109 @@ def place_order(request):
 def your_orders(request):
     orders = Order.objects.filter(
         user=request.user,
-        payment_status__in=['Paid', 'Pending (COD)']
+        payment_status__in=['Paid', 'Pending (COD)', 'Refunded', 'Cancelled']
     ).order_by('-created_at')
 
     context = {'orders': orders}
     return render(request, 'your_order.html', context)
 
 
+@login_required(login_url='login')
+def cancel_order(request, id):
+    if request.method == "POST":
+        order = get_object_or_404(Order, id=id, user=request.user)
+        
+        # Only allow cancellation if not yet shipped
+        cancellable_statuses = ['Placed', 'Processing']
+        if order.delivery_status not in cancellable_statuses:
+            messages.error(request, 'This order cannot be cancelled as it has already been shipped or delivered.')
+            return redirect('your_orders')
+        
+        # --- Handle Refund for Online Payments (Razorpay) ---
+        refund_issued = False
+        if order.payment_status == 'Paid' and order.razorpay_payment_id:
+            try:
+                client = razorpay.Client(
+                    auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
+                )
+                # Process refund through Razorpay API
+                refund = client.payment.refund(order.razorpay_payment_id, {
+                    'amount': order.bill * 100,  # amount in paise
+                    'speed': 'normal',
+                    'notes': {
+                        'order_id': str(order.id),
+                        'reason': 'Customer cancelled order'
+                    }
+                })
+                
+                if refund.get('status') == 'processed':
+                    refund_issued = True
+                elif refund.get('status') == 'pending':
+                    refund_issued = True  # Will be processed, mark as refund initiated
+                    
+            except Exception as e:
+                print(f"REFUND ERROR for Order #{order.id}: {str(e)}")
+                messages.error(request, f'Refund failed: {str(e)}. Please contact support for manual refund.')
+                # Still proceed with cancellation, but log the issue
+                # The admin can manually process the refund from Razorpay dashboard
+        
+        # Restore cart items (so customer can re-order if they want)
+        for item in order.order_item_set.all():
+            cart_item, created = Cart.objects.get_or_create(
+                user=request.user,
+                product=item.product,
+                defaults={
+                    'product_quantity': item.product_quantity,
+                    'product_total': item.product_total
+                }
+            )
+            if not created:
+                cart_item.product_quantity += item.product_quantity
+                cart_item.product_total = cart_item.product_quantity * item.product.price
+                cart_item.save()
+        
+        # Mark order as cancelled
+        order.delivery_status = 'Cancelled'
+        order.payment_status = 'Refunded' if refund_issued else 'Cancelled'
+        order.save()
+        
+        # Delete order items
+        order.order_item_set.all().delete()
+        
+        if refund_issued:
+            messages.success(request, f'Order #{order.id} cancelled. Refund of ₹{order.bill} has been initiated to your payment source.')
+        else:
+            messages.success(request, f'Order #{order.id} has been cancelled successfully.')
+        return redirect('your_orders')
+    
+    return redirect('your_orders')
+
+
 def send_otp(request):
     if request.method == 'POST':
         try:
-            # --- Backend Cooldown Protection ---
-            last_sent = request.session.get('last_otp_time')
             current_time = time.time()
+
+            # --- IP-BASED RATE LIMITING (5 OTPs per IP per 10 minutes) ---
+            ip = request.META.get('REMOTE_ADDR', 'unknown')
+            rate_key = f'otp_rate_{ip}'
+            rate_data = request.session.get(rate_key, {'count': 0, 'start': current_time})
+            
+            # Reset if 10 minutes have passed
+            if current_time - rate_data['start'] > 600:
+                rate_data = {'count': 0, 'start': current_time}
+            
+            rate_data['count'] += 1
+            if rate_data['count'] > 5:
+                retry_after = int(600 - (current_time - rate_data['start']))
+                return JsonResponse({
+                    'status': 'cooldown',
+                    'message': f'Too many OTP requests. Please try again in {retry_after} seconds.'
+                })
+            request.session[rate_key] = rate_data
+
+            # --- SESSION-BASED COOLDOWN (60 seconds between OTPs) ---
+            last_sent = request.session.get('last_otp_time')
             if last_sent and (current_time - last_sent) < 60:
                 remaining = int(60 - (current_time - last_sent))
                 return JsonResponse({
@@ -488,14 +592,28 @@ def send_otp(request):
                     'message': f'Please wait {remaining} seconds before requesting another OTP.'
                 })
 
+            # --- ReCAPTCHA-like OTP Rate Limit per phone number ---
             data = json.loads(request.body)
             phone = data.get('phone', '')
             phone = ''.join(filter(str.isdigit, phone))
             if len(phone) > 10: phone = phone[-10:]
             
+            # Max 3 OTPs per phone per hour
+            phone_key = f'otp_phone_{phone}'
+            phone_data = request.session.get(phone_key, {'count': 0, 'start': current_time})
+            if current_time - phone_data['start'] > 3600:
+                phone_data = {'count': 0, 'start': current_time}
+            phone_data['count'] += 1
+            if phone_data['count'] > 3:
+                return JsonResponse({
+                    'status': 'cooldown',
+                    'message': 'Maximum OTP limit reached for this number. Try again later.'
+                })
+            request.session[phone_key] = phone_data
+
             otp = str(random.randint(100000, 999999))
             request.session['verification_otp'] = otp
-            request.session['last_otp_time'] = current_time # Save the time we sent it
+            request.session['last_otp_time'] = current_time
             
             url = "https://www.fast2sms.com/dev/bulkV2"
             payload = f"variables_values={otp}&route=otp&numbers={phone}"
