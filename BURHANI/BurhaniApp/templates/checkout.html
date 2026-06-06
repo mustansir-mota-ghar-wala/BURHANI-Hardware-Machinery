@@ -860,7 +860,7 @@
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRFToken': '{{ csrf_token }}'
+                                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
                             },
                             body: JSON.stringify({
                                 order_id: document.querySelector('input[name="order_id"]').value,
@@ -927,7 +927,7 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}'
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
                         },
                         body: JSON.stringify({
                             order_id: document.querySelector('input[name="order_id"]').value,
@@ -952,22 +952,33 @@
                                 name: 'Burhani Hardware',
                                 description: 'Order Payment',
                                 order_id: razorpayOrderId,
-                                redirect: true,
                                 callback_url: callbackUrl,
                                 prefill: {
                                     name: realFirstName.value + " " + realLastName.value,
-                                    email: "{{ user.email|default:''|escapejs }}",
+                                    email: "{{ user.email|default:''|escapejs }}" || "customer@burhani.store",
                                     contact: realPhone.value
                                 },
                                 notes: {
-                                    address: addrVal
+                                    address: addrVal.substring(0, 250)
                                 },
                                 theme: {
                                     color: '#e67e22'
                                 }
                             };
-                            const rzp1 = new Razorpay(options);
-                            rzp1.open();
+                            try {
+                                const rzp1 = new Razorpay(options);
+                                rzp1.on('payment.failed', function (response){
+                                    alert("Payment failed: " + response.error.description);
+                                    placeOrderBtn.disabled = false;
+                                    placeOrderBtn.innerHTML = originalBtnContent;
+                                });
+                                rzp1.open();
+                            } catch (e) {
+                                console.error("Razorpay init error:", e);
+                                alert("Could not open payment gateway. Try disabling adblockers.");
+                                placeOrderBtn.disabled = false;
+                                placeOrderBtn.innerHTML = originalBtnContent;
+                            }
                         } else {
                             alert(data.message || 'Failed to save address details. Please try again.');
                         }
