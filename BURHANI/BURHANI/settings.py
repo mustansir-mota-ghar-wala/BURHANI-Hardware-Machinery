@@ -226,3 +226,6 @@ if not DEBUG:
     CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS if not host.startswith(('127.', 'localhost'))]
 
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
+
+# Allow cross-origin popups for Razorpay 3D Secure/Mock Bank authentication
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
