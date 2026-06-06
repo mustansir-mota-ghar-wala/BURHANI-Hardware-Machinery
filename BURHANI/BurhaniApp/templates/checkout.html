@@ -998,7 +998,6 @@
 
             // Location Autocomplete functionality
             const getLocationBtn = document.getElementById('getLocationBtn');
-            const shippingAddress = document.getElementById('shippingAddress');
             const locationStatus = document.getElementById('locationStatus');
 
             // Combine individual address fields into hidden textarea
@@ -1024,8 +1023,8 @@
                     compiledAddress = `[CONTACT: ${fullName} | ${phone}] ` + compiledAddress;
                 }
 
-                if (shippingAddress) {
-                    shippingAddress.value = compiledAddress;
+                if (shippingAddressField) {
+                    shippingAddressField.value = compiledAddress;
                 }
             }
 
@@ -1034,7 +1033,7 @@
                 field.addEventListener('input', updateHiddenAddress);
             });
 
-            if (getLocationBtn && shippingAddress && locationStatus) {
+            if (getLocationBtn && shippingAddressField && locationStatus) {
                 getLocationBtn.addEventListener('click', function () {
                     if ("geolocation" in navigator) {
                         getLocationBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Locating...';
