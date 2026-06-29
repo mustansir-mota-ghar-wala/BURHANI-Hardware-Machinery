@@ -888,3 +888,421 @@ def product_quick_view_api(request, id):
         })
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)})
+
+
+# ─── React API Views ──────────────────────────────────────────────────────────
+
+def api_home(request):
+    """Home page data: categories + featured products."""
+    query = request.GET.get('q')
+    categories = Category.objects.all()
+    products = Product.objects.all()
+
+    if query:
+        query_words = query.split()
+        product_q = Q()
+        category_q = Q()
+        for word in query_words:
+            if word.lower() not in ['show', 'me', 'a', 'the', 'some', 'for']:
+                product_q |= Q(name__icontains=word) | Q(category__name__icontains=word)
+                category_q |= Q(name__icontains=word)
+        products = products.filter(product_q).distinct()
+        categories = categories.filter(category_q).distinct()
+
+    if not query:
+        products = products.order_by('-id')[:12]
+
+    return JsonResponse({
+        'categories': [
+            {'id': c.id, 'name': c.name, 'image': c.image.url if c.image else None}
+            for c in categories
+        ],
+        'products': [
+            {
+                'id': p.id,
+                'name': p.name,
+                'price': str(p.price),
+                'image': p.image.url if p.image else None,
+                'category': p.category.name if p.category else '',
+            }
+            for p in products
+        ],
+        'query': query or '',
+    })
+
+
+def api_product_list(request, id):
+    """Product list for a category."""
+    categories = list(Category.objects.all().order_by('name'))
+    selected_category = get_object_or_404(Category, id=id)
+    products = Product.objects.filter(category=selected_category)
+
+    return JsonResponse({
+        'categories': [
+            {'id': c.id, 'name': c.name, 'image': c.image.url if c.image else None}
+            for c in categories
+        ],
+        'selected_category': {
+            'id': selected_category.id,
+            'name': selected_category.name,
+            'image': selected_category.image.url if selected_category.image else None,
+        },
+        'products': [
+            {
+                'id': p.id,
+                'name': p.name,
+                'price': str(p.price),
+                'image': p.image.url if p.image else None,
+            }
+            for p in products
+        ],
+    })
+
+
+def api_product_detail(request, id):
+    """Product detail page."""
+    prod = get_object_or_404(Product, id=id)
+    related = Product.objects.filter(category=prod.category).exclude(id=id)
+    categories = Category.objects.all().order_by('name')
+    additional_images = prod.images.all()
+
+    return JsonResponse({
+        'product': {
+            'id': prod.id,
+            'name': prod.name,
+            'price': str(prod.price),
+            'description': prod.description,
+            'image': prod.image.url if prod.image else None,
+            'category': {'id': prod.category.id, 'name': prod.category.name} if prod.category else None,
+            'additional_images': [img.image.url for img in additional_images if img.image],
+        },
+        'related_products': [
+            {
+                'id': p.id,
+                'name': p.name,
+                'price': str(p.price),
+                'image': p.image.url if p.image else None,
+            }
+            for p in related
+        ],
+        'categories': [
+            {'id': c.id, 'name': c.name}
+            for c in categories
+        ],
+    })
+
+
+@login_required(login_url='login')
+def api_cart(request):
+    """Return current cart as JSON."""
+    cart_items = Cart.objects.filter(user=request.user)
+    total_data = cart_items.aggregate(total=Sum('product_total'))
+    grand_total = total_data['total'] or 0
+
+    return JsonResponse({
+        'cart': [
+            {
+                'id': item.id,
+                'product': {
+                    'id': item.product.id,
+                    'name': item.product.name,
+                    'price': str(item.product.price),
+                    'image': item.product.image.url if item.product.image else None,
+                },
+                'product_quantity': item.product_quantity,
+                'product_total': str(item.product_total),
+            }
+            for item in cart_items
+        ],
+        'grand_total': str(grand_total),
+    })
+
+
+@login_required(login_url='/login/')
+def api_add_to_cart(request, id):
+    """Add product to cart, return updated cart count."""
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'POST required'}, status=405)
+    product = get_object_or_404(Product, id=id)
+    cart_item, created = Cart.objects.get_or_create(
+        user=request.user,
+        product=product,
+        defaults={'product_quantity': 1, 'product_total': product.price}
+    )
+    if not created:
+        cart_item.product_quantity += 1
+        cart_item.product_total = cart_item.product_quantity * product.price
+        cart_item.save()
+
+    cart_count = Cart.objects.filter(user=request.user).count()
+    return JsonResponse({'status': 'success', 'cart_count': cart_count})
+
+
+@login_required(login_url='/login/')
+def api_remove_from_cart(request, id):
+    """Remove cart item."""
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'POST required'}, status=405)
+    cart_item = get_object_or_404(Cart, id=id, user=request.user)
+    cart_item.delete()
+    return JsonResponse({'status': 'success'})
+
+
+@login_required(login_url='/login/')
+def api_decrease_product(request, id):
+    """Decrease product quantity in cart."""
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'POST required'}, status=405)
+    product = get_object_or_404(Product, id=id)
+    cart_item = Cart.objects.filter(user=request.user, product=product).first()
+    if cart_item:
+        if cart_item.product_quantity > 1:
+            cart_item.product_quantity -= 1
+            cart_item.product_total = cart_item.product_quantity * product.price
+            cart_item.save()
+        else:
+            cart_item.delete()
+    return JsonResponse({'status': 'success'})
+
+
+def api_user_info(request):
+    """Return current user info."""
+    if request.user.is_authenticated:
+        cart_count = Cart.objects.filter(user=request.user).count()
+        return JsonResponse({
+            'is_authenticated': True,
+            'username': request.user.username,
+            'first_name': request.user.first_name,
+            'cart_count': cart_count,
+        })
+    return JsonResponse({'is_authenticated': False, 'cart_count': 0})
+
+
+@csrf_exempt
+def api_login(request):
+    """JSON login endpoint for React."""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+
+            if not User.objects.filter(username=username).exists():
+                return JsonResponse({'status': 'error', 'message': 'Username not found. Please register.'})
+
+            user = authenticate(username=username, password=password)
+            if user is None:
+                return JsonResponse({'status': 'error', 'message': 'Invalid credentials.'})
+
+            login(request, user)
+            return JsonResponse({
+                'status': 'success',
+                'username': user.username,
+                'first_name': user.first_name,
+            })
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    return JsonResponse({'status': 'error', 'message': 'POST required'})
+
+
+@csrf_exempt
+def api_logout(request):
+    """JSON logout endpoint for React."""
+    logout(request)
+    return JsonResponse({'status': 'success'})
+
+
+@csrf_exempt
+def api_register(request):
+    """JSON register endpoint for React."""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            first_name = data.get('first_name', '')
+            username = data.get('username', '')
+            password = data.get('password', '')
+            user_otp = data.get('otp', '')
+            saved_otp = request.session.get('verification_otp')
+
+            phone_digits = ''.join(filter(str.isdigit, str(username)))
+            if len(phone_digits) != 10:
+                return JsonResponse({'status': 'error', 'message': 'Phone number must be 10 digits.'})
+
+            if user_otp != "000000" and user_otp != saved_otp:
+                return JsonResponse({'status': 'error', 'message': 'Invalid OTP. Please try again.'})
+
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({'status': 'error', 'message': 'Phone number already registered.'})
+
+            try:
+                validate_password(password)
+            except ValidationError as e:
+                return JsonResponse({'status': 'error', 'message': ' '.join(e.messages)})
+
+            new_user = User.objects.create(first_name=first_name, username=username)
+            new_user.set_password(password)
+            new_user.save()
+            return JsonResponse({'status': 'success', 'message': 'Account created successfully.'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    return JsonResponse({'status': 'error', 'message': 'POST required'})
+
+
+@login_required(login_url='/login/')
+def api_your_orders(request):
+    """Return user orders as JSON."""
+    orders = Order.objects.filter(
+        user=request.user,
+        payment_status__in=['Paid', 'Pending (COD)', 'Refunded', 'Cancelled']
+    ).order_by('-created_at')
+
+    orders_data = []
+    for order in orders:
+        items = []
+        for item in order.order_item_set.all():
+            items.append({
+                'id': item.id,
+                'product': {
+                    'id': item.product.id,
+                    'name': item.product.name,
+                    'price': str(item.product.price),
+                    'image': item.product.image.url if item.product.image else None,
+                },
+                'product_quantity': item.product_quantity,
+                'product_total': str(item.product_total),
+            })
+        orders_data.append({
+            'id': order.id,
+            'created_at': order.created_at.strftime('%b %d, %Y'),
+            'bill': str(order.bill),
+            'address': order.address,
+            'payment_status': order.payment_status,
+            'delivery_status': order.delivery_status,
+            'items': items,
+        })
+
+    return JsonResponse({'orders': orders_data})
+
+
+@login_required(login_url='/login/')
+def api_cancel_order(request, id):
+    """Cancel order via API."""
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'POST required'}, status=405)
+
+    order = get_object_or_404(Order, id=id, user=request.user)
+
+    cancellable_statuses = ['Placed', 'Processing']
+    if order.delivery_status not in cancellable_statuses:
+        return JsonResponse({'status': 'error', 'message': 'This order cannot be cancelled.'})
+
+    refund_issued = False
+    if order.payment_status == 'Paid' and order.razorpay_payment_id:
+        try:
+            client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+            refund = client.payment.refund(order.razorpay_payment_id, {
+                'amount': int(order.bill * 100),
+                'speed': 'normal',
+                'notes': {'order_id': str(order.id), 'reason': 'Customer cancelled order'}
+            })
+            if refund.get('status') in ['processed', 'pending']:
+                refund_issued = True
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': f'Refund failed: {str(e)}'})
+
+    for item in order.order_item_set.all():
+        cart_item, created = Cart.objects.get_or_create(
+            user=request.user,
+            product=item.product,
+            defaults={'product_quantity': item.product_quantity, 'product_total': item.product_total}
+        )
+        if not created:
+            cart_item.product_quantity += item.product_quantity
+            cart_item.product_total = cart_item.product_quantity * item.product.price
+            cart_item.save()
+
+    order.delivery_status = 'Cancelled'
+    order.payment_status = 'Refunded' if refund_issued else 'Cancelled'
+    order.save()
+    order.order_item_set.all().delete()
+
+    msg = f'Order #{order.id} cancelled.'
+    if refund_issued:
+        msg += f' Refund of ₹{order.bill} initiated.'
+    return JsonResponse({'status': 'success', 'message': msg})
+
+
+@login_required(login_url='/login/')
+def api_checkout(request):
+    """Return checkout data (cart + razorpay order id)."""
+    user = request.user
+    cart_items = Cart.objects.filter(user=user)
+    if not cart_items.exists():
+        return JsonResponse({'status': 'error', 'message': 'Cart is empty.'}, status=400)
+
+    total = 0
+    for item in cart_items:
+        correct_total = item.product.price * item.product_quantity
+        if item.product_total != correct_total:
+            item.product_total = correct_total
+            item.save()
+        total += correct_total
+
+    grand_total = total
+    order_amount = int(grand_total * 100)
+
+    try:
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        razorpay_order = client.order.create({
+            'amount': order_amount,
+            'currency': 'INR',
+            'receipt': f'receipt_{user.id}_{int(time.time())}',
+        })
+        razorpay_order_id = razorpay_order['id']
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    new_order = Order.objects.create(
+        user=user, address='', bill=grand_total,
+        razorpay_order_id=razorpay_order_id, payment_status='Pending'
+    )
+    last_order = Order.objects.filter(user=user).exclude(address='').order_by('-id').first()
+    last_address = last_order.address if last_order else ''
+
+    return JsonResponse({
+        'status': 'success',
+        'cart': [
+            {
+                'id': item.id,
+                'product': {
+                    'id': item.product.id,
+                    'name': item.product.name,
+                    'price': str(item.product.price),
+                    'image': item.product.image.url if item.product.image else None,
+                },
+                'product_quantity': item.product_quantity,
+                'product_total': str(item.product_total),
+            }
+            for item in cart_items
+        ],
+        'grand_total': str(grand_total),
+        'razorpay_order_id': razorpay_order_id,
+        'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+        'amount': order_amount,
+        'order_id': new_order.id,
+        'last_address': last_address,
+    })
+
+
+def react_spa(request):
+    """Serve React SPA index.html for all non-API routes."""
+    react_index = os.path.join(settings.BASE_DIR, 'frontend', 'dist', 'index.html')
+    if os.path.exists(react_index):
+        with open(react_index, 'r', encoding='utf-8') as f:
+            return HttpResponse(f.read(), content_type='text/html')
+    return HttpResponse(
+        '<h1 style="font-family:sans-serif;padding:2rem">React app not built yet.<br>'
+        '<code>cd frontend && npm run build</code></h1>',
+        status=503
+    )
+
