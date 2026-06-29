@@ -65,10 +65,14 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+from django.views.static import serve
+
 # ── Serve React built assets (/assets/index-xxx.js, /assets/index-xxx.css) ──
 # Vite builds to frontend/dist/assets/ and the HTML references /assets/...
 REACT_DIST = os.path.join(settings.BASE_DIR, 'frontend', 'dist')
-urlpatterns += static('/assets/', document_root=os.path.join(REACT_DIST, 'assets'))
+urlpatterns += [
+    re_path(r'^assets/(?P<path>.*)$', serve, {'document_root': os.path.join(REACT_DIST, 'assets')}),
+]
 
 urlpatterns += staticfiles_urlpatterns()
 
