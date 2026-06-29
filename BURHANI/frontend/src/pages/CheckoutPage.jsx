@@ -9,6 +9,7 @@ export default function CheckoutPage({ setToasts }) {
   const [address, setAddress] = useState('');
   const [recipientName, setRecipientName] = useState('');
   const [recipientPhone, setRecipientPhone] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('cod');
   const [placing, setPlacing] = useState(false);
   const { user, setCartCount } = useAuth();
   const navigate = useNavigate();
@@ -40,24 +41,33 @@ export default function CheckoutPage({ setToasts }) {
       setToasts(t => [...t, { tag: 'error', text: 'Please fill in all address fields.' }]); return;
     }
     setPlacing(true);
-    // Save address first
-    await apiPost('/api/react/save-address/', { address: fullAddress, order_id: data.order_id });
-    // Place COD order
-    const formData = new FormData();
-    formData.append('address', fullAddress);
-    formData.append('order_id', data.order_id);
-    const res = await fetch('/api/react/place-order/', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'X-CSRFToken': getCookie('csrftoken') },
-      body: formData
-    });
-    if (res.redirected || res.ok) {
-      setCartCount(0);
-      setToasts(t => [...t, { tag: 'success', text: 'Order placed successfully! (Cash on Delivery)' }]);
-      navigate('/your_orders');
+    try {
+      // Save address first
+      await apiPost('/api/react/save-address/', { address: fullAddress, order_id: data.order_id });
+      // Place COD order
+      const formData = new FormData();
+      formData.append('address', fullAddress);
+      formData.append('order_id', data.order_id);
+      const res = await fetch('/api/react/place-order/', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+        body: formData
+      });
+      const resData = await res.json();
+      if (resData.status === 'success') {
+        setCartCount(0);
+        setToasts(t => [...t, { tag: 'success', text: 'Order placed successfully! (Cash on Delivery)' }]);
+        navigate('/your_orders');
+      } else {
+        setToasts(t => [...t, { tag: 'error', text: resData.message || 'Failed to place order.' }]);
+      }
+    } catch (e) {
+      console.error(e);
+      setToasts(t => [...t, { tag: 'error', text: 'An unexpected error occurred during checkout.' }]);
+    } finally {
+      setPlacing(false);
     }
-    setPlacing(false);
   };
 
   const handleRazorpay = async () => {
@@ -65,43 +75,54 @@ export default function CheckoutPage({ setToasts }) {
     if (!recipientName || !recipientPhone || !address) {
       setToasts(t => [...t, { tag: 'error', text: 'Please fill in all address fields.' }]); return;
     }
+    setPlacing(true);
+    try {
+      // Save address
+      await apiPost('/api/react/save-address/', { address: fullAddress, order_id: data.order_id });
 
-    // Save address
-    await apiPost('/api/react/save-address/', { address: fullAddress, order_id: data.order_id });
+      const options = {
+        key: data.razorpay_key_id,
+        amount: data.amount,
+        currency: 'INR',
+        name: 'Burhani Hardware & Machinery',
+        description: 'Order Payment',
+        order_id: data.razorpay_order_id,
+        handler: async function (response) {
+          // Submit payment callback
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = '/api/react/payment-callback/';
+          const fields = {
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_signature: response.razorpay_signature,
+            address: fullAddress,
+            csrfmiddlewaretoken: getCookie('csrftoken'),
+          };
+          for (const [key, val] of Object.entries(fields)) {
+            const input = document.createElement('input');
+            input.type = 'hidden'; input.name = key; input.value = val;
+            form.appendChild(input);
+          }
+          document.body.appendChild(form);
+          form.submit();
+        },
+        modal: {
+          ondismiss: function () {
+            setPlacing(false);
+          }
+        },
+        prefill: { name: recipientName, contact: recipientPhone },
+        theme: { color: '#e67e22' },
+      };
 
-    const options = {
-      key: data.razorpay_key_id,
-      amount: data.amount,
-      currency: 'INR',
-      name: 'Burhani Hardware & Machinery',
-      description: 'Order Payment',
-      order_id: data.razorpay_order_id,
-      handler: async function (response) {
-        // Submit payment callback
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/api/react/payment-callback/';
-        const fields = {
-          razorpay_payment_id: response.razorpay_payment_id,
-          razorpay_order_id: response.razorpay_order_id,
-          razorpay_signature: response.razorpay_signature,
-          address: fullAddress,
-          csrfmiddlewaretoken: getCookie('csrftoken'),
-        };
-        for (const [key, val] of Object.entries(fields)) {
-          const input = document.createElement('input');
-          input.type = 'hidden'; input.name = key; input.value = val;
-          form.appendChild(input);
-        }
-        document.body.appendChild(form);
-        form.submit();
-      },
-      prefill: { name: recipientName, contact: recipientPhone },
-      theme: { color: '#e67e22' },
-    };
-
-    const rzp = new window.Razorpay(options);
-    rzp.open();
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (e) {
+      console.error(e);
+      setToasts(t => [...t, { tag: 'error', text: 'An unexpected error occurred during Razorpay checkout.' }]);
+      setPlacing(false);
+    }
   };
 
   if (loading) return <div className="text-center py-5"><div className="spinner-border text-warning" role="status"></div></div>;
@@ -144,19 +165,22 @@ export default function CheckoutPage({ setToasts }) {
 
               <div className="mt-4">
                 <h6 className="fw-bold mb-3">Payment Method</h6>
-                <div className="row g-2">
-                  <div className="col-6">
-                    <button className="btn btn-outline-warning w-100 py-3 fw-bold" onClick={handleRazorpay}>
-                      <i className="bi bi-credit-card-fill me-2"></i>Pay Online
-                      <div className="small fw-normal text-muted">Razorpay • UPI • Cards</div>
-                    </button>
-                  </div>
-                  <div className="col-6">
-                    <button className="btn btn-outline-success w-100 py-3 fw-bold" onClick={handleCOD} disabled={placing}>
-                      <i className="bi bi-cash-stack me-2"></i>Cash on Delivery
-                      <div className="small fw-normal text-muted">Pay when delivered</div>
-                    </button>
-                  </div>
+                <div className="d-flex flex-column gap-3">
+                  <label className={`p-3 rounded-3 border d-flex align-items-center gap-3 cursor-pointer transition ${paymentMethod === 'cod' ? 'border-success bg-success bg-opacity-10' : 'border-light-subtle'}`} style={{ cursor: 'pointer' }}>
+                    <input type="radio" name="payment" value="cod" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} style={{ width: '20px', height: '20px' }} />
+                    <div>
+                      <div className="fw-bold fs-6"><i className="bi bi-cash-stack text-success me-2"></i>Cash on Delivery</div>
+                      <div className="small text-muted">Pay at the time of delivery</div>
+                    </div>
+                  </label>
+                  
+                  <label className={`p-3 rounded-3 border d-flex align-items-center gap-3 cursor-pointer transition ${paymentMethod === 'online' ? 'border-warning bg-warning bg-opacity-10' : 'border-light-subtle'}`} style={{ cursor: 'pointer' }}>
+                    <input type="radio" name="payment" value="online" checked={paymentMethod === 'online'} onChange={() => setPaymentMethod('online')} style={{ width: '20px', height: '20px' }} />
+                    <div>
+                      <div className="fw-bold fs-6"><i className="bi bi-credit-card-fill text-warning me-2"></i>Pay Online</div>
+                      <div className="small text-muted">UPI, Cards, Wallets via Razorpay</div>
+                    </div>
+                  </label>
                 </div>
               </div>
             </div>
@@ -182,10 +206,23 @@ export default function CheckoutPage({ setToasts }) {
                 <span className="fw-bold">Shipping</span>
                 <span className="text-success fw-bold">FREE</span>
               </div>
-              <div className="d-flex justify-content-between mt-2 align-items-center">
+              <div className="d-flex justify-content-between mt-2 align-items-center mb-4">
                 <span className="fs-5 fw-bold">Total</span>
                 <span className="fs-4 fw-bold" style={{ color: 'var(--gg-accent)' }}>₹{data.grand_total}</span>
               </div>
+              
+              <button 
+                className="btn btn-warning w-100 py-3 fw-bold fs-5 shadow-sm text-dark d-flex justify-content-center align-items-center gap-2"
+                onClick={paymentMethod === 'cod' ? handleCOD : handleRazorpay}
+                disabled={placing}
+                style={{ borderRadius: '12px' }}
+              >
+                {placing ? (
+                  <><span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...</>
+                ) : (
+                  <>Confirm and Place Order <i className="bi bi-arrow-right"></i></>
+                )}
+              </button>
             </div>
           </div>
         </div>

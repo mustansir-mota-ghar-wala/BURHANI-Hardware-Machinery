@@ -342,24 +342,29 @@ def payment_callback(request):
                 )
             user_cart.delete()
 
+            from django.http import HttpResponseRedirect
             messages.success(request, "Payment successful! Order placed.")
-            return redirect("your_orders")
+            return HttpResponseRedirect("/your_orders")
 
         except razorpay.errors.SignatureVerificationError:
+            from django.http import HttpResponseRedirect
             messages.error(request, "Payment signature verification failed.")
-            return redirect("checkout")
+            return HttpResponseRedirect("/checkout")
 
         except Order.DoesNotExist:
+            from django.http import HttpResponseRedirect
             messages.error(request, "Order not found.")
-            return redirect("cart")
+            return HttpResponseRedirect("/cart")
 
         except Exception as e:
+            from django.http import HttpResponseRedirect
             print("PAYMENT CALLBACK ERROR:", str(e))
             messages.error(request, f"Payment failed: {str(e)}")
-            return redirect("cart")
+            return HttpResponseRedirect("/cart")
 
+    from django.http import HttpResponseRedirect
     messages.error(request, "Invalid payment callback request.")
-    return redirect("home")
+    return HttpResponseRedirect("/")
 
 
 import re
@@ -390,9 +395,10 @@ def validate_shipping_address(address):
     return True, ""
 
 
-@login_required(login_url='login')
 def save_address(request):
     if request.method == "POST":
+        if not request.user.is_authenticated:
+            return JsonResponse({'status': 'error', 'message': 'You must be logged in.'})
         try:
             data = json.loads(request.body)
             address = data.get('address', '').strip()
@@ -413,23 +419,22 @@ def save_address(request):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
 
-@login_required(login_url='login')
 def place_order(request):
     if request.method == "POST":
+        if not request.user.is_authenticated:
+            return JsonResponse({'status': 'error', 'message': 'You must be logged in to place an order.'})
         user = request.user
         address = request.POST.get('address', '').strip()
         order_id = request.POST.get('order_id')
         user_cart = Cart.objects.filter(user=user)
 
         if not user_cart.exists():
-            messages.warning(request, "Your cart is empty.")
-            return redirect('cart')
+            return JsonResponse({'status': 'error', 'message': "Your cart is empty."})
 
         # Strict Backend Validation
         is_valid, err_msg = validate_shipping_address(address)
         if not is_valid:
-            messages.error(request, err_msg)
-            return redirect('checkout')
+            return JsonResponse({'status': 'error', 'message': err_msg})
 
         # Server-side price recalculation for COD
         total = 0
@@ -472,10 +477,9 @@ def place_order(request):
             )
 
         user_cart.delete()
-        messages.success(request, 'Order placed successfully! (Cash on Delivery)')
-        return redirect('your_orders')
+        return JsonResponse({'status': 'success', 'message': 'Order placed successfully!'})
 
-    return redirect('checkout')
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
 
 @login_required(login_url='login')
@@ -896,7 +900,7 @@ def api_home(request):
     """Home page data: categories + featured products."""
     query = request.GET.get('q')
     categories = Category.objects.all()
-    products = Product.objects.all()
+    products = Product.objects.select_related('category').all()
 
     if query:
         query_words = query.split()
@@ -935,7 +939,7 @@ def api_product_list(request, id):
     """Product list for a category."""
     categories = list(Category.objects.all().order_by('name'))
     selected_category = get_object_or_404(Category, id=id)
-    products = Product.objects.filter(category=selected_category)
+    products = Product.objects.select_related('category').filter(category=selected_category)
 
     return JsonResponse({
         'categories': [
@@ -961,8 +965,8 @@ def api_product_list(request, id):
 
 def api_product_detail(request, id):
     """Product detail page."""
-    prod = get_object_or_404(Product, id=id)
-    related = Product.objects.filter(category=prod.category).exclude(id=id)
+    prod = get_object_or_404(Product.objects.select_related('category'), id=id)
+    related = Product.objects.select_related('category').filter(category=prod.category).exclude(id=id)
     categories = Category.objects.all().order_by('name')
     additional_images = prod.images.all()
 
@@ -995,7 +999,7 @@ def api_product_detail(request, id):
 @login_required(login_url='login')
 def api_cart(request):
     """Return current cart as JSON."""
-    cart_items = Cart.objects.filter(user=request.user)
+    cart_items = Cart.objects.select_related('product').filter(user=request.user)
     total_data = cart_items.aggregate(total=Sum('product_total'))
     grand_total = total_data['total'] or 0
 
@@ -1154,7 +1158,7 @@ def api_your_orders(request):
     orders = Order.objects.filter(
         user=request.user,
         payment_status__in=['Paid', 'Pending (COD)', 'Refunded', 'Cancelled']
-    ).order_by('-created_at')
+    ).prefetch_related('order_item_set__product').order_by('-created_at')
 
     orders_data = []
     for order in orders:
@@ -1236,7 +1240,7 @@ def api_cancel_order(request, id):
 def api_checkout(request):
     """Return checkout data (cart + razorpay order id)."""
     user = request.user
-    cart_items = Cart.objects.filter(user=user)
+    cart_items = Cart.objects.select_related('product').filter(user=user)
     if not cart_items.exists():
         return JsonResponse({'status': 'error', 'message': 'Cart is empty.'}, status=400)
 
