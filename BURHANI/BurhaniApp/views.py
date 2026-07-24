@@ -155,7 +155,7 @@ def home(request):
         categories = categories.filter(category_q).distinct()
 
     if not query:
-        products = products.order_by('-id')[:12]
+        products = products.order_by('-id')[:100]
 
     context = {
         'categories': categories,
@@ -755,7 +755,7 @@ CRITICAL: {lang_instruction}"""
                                 <h6 class="mb-1 text-dark fw-bold text-truncate" style="font-size: 0.85rem; line-height: 1.2;">{prod.name}</h6>
                                 <div class="text-success fw-bold" style="font-size: 0.8rem;">₹{prod.price}</div>
                             </div>
-                            <a href="#" class="btn btn-sm text-white flex-shrink-0" style="background: var(--gg-accent); border-radius: 8px; font-size: 0.75rem; padding: 4px 10px;" onclick="openQuickView({prod.id}); return false;">View</a>
+                            <a href="/item/{prod.id}/" class="btn btn-sm text-white flex-shrink-0" style="background: var(--gg-accent); border-radius: 8px; font-size: 0.75rem; padding: 4px 10px;">View</a>
                         </div>
                     </div>
                     """
@@ -914,7 +914,7 @@ def api_home(request):
         categories = categories.filter(category_q).distinct()
 
     if not query:
-        products = products.order_by('-id')[:12]
+        products = products.order_by('-id')[:100]
 
     return JsonResponse({
         'categories': [

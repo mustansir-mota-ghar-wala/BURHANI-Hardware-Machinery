@@ -22,7 +22,7 @@ function getStatusClass(paymentStatus) {
 
 function getCardTheme(deliveryStatus, index) {
   if (deliveryStatus === 'Cancelled') return 'order-theme-cancelled';
-  return index % 2 === 0 ? 'order-theme-green' : 'order-theme-orange';
+  return 'order-theme-green';
 }
 
 export default function YourOrdersPage({ setToasts }) {

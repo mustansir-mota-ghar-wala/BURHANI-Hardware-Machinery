@@ -79,5 +79,5 @@ urlpatterns += staticfiles_urlpatterns()
 # ── Catch-all: ALL routes not matched above → serve React SPA ──
 # React Router handles /  /cart  /login  /product/1  etc.
 urlpatterns += [
-    re_path(r'^.*$', react_spa, name='react_spa'),
+    re_path(r'^(?!admin|api).*$', react_spa, name='react_spa'),
 ]

@@ -145,6 +145,22 @@ export default function Navbar({ query, setQuery, mobileMenuOpen, setMobileMenuO
             style={{ width: '42px', height: '42px', color: '#dc3545', background: 'rgba(220,53,69,0.15)' }}>
             <i className="bi bi-mic-fill fs-5" id="searchMicIcon"></i>
           </button>
+          <label htmlFor="cameraInputDesktop" className="btn btn-light rounded-circle p-2 mx-1 d-flex align-items-center justify-content-center border-0 mb-0"
+            style={{ width: '42px', height: '42px', color: 'var(--gg-accent)', background: 'rgba(230,126,34,0.15)', cursor: 'pointer' }}>
+            <i className="bi bi-camera-fill fs-5"></i>
+          </label>
+          <input type="file" id="cameraInputDesktop" accept="image/*" className="d-none" onChange={async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('image', file);
+            try {
+              const data = await apiPostForm('/api/visual-search/', formData);
+              if (data.status === 'success' && data.keywords?.length) {
+                navigate(`/?q=${encodeURIComponent(data.keywords.join(' '))}`);
+              }
+            } catch (err) { console.error(err); }
+          }} />
           <button type="submit" className="btn btn-warning rounded-pill px-4 fw-bold" style={{ fontSize: '0.9rem' }}>Search</button>
         </form>
       </div>

@@ -9,6 +9,9 @@ export default function ProductDetailPage({ setToasts }) {
   const [loading, setLoading] = useState(true);
   const [activeImg, setActiveImg] = useState(null);
   const [activeImgIndex, setActiveImgIndex] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
   const { user, setCartCount } = useAuth();
   const navigate = useNavigate();
 
@@ -61,6 +64,18 @@ export default function ProductDetailPage({ setToasts }) {
     setActiveImg(allImages[newIdx]);
   };
 
+  const onTouchStartHandler = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+  const onTouchMoveHandler = (e) => setTouchEnd(e.targetTouches[0].clientX);
+  const onTouchEndHandler = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    if (distance > 50) handleNextImage();
+    if (distance < -50) handlePrevImage();
+  };
+
   return (
     <div style={{ background: '#f5f7fa', minHeight: '100vh', paddingBottom: '100px' }}>
       <div className="container py-3">
@@ -80,8 +95,14 @@ export default function ProductDetailPage({ setToasts }) {
       <div className="row g-3 mb-5">
         {/* Mobile Style Image Container */}
         <div className="col-lg-5">
-          <div style={{ background: 'white', borderRadius: '25px', padding: '15px', position: 'relative', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', textAlign: 'center', margin: '0 auto', maxWidth: '350px' }}>
-            <div style={{ width: '100%', height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: 'white', borderRadius: '25px', padding: '15px', position: 'relative', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', textAlign: 'center', margin: '0 auto', maxWidth: '450px' }}>
+            <div 
+              style={{ width: '100%', aspectRatio: '1/1', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+              onClick={() => setIsFullscreen(true)}
+              onTouchStart={onTouchStartHandler}
+              onTouchMove={onTouchMoveHandler}
+              onTouchEnd={onTouchEndHandler}
+            >
               <img
                 src={activeImg || 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=800'}
                 alt={product.name}
@@ -179,6 +200,29 @@ export default function ProductDetailPage({ setToasts }) {
       </div>
 
       </div>
+
+      {isFullscreen && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 1060, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button onClick={() => setIsFullscreen(false)} style={{ position: 'absolute', top: '20px', right: '20px', background: 'transparent', border: 'none', color: 'white', fontSize: '2rem', cursor: 'pointer' }}>&times;</button>
+          
+          {allImages.length > 1 && (
+             <button onClick={(e) => { e.stopPropagation(); handlePrevImage(); }} style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '50%', color: 'white', width: '50px', height: '50px', fontSize: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><i className="bi bi-chevron-left"></i></button>
+          )}
+
+          <div
+             onTouchStart={onTouchStartHandler}
+             onTouchMove={onTouchMoveHandler}
+             onTouchEnd={onTouchEndHandler}
+             style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
+          >
+             <img src={activeImg} alt="Fullscreen" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+          </div>
+
+          {allImages.length > 1 && (
+             <button onClick={(e) => { e.stopPropagation(); handleNextImage(); }} style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '50%', color: 'white', width: '50px', height: '50px', fontSize: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><i className="bi bi-chevron-right"></i></button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

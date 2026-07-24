@@ -79,7 +79,21 @@ export default function ChatbotWidget() {
               <div key={i}>
                 <div className={`chatbot-msg ${msg.role}`}>{msg.text}</div>
                 {msg.productsHtml && (
-                  <div dangerouslySetInnerHTML={{ __html: msg.productsHtml }} />
+                  <div className="chat-products-container" dangerouslySetInnerHTML={{ __html: msg.productsHtml }} onClick={(e) => {
+                    const link = e.target.closest('a');
+                    if (link && link.getAttribute('href')) {
+                      e.preventDefault();
+                      navigate(link.getAttribute('href'));
+                      setOpen(false);
+                    } else {
+                      // Fallback if the card itself isn't an 'a' tag but has data-id or something
+                      const card = e.target.closest('[data-id], .card, .product-card, .ai-product-card');
+                      if (card && card.dataset && card.dataset.id) {
+                         navigate(`/item/${card.dataset.id}`);
+                         setOpen(false);
+                      }
+                    }
+                  }} />
                 )}
               </div>
             ))}

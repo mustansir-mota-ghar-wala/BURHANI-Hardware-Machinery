@@ -97,16 +97,34 @@ export default function HomePage({ setToasts }) {
             </div>
           </div>
           <div className="hero-categories">
-            <h2 className="heading-font">Shop By Category</h2>
+            <h2 className="heading-font">Latest Products</h2>
             <div className="hero-category-grid">
-              {data.categories.map(cat => (
-                <Link key={cat.id} to={`/product/${cat.id}`} className="hero-category-card">
-                  {cat.image
-                    ? <img src={cat.image} alt={cat.name} />
-                    : <img src="/static/images/cat_hardware.png" alt="Hardware" />
-                  }
-                  <span>{cat.name}</span>
+              {data.products.map(product => (
+                <Link key={product.id} to={`/item/${product.id}`} className="prod-card touch-feedback d-block text-decoration-none text-dark position-relative">
+                  <div className="prod-img d-block">
+                    <img
+                      src={product.image || 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=800&auto=format&fit=crop'}
+                      alt={product.name}
+                    />
+                  </div>
+                  <div className="prod-info text-center p-2">
+                    <h4 style={{ fontSize: '0.8rem', marginBottom: '4px', height: '2.4em', overflow: 'hidden' }}>{product.name}</h4>
+                    <div className="prod-price" style={{ fontSize: '0.9rem' }}>₹{product.price}</div>
+                  </div>
                 </Link>
+              ))}
+              
+              {/* Render empty placeholders to guarantee 2 rows of 3 columns (6 slots total) */}
+              {Array.from({ length: Math.max(0, 6 - (data.products ? data.products.length : 0)) }).map((_, idx) => (
+                <div key={`empty-${idx}`} className="prod-card d-block position-relative" style={{ opacity: 0.4, pointerEvents: 'none' }}>
+                  <div className="prod-img d-block" style={{ background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <i className="bi bi-image text-muted fs-3"></i>
+                  </div>
+                  <div className="prod-info text-center p-2">
+                    <div style={{ background: '#e0e0e0', height: '0.8rem', width: '80%', margin: '0 auto 8px', borderRadius: '4px' }}></div>
+                    <div style={{ background: '#e0e0e0', height: '0.9rem', width: '40%', margin: '0 auto', borderRadius: '4px' }}></div>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
