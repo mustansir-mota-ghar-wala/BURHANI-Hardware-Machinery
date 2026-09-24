@@ -42,11 +42,17 @@ export default function ChatbotWidget() {
 
   return (
     <>
-      {/* FAB Button */}
-      <button className="chatbot-fab d-flex align-items-center gap-1" onClick={() => setOpen(o => !o)} title="AI Assistant"
-        style={{ background: '#dc3545', color: 'white', padding: open ? '10px' : '6px 12px', borderRadius: '30px', fontWeight: 'bold', border: '2px solid rgba(255,255,255,0.3)', boxShadow: '0 4px 12px rgba(220,53,69,0.4)', right: '15px', bottom: '140px' }}>
-        <i className={`bi ${open ? 'bi-x-lg' : 'bi-chat-dots-fill'}`} style={{ fontSize: '1.1rem' }}></i>
-        {!open && <span style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>AI HELP</span>}
+      {/* Floating Glass AI Assistant Button */}
+      <button
+        className="glass-ai-fab"
+        onClick={() => setOpen(o => !o)}
+        title="AI Hardware Assistant"
+        aria-label="Open AI Assistant"
+      >
+        <div className="glass-ai-icon">
+          <i className={`bi ${open ? 'bi-x-lg' : 'bi-stars'}`}></i>
+        </div>
+        {!open && <span className="glass-ai-label">Ask AI</span>}
       </button>
 
       {/* Chat Panel */}

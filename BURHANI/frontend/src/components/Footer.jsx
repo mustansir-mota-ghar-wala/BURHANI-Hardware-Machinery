@@ -3,65 +3,111 @@ import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
-    <footer>
-      <div className="container">
-        <div className="row g-4">
-          <div className="col-lg-4">
-            <div className="d-flex align-items-center mb-4">
-              <div className="logo-circle">
-                <i className="bi bi-tools fs-5"></i>
+    <footer className="glass-footer-wrapper">
+      <div className="glass-footer-card">
+        <div className="row g-4 align-items-start">
+          {/* Brand & Overview */}
+          <div className="col-lg-4 col-md-6">
+            <div className="d-flex align-items-center gap-2 mb-3">
+              <div className="footer-brand-badge">
+                <i className="bi bi-tools fs-6"></i>
               </div>
-              <h3 className="heading-font text-white mb-0" style={{ letterSpacing: '1px' }}>BURHANI HARDWARE</h3>
+              <h4 className="m-0 fw-bold footer-brand-title">BURHANI HARDWARE</h4>
             </div>
-            <p className="text-white-50 mb-4 pe-lg-5">
-              Burhani Hardware and Machinery, owned by Huzaifa Bhai Boraji, supplies tools, machinery, motors, pipes and agricultural equipment in Bhawani Mandi.
+            <p className="footer-subtext mb-3">
+              Premium hardware, industrial power tools, machinery, motors, and authentic spare parts. Owned by Huzaifa Bhai Boraji in Bhawani Mandi.
             </p>
-            <div className="social-icons">
-              <a href="#"><i className="bi bi-facebook"></i></a>
-              <a href="#"><i className="bi bi-instagram"></i></a>
-              <a href="https://wa.me/917742752753" target="_blank" rel="noopener"><i className="bi bi-whatsapp"></i></a>
+            <div className="d-flex gap-2 align-items-center">
+              <a
+                href="https://wa.me/917742752753"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="footer-social-btn whatsapp"
+                title="Chat on WhatsApp"
+              >
+                <i className="bi bi-whatsapp"></i>
+                <span className="ms-1 small fw-semibold">WhatsApp Us</span>
+              </a>
+              <a
+                href="tel:+917742752753"
+                className="footer-social-btn"
+                title="Call Support"
+              >
+                <i className="bi bi-telephone-fill"></i>
+              </a>
             </div>
           </div>
 
-          <div className="col-lg-2 col-md-4">
-            <h4 className="footer-title">Quick Links</h4>
-            <ul className="footer-links">
-              <li><Link to="/">Home</Link></li>
-              <li><a href="/#categories">Shop Tools</a></li>
+          {/* Quick Links */}
+          <div className="col-lg-2 col-md-3 col-6">
+            <h6 className="footer-col-heading">Navigation</h6>
+            <ul className="footer-links-list">
+              <li><Link to="/">Store Home</Link></li>
               <li><Link to="/your_orders">My Orders</Link></li>
-              <li><a href="/#about">About Us</a></li>
-              <li><a href="/business/" style={{ color: '#ffc107', fontWeight: 600 }}><i className="bi bi-speedometer2 me-1"></i>Business Panel</a></li>
-            </ul>
-          </div>
-
-          <div className="col-lg-3 col-md-4">
-            <h4 className="footer-title">Categories</h4>
-            <ul className="footer-links">
-              <li><a href="#">Power Tools</a></li>
-              <li><a href="#">Industrial Machinery</a></li>
-              <li><a href="#">Hand Tools</a></li>
-              <li><a href="#">Spare Parts</a></li>
-            </ul>
-          </div>
-
-          <div className="col-lg-3 col-md-4">
-            <h4 className="footer-title">Contact Us</h4>
-            <ul className="footer-links">
-              <li className="text-white-50"><i className="bi bi-person me-2 text-warning"></i>Huzaifa Bhai Boraji</li>
+              <li><Link to="/cart">Cart</Link></li>
               <li>
-                <a href="https://maps.app.goo.gl/xJR2zs7dau7Srehg7" target="_blank" rel="noopener">
-                  <i className="bi bi-geo-alt me-2 text-warning"></i>Balaji Chauraha, Station Road, Bhawani Mandi, Jhalawar, Rajasthan
+                <Link to="/business" className="footer-erp-link">
+                  <i className="bi bi-speedometer2 me-1"></i>Business ERP
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Categories */}
+          <div className="col-lg-2 col-md-3 col-6">
+            <h6 className="footer-col-heading">Categories</h6>
+            <ul className="footer-links-list">
+              <li><Link to="/?q=power">Power Tools</Link></li>
+              <li><Link to="/?q=machinery">Machinery</Link></li>
+              <li><Link to="/?q=welding">Welding Gear</Link></li>
+              <li><Link to="/?q=chainsaw">Chainsaws</Link></li>
+              <li><Link to="/?q=spare">Spare Parts</Link></li>
+            </ul>
+          </div>
+
+          {/* Contact Details */}
+          <div className="col-lg-4 col-md-6">
+            <h6 className="footer-col-heading">Store &amp; Location</h6>
+            <ul className="footer-contact-list">
+              <li>
+                <i className="bi bi-geo-alt-fill text-success"></i>
+                <a
+                  href="https://maps.app.goo.gl/xJR2zs7dau7Srehg7"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-decoration-none"
+                >
+                  Balaji Chauraha, Station Road, Bhawani Mandi, Rajasthan
                 </a>
               </li>
-              <li><a href="tel:+917742752753"><i className="bi bi-telephone me-2 text-warning"></i>+91 77427 52753</a></li>
-              <li><a href="https://wa.me/917742752753" target="_blank" rel="noopener"><i className="bi bi-whatsapp me-2 text-warning"></i>WhatsApp: +91 77427 52753</a></li>
-              <li><a href="mailto:mustansirmotagh786.88@gmail.com"><i className="bi bi-envelope me-2 text-warning"></i>mustansirmotagh786.88@gmail.com</a></li>
-              <li className="text-white-50"><i className="bi bi-clock me-2 text-warning"></i>8:00 AM to 8:00 PM</li>
+              <li>
+                <i className="bi bi-telephone-fill text-success"></i>
+                <span>+91 77427 52753</span>
+              </li>
+              <li>
+                <i className="bi bi-clock-fill text-success"></i>
+                <span>Mon – Sat: 8:00 AM – 8:00 PM</span>
+              </li>
+              <li>
+                <i className="bi bi-patch-check-fill text-success"></i>
+                <span>GST Invoicing Available</span>
+              </li>
             </ul>
           </div>
         </div>
-        <div className="copyright">
-          <p className="mb-0">&copy; 2026 Burhani Hardware &amp; Machinery. All rights reserved.</p>
+
+        {/* Bottom Bar */}
+        <div className="glass-footer-bottom">
+          <p className="m-0 small text-muted">
+            &copy; {new Date().getFullYear()} Burhani Hardware &amp; Machinery. Engineered for quality and durability.
+          </p>
+          <div className="d-flex gap-3 small text-muted">
+            <span>Genuine Tools</span>
+            <span>&bull;</span>
+            <span>Transparent Pricing</span>
+            <span>&bull;</span>
+            <span>Fast Shipping</span>
+          </div>
         </div>
       </div>
     </footer>

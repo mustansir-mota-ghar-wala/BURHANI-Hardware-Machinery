@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 
-import Navbar from './components/Navbar';
+import FloatingDock from './components/FloatingDock';
 import Footer from './components/Footer';
-import BottomNav from './components/BottomNav';
-import ChatbotWidget from './components/ChatbotWidget';
 import ToastContainer from './components/ToastContainer';
 
 import HomePage from './pages/HomePage';
@@ -30,7 +28,6 @@ import ReportsPage from './business/ReportsPage';
 
 function AppInner() {
   const [toasts, setToasts] = useState([]);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   // Pages that manage their own standalone layout
@@ -39,14 +36,12 @@ function AppInner() {
   const isCustomLayout = isAuthPage || isBusinessPage;
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className={!isCustomLayout ? 'scenic-page-root' : ''} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <ToastContainer messages={toasts} setMessages={setToasts} />
 
-      {!isCustomLayout && (
-        <Navbar mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
-      )}
+      {!isCustomLayout && <FloatingDock />}
 
-      <main style={{ flex: 1, paddingTop: isCustomLayout ? 0 : '62px' }}>
+      <main style={{ flex: 1 }}>
         <Routes>
           {/* Consumer Storefront */}
           <Route path="/" element={<HomePage setToasts={setToasts} />} />
@@ -83,8 +78,6 @@ function AppInner() {
       </main>
 
       {!isCustomLayout && <Footer />}
-      {!isCustomLayout && <BottomNav onMenuOpen={() => setMobileMenuOpen(true)} />}
-      {!isCustomLayout && <ChatbotWidget />}
     </div>
   );
 }
