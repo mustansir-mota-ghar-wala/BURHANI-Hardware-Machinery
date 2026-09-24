@@ -175,12 +175,8 @@ export default function PurchasesPage() {
 
   return (
     <div className="d-flex flex-column gap-3">
-      {/* Header */}
-      <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
-        <div>
-          <h4 className="fw-bold m-0" style={{ letterSpacing: '-0.3px', color: '#111418' }}>Purchases &amp; Stock Inward</h4>
-          <p className="text-muted small m-0">Record incoming goods from suppliers and auto-recalculate inventory costs.</p>
-        </div>
+      {/* Top Action Row */}
+      <div className="d-flex align-items-center justify-content-end mb-1">
         <button onClick={openNewPurchase} className="btn btn-dark fw-bold d-flex align-items-center gap-2 shadow-sm px-3 py-2" style={{ borderRadius: '12px', background: '#111418', border: 'none' }}>
           <i className="bi bi-truck"></i> Record Inward Purchase
         </button>

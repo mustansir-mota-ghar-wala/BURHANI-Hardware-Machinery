@@ -38,28 +38,22 @@ export default function ReportsPage() {
 
   return (
     <div className="d-flex flex-column gap-3">
-      {/* Header */}
-      <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
-        <div>
-          <h4 className="fw-bold m-0">Financial &amp; GST Tax Reports</h4>
-          <p className="text-muted small m-0">GSTR-1, GSTR-3B Input/Output tax breakdown and aged balance aging.</p>
+      {/* Starline Pill Navigation Tabs & Action Row */}
+      <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
+        <div className="d-flex gap-2">
+          <button
+            onClick={() => setActiveTab('gst')}
+            className={`starline-pill-tab ${activeTab === 'gst' ? 'active' : ''}`}>
+            <i className="bi bi-receipt-cutoff me-2"></i> GST Tax Filing Summary
+          </button>
+          <button
+            onClick={() => setActiveTab('outstanding')}
+            className={`starline-pill-tab ${activeTab === 'outstanding' ? 'active' : ''}`}>
+            <i className="bi bi-hourglass-split me-2"></i> Outstanding Balances
+          </button>
         </div>
-        <button onClick={() => window.print()} className="btn btn-outline-dark fw-bold d-flex align-items-center gap-1.5 shadow-sm" style={{ borderRadius: '10px' }}>
+        <button onClick={() => window.print()} className="btn btn-light fw-bold d-flex align-items-center gap-1.5 shadow-sm px-3 py-2" style={{ borderRadius: '12px' }}>
           <i className="bi bi-printer"></i> Print Report
-        </button>
-      </div>
-
-      {/* Starline Pill Navigation Tabs */}
-      <div className="d-flex gap-2">
-        <button
-          onClick={() => setActiveTab('gst')}
-          className={`starline-pill-tab ${activeTab === 'gst' ? 'active' : ''}`}>
-          <i className="bi bi-receipt-cutoff me-2"></i> GST Tax Filing Summary
-        </button>
-        <button
-          onClick={() => setActiveTab('outstanding')}
-          className={`starline-pill-tab ${activeTab === 'outstanding' ? 'active' : ''}`}>
-          <i className="bi bi-hourglass-split me-2"></i> Outstanding Balances
         </button>
       </div>
 

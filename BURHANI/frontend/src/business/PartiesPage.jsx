@@ -127,28 +127,22 @@ export default function PartiesPage() {
 
   return (
     <div className="d-flex flex-column gap-3">
-      {/* Header */}
-      <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
-        <div>
-          <h4 className="fw-bold m-0" style={{ letterSpacing: '-0.3px', color: '#111418' }}>Customers &amp; Suppliers Directory</h4>
-          <p className="text-muted small m-0">Manage customer ledgers, supplier accounts, and outstanding balances.</p>
+      {/* Starline Pill Navigation Tabs & Action Row */}
+      <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
+        <div className="d-flex gap-2">
+          <button
+            onClick={() => setActiveTab('customer')}
+            className={`starline-pill-tab ${activeTab === 'customer' ? 'active' : ''}`}>
+            <i className="bi bi-people me-2"></i> Customers ({activeTab === 'customer' ? parties.length : '...'})
+          </button>
+          <button
+            onClick={() => setActiveTab('supplier')}
+            className={`starline-pill-tab ${activeTab === 'supplier' ? 'active' : ''}`}>
+            <i className="bi bi-truck me-2"></i> Suppliers ({activeTab === 'supplier' ? parties.length : '...'})
+          </button>
         </div>
         <button onClick={openAddModal} className="btn btn-dark fw-bold d-flex align-items-center gap-2 shadow-sm px-3 py-2" style={{ borderRadius: '12px', background: '#111418', border: 'none' }}>
           <i className="bi bi-person-plus-fill"></i> Add {activeTab === 'customer' ? 'Customer' : 'Supplier'}
-        </button>
-      </div>
-
-      {/* Starline Pill Navigation Tabs */}
-      <div className="d-flex gap-2">
-        <button
-          onClick={() => setActiveTab('customer')}
-          className={`starline-pill-tab ${activeTab === 'customer' ? 'active' : ''}`}>
-          <i className="bi bi-people me-2"></i> Customers ({activeTab === 'customer' ? parties.length : '...'})
-        </button>
-        <button
-          onClick={() => setActiveTab('supplier')}
-          className={`starline-pill-tab ${activeTab === 'supplier' ? 'active' : ''}`}>
-          <i className="bi bi-truck me-2"></i> Suppliers ({activeTab === 'supplier' ? parties.length : '...'})
         </button>
       </div>
 

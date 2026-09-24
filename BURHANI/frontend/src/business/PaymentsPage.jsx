@@ -96,12 +96,8 @@ export default function PaymentsPage() {
 
   return (
     <div className="d-flex flex-column gap-3">
-      {/* Header */}
-      <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
-        <div>
-          <h4 className="fw-bold m-0" style={{ letterSpacing: '-0.3px', color: '#111418' }}>Payments &amp; Cashbook Ledger</h4>
-          <p className="text-muted small m-0">Record collections from customers and disbursements to suppliers.</p>
-        </div>
+      {/* Top Action Row */}
+      <div className="d-flex align-items-center justify-content-end mb-1">
         <button onClick={openAddModal} className="btn btn-dark fw-bold d-flex align-items-center gap-2 shadow-sm px-3 py-2" style={{ borderRadius: '12px', background: '#111418', border: 'none' }}>
           <i className="bi bi-plus-lg"></i> Record Payment Entry
         </button>

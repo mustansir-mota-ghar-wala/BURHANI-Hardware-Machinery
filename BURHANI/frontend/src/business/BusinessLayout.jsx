@@ -107,19 +107,19 @@ export default function BusinessLayout() {
       };
     }
     if (path.startsWith('/business/products')) {
-      return { title: 'Inventory & Catalog', sub: 'Manage product stock levels, pricing, and barcodes.' };
+      return { title: 'Inventory & Stock Management', sub: 'Manage items, stock counts, cost pricing, and GST tax slabs.' };
     }
     if (path.startsWith('/business/sales')) {
-      return { title: 'Sales & Invoices', sub: 'Create tax invoices, manage receivables, and track sales.' };
+      return { title: 'Sales & Tax Invoices', sub: 'Create GST-compliant customer bills and track payments.' };
     }
     if (path.startsWith('/business/purchases')) {
-      return { title: 'Purchases & Inward', sub: 'Supplier bills, purchase orders, and stock replenishment.' };
+      return { title: 'Purchases & Stock Inward', sub: 'Record incoming goods from suppliers and auto-recalculate inventory costs.' };
     }
     if (path.startsWith('/business/parties')) {
-      return { title: 'Customers & Suppliers', sub: 'Ledgers, outstanding dues, and party directories.' };
+      return { title: 'Customers & Suppliers Directory', sub: 'Manage customer ledgers, supplier accounts, and outstanding balances.' };
     }
     if (path.startsWith('/business/payments')) {
-      return { title: 'Payments & Ledger', sub: 'Cashbook, bank accounts, and settlement history.' };
+      return { title: 'Payments & Cashbook Ledger', sub: 'Record collections from customers and disbursements to suppliers.' };
     }
     if (path.startsWith('/business/reports')) {
       return { title: 'GST & Business Reports', sub: 'GSTR-1, GSTR-3B tax calculations and profit statements.' };
