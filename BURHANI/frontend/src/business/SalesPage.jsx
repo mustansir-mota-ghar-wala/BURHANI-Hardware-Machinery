@@ -196,29 +196,46 @@ export default function SalesPage() {
 
   return (
     <div className="d-flex flex-column gap-3">
-      {/* Header */}
-      <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
-        <div>
-          <h4 className="fw-bold m-0">Sales &amp; Tax Invoices</h4>
-          <p className="text-muted small m-0">Create GST-compliant customer bills and track payments.</p>
-        </div>
-        <button onClick={openNewSale} className="btn btn-warning fw-bold d-flex align-items-center gap-1.5 shadow-sm" style={{ borderRadius: '10px' }}>
+      {/* Top Action Row */}
+      <div className="d-flex align-items-center justify-content-end mb-1">
+        <button onClick={openNewSale} className="btn btn-dark fw-bold d-flex align-items-center gap-2 shadow-sm px-3 py-2" style={{ borderRadius: '12px', background: '#111418', border: 'none' }}>
           <i className="bi bi-receipt-cutoff"></i> Create New Sale (POS)
         </button>
       </div>
 
-      {/* Metrics */}
+      {/* Starline Metrics Cards */}
       <div className="row g-3">
-        <div className="col-sm-6">
-          <div className="card border-0 shadow-sm p-3" style={{ borderRadius: '12px' }}>
-            <span className="text-muted small fw-semibold">Total Sales Revenue</span>
-            <h3 className="fw-bold text-success m-0">{formatCurrency(totalRevenue)}</h3>
+        <div className="col-12 col-md-6">
+          <div className="starline-pastel-card peach h-100">
+            <div className="d-flex align-items-center gap-3">
+              <div className="starline-card-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4.5"></path>
+                  <line x1="12" y1="7" x2="12" y2="17"></line>
+                </svg>
+              </div>
+              <div className="d-flex flex-column">
+                <span className="starline-metric-num">{formatCurrency(totalRevenue)}</span>
+                <span className="starline-metric-label">Total Sales Revenue</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="col-sm-6">
-          <div className="card border-0 shadow-sm p-3" style={{ borderRadius: '12px' }}>
-            <span className="text-muted small fw-semibold">Outstanding Customer Receivables</span>
-            <h3 className="fw-bold text-danger m-0">{formatCurrency(totalOutstanding)}</h3>
+        <div className="col-12 col-md-6">
+          <div className="starline-pastel-card lavender h-100">
+            <div className="d-flex align-items-center gap-3">
+              <div className="starline-card-icon-box" style={{ background: '#FEE2E2', color: '#DC2626' }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                  <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                  <line x1="2" y1="10" x2="22" y2="10"></line>
+                </svg>
+              </div>
+              <div className="d-flex flex-column">
+                <span className="starline-metric-num" style={{ color: '#DC2626' }}>{formatCurrency(totalOutstanding)}</span>
+                <span className="starline-metric-label">Outstanding Customer Receivables</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

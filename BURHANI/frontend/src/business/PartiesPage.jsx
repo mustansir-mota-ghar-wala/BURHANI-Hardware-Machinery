@@ -127,45 +127,47 @@ export default function PartiesPage() {
 
   return (
     <div className="d-flex flex-column gap-3">
-      {/* Header */}
-      <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
-        <div>
-          <h4 className="fw-bold m-0">Customers &amp; Suppliers Directory</h4>
-          <p className="text-muted small m-0">Manage customer ledgers, supplier accounts, and outstanding balances.</p>
+      {/* Starline Pill Navigation Tabs & Action Row */}
+      <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
+        <div className="d-flex gap-2">
+          <button
+            onClick={() => setActiveTab('customer')}
+            className={`starline-pill-tab ${activeTab === 'customer' ? 'active' : ''}`}>
+            <i className="bi bi-people me-2"></i> Customers ({activeTab === 'customer' ? parties.length : '...'})
+          </button>
+          <button
+            onClick={() => setActiveTab('supplier')}
+            className={`starline-pill-tab ${activeTab === 'supplier' ? 'active' : ''}`}>
+            <i className="bi bi-truck me-2"></i> Suppliers ({activeTab === 'supplier' ? parties.length : '...'})
+          </button>
         </div>
-        <button onClick={openAddModal} className="btn btn-warning fw-bold d-flex align-items-center gap-1.5 shadow-sm" style={{ borderRadius: '10px' }}>
+        <button onClick={openAddModal} className="btn btn-dark fw-bold d-flex align-items-center gap-2 shadow-sm px-3 py-2" style={{ borderRadius: '12px', background: '#111418', border: 'none' }}>
           <i className="bi bi-person-plus-fill"></i> Add {activeTab === 'customer' ? 'Customer' : 'Supplier'}
         </button>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="d-flex gap-2 border-bottom pb-2">
-        <button
-          onClick={() => setActiveTab('customer')}
-          className={`btn fw-bold px-4 py-2 ${activeTab === 'customer' ? 'btn-dark' : 'btn-light text-muted'}`}
-          style={{ borderRadius: '10px' }}>
-          <i className="bi bi-people me-2"></i> Customers ({activeTab === 'customer' ? parties.length : '...'})
-        </button>
-        <button
-          onClick={() => setActiveTab('supplier')}
-          className={`btn fw-bold px-4 py-2 ${activeTab === 'supplier' ? 'btn-dark' : 'btn-light text-muted'}`}
-          style={{ borderRadius: '10px' }}>
-          <i className="bi bi-truck me-2"></i> Suppliers ({activeTab === 'supplier' ? parties.length : '...'})
-        </button>
-      </div>
-
-      {/* Summary Card */}
-      <div className="card border-0 shadow-sm p-3" style={{ borderRadius: '12px' }}>
+      {/* Starline Summary Card */}
+      <div className="starline-pastel-card peach">
         <div className="d-flex align-items-center justify-content-between">
-          <div>
-            <span className="text-muted small fw-semibold">
-              Total {activeTab === 'customer' ? 'Customer Outstanding (Receivable)' : 'Supplier Due (Payable)'}
-            </span>
-            <h3 className={`fw-bold m-0 ${activeTab === 'customer' ? 'text-danger' : 'text-warning text-dark'}`}>
-              {formatCurrency(totalOutstanding)}
-            </h3>
+          <div className="d-flex align-items-center gap-3">
+            <div className="starline-card-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <div>
+              <span className="starline-metric-label">
+                Total {activeTab === 'customer' ? 'Customer Outstanding (Receivable)' : 'Supplier Due (Payable)'}
+              </span>
+              <div className="starline-metric-num" style={{ color: activeTab === 'customer' ? '#DC2626' : '#D97706' }}>
+                {formatCurrency(totalOutstanding)}
+              </div>
+            </div>
           </div>
-          <span className="badge bg-light text-dark border px-3 py-2 fs-6">
+          <span className="starline-dropdown-chip bg-white border-0">
             {parties.length} Registered {activeTab === 'customer' ? 'Customers' : 'Suppliers'}
           </span>
         </div>

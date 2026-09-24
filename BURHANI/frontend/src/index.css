@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -6164,3 +6164,539 @@ footer.glass-footer-wrapper {
     width: 260px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STARLINE MODERN BUSINESS SUITE THEME (Light Studio Canvas)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.starline-root {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  background-color: #E7E9ED !important;
+  color: #111418 !important;
+  min-height: 100vh;
+}
+
+.starline-sidebar {
+  width: 230px;
+  background: #E7E9ED;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px 18px;
+  transition: transform 0.3s ease;
+}
+
+.starline-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px;
+  text-decoration: none;
+  color: #111418;
+}
+
+.starline-brand-row:hover {
+  color: #111418;
+}
+
+.starline-brand-icon {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.starline-brand-text {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #111418;
+  letter-spacing: -0.4px;
+}
+
+.starline-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.starline-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #525866;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.starline-nav-item:hover {
+  color: #111418;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.starline-nav-item.active {
+  background: #EBF86D !important;
+  color: #111418 !important;
+  font-weight: 750 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.starline-nav-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* Header pill & greetings */
+.starline-root header,
+.starline-header-row {
+  background-color: transparent !important;
+  background: transparent !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  position: static !important;
+  backdrop-filter: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 0 16px 0 !important;
+  margin: 0 !important;
+}
+
+/* Starline Dashboard Straight Grid System */
+.starline-dashboard-grid {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.starline-left-col {
+  width: 330px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.starline-right-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.starline-section-title {
+  font-size: 1.05rem;
+  font-weight: 750;
+  color: #111418;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px;
+  letter-spacing: -0.2px;
+}
+
+.starline-greeting-title {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #111418;
+  letter-spacing: -0.4px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.starline-greeting-sub {
+  font-size: 0.85rem;
+  color: #687082;
+  margin-top: 3px;
+  margin-bottom: 0;
+  font-weight: 500;
+}
+
+.starline-header-pill {
+  background: #FFFFFF;
+  border-radius: 50px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.starline-pill-btn {
+  background: none;
+  border: none;
+  color: #525866;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.15s;
+  position: relative;
+}
+
+.starline-pill-btn:hover {
+  color: #111418;
+  background: #F4F5F7;
+}
+
+.starline-notif-badge {
+  position: absolute;
+  top: -2px;
+  right: -3px;
+  background: #EF4444;
+  color: #FFFFFF;
+  font-size: 0.6rem;
+  font-weight: 800;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #FFFFFF;
+}
+
+.starline-avatar-bubble {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #FBBF24;
+  color: #78350F;
+  font-weight: 800;
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Starline Cards */
+.starline-white-card {
+  background: #FFFFFF;
+  border-radius: 22px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+}
+
+.starline-pastel-card {
+  border-radius: 22px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.starline-pastel-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+.starline-pastel-card.peach { background: #FFF2E2; }
+.starline-pastel-card.lavender { background: #F3EFFF; }
+.starline-pastel-card.mint { background: #EBFBF8; }
+.starline-pastel-card.white { background: #FFFFFF; border: 1px solid rgba(255, 255, 255, 0.95); }
+
+.starline-card-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.peach .starline-card-icon-box { background: #FFE4C4; color: #EA580C; }
+.lavender .starline-card-icon-box { background: #E8DEFF; color: #7C3AED; }
+.mint .starline-card-icon-box { background: #D5F6EF; color: #0D9488; }
+
+.starline-metric-num {
+  font-size: 1.48rem;
+  font-weight: 800;
+  color: #111418;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+
+.starline-metric-label {
+  font-size: 0.78rem;
+  color: #687082;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+.starline-trend-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #059669;
+}
+
+.starline-dropdown-chip {
+  background: #F4F5F7;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #111418;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.starline-dropdown-chip:hover {
+  background: #E5E7EB;
+}
+
+/* Products Table */
+.starline-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.starline-table th {
+  text-align: left;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #8C94A3;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #F1F3F5;
+}
+
+.starline-table th:last-child {
+  text-align: right;
+}
+
+.starline-table td {
+  padding: 10px 0;
+  font-size: 0.82rem;
+  color: #111418;
+  border-bottom: 1px solid #F9FAFB;
+  vertical-align: middle;
+}
+
+.starline-table td:last-child {
+  text-align: right;
+  font-weight: 700;
+}
+
+/* Starline Global Design System Harmony for All Business Pages */
+.starline-root h1,
+.starline-root h2,
+.starline-root h3,
+.starline-root h4,
+.starline-root h5,
+.starline-root h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-weight: 750 !important;
+  color: #111418 !important;
+  letter-spacing: -0.3px;
+}
+
+.starline-root .card {
+  background: #FFFFFF !important;
+  border-radius: 22px !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+.starline-root .btn {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  border-radius: 12px !important;
+  font-weight: 650 !important;
+  font-size: 0.85rem !important;
+  transition: all 0.15s ease !important;
+}
+
+/* Transform old ERP btn-warning into Starline dark pill or lime highlight */
+.starline-root .btn-warning {
+  background-color: #111418 !important;
+  border-color: #111418 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.starline-root .btn-warning:hover {
+  background-color: #2D323B !important;
+  border-color: #2D323B !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px);
+}
+
+.starline-root .btn-dark {
+  background-color: #111418 !important;
+  border-color: #111418 !important;
+  color: #FFFFFF !important;
+}
+
+.starline-root .btn-dark:hover {
+  background-color: #2D323B !important;
+  border-color: #2D323B !important;
+}
+
+.starline-root .btn-light {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  color: #525866 !important;
+}
+
+.starline-root .btn-light:hover {
+  background-color: #F4F5F7 !important;
+  color: #111418 !important;
+}
+
+/* Form controls & inputs */
+.starline-root .form-control,
+.starline-root .form-select {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  border-radius: 12px !important;
+  border: 1px solid #E5E7EB !important;
+  background-color: #FFFFFF !important;
+  font-size: 0.86rem !important;
+  padding: 9px 14px !important;
+  color: #111418 !important;
+}
+
+.starline-root .form-control:focus,
+.starline-root .form-select:focus {
+  border-color: #111418 !important;
+  box-shadow: 0 0 0 3px rgba(235, 248, 109, 0.45) !important;
+}
+
+.starline-root .input-group-text {
+  border-radius: 12px !important;
+  border: 1px solid #E5E7EB !important;
+  background-color: #FFFFFF !important;
+}
+
+/* Tables across all business pages */
+.starline-root .table {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  color: #111418 !important;
+  margin-bottom: 0 !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.starline-root .table thead th {
+  background-color: #F8F9FA !important;
+  color: #687082 !important;
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.4px !important;
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #EDF0F3 !important;
+  border-top: none !important;
+}
+
+.starline-root .table tbody td {
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #F3F4F6 !important;
+  font-size: 0.84rem !important;
+  vertical-align: middle !important;
+}
+
+.starline-root .table tbody tr:hover td {
+  background-color: #F9FAFB !important;
+}
+
+/* Soft rounded badges */
+.starline-root .badge {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  border-radius: 8px !important;
+  padding: 5px 10px !important;
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.2px !important;
+}
+
+.starline-root .badge.bg-success {
+  background-color: #D1FAE5 !important;
+  color: #059669 !important;
+}
+
+.starline-root .badge.bg-danger {
+  background-color: #FEE2E2 !important;
+  color: #DC2626 !important;
+}
+
+.starline-root .badge.bg-warning {
+  background-color: #FEF3C7 !important;
+  color: #D97706 !important;
+}
+
+.starline-root .badge.bg-primary {
+  background-color: #E0E7FF !important;
+  color: #4F46E5 !important;
+}
+
+/* Starline Pill Navigation Tabs */
+.starline-pill-tab {
+  border-radius: 12px !important;
+  font-weight: 650 !important;
+  padding: 8px 18px !important;
+  font-size: 0.86rem !important;
+  border: 1px solid transparent !important;
+  text-decoration: none !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer;
+}
+
+.starline-pill-tab.active {
+  background-color: #EBF86D !important;
+  color: #111418 !important;
+  font-weight: 750 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+}
+
+.starline-pill-tab:not(.active) {
+  background-color: #FFFFFF !important;
+  color: #525866 !important;
+  border: 1px solid #E5E7EB !important;
+}
+
+.starline-pill-tab:not(.active):hover {
+  background-color: #F4F5F7 !important;
+  color: #111418 !important;
+}
+
+/* Modals */
+.starline-root .modal-content {
+  border-radius: 24px !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1) !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+.starline-root .modal-header {
+  border-bottom: 1px solid #F1F3F5 !important;
+  padding: 18px 24px !important;
+}
+
+.starline-root .modal-footer {
+  border-top: 1px solid #F1F3F5 !important;
+  padding: 16px 24px !important;
+}
+
+

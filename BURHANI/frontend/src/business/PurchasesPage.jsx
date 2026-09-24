@@ -175,29 +175,46 @@ export default function PurchasesPage() {
 
   return (
     <div className="d-flex flex-column gap-3">
-      {/* Header */}
-      <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
-        <div>
-          <h4 className="fw-bold m-0">Purchases &amp; Stock Inward</h4>
-          <p className="text-muted small m-0">Record incoming goods from suppliers and auto-recalculate inventory costs.</p>
-        </div>
-        <button onClick={openNewPurchase} className="btn btn-dark fw-bold d-flex align-items-center gap-1.5 shadow-sm" style={{ borderRadius: '10px' }}>
+      {/* Top Action Row */}
+      <div className="d-flex align-items-center justify-content-end mb-1">
+        <button onClick={openNewPurchase} className="btn btn-dark fw-bold d-flex align-items-center gap-2 shadow-sm px-3 py-2" style={{ borderRadius: '12px', background: '#111418', border: 'none' }}>
           <i className="bi bi-truck"></i> Record Inward Purchase
         </button>
       </div>
 
-      {/* Metrics */}
+      {/* Starline Metrics Cards */}
       <div className="row g-3">
-        <div className="col-sm-6">
-          <div className="card border-0 shadow-sm p-3" style={{ borderRadius: '12px' }}>
-            <span className="text-muted small fw-semibold">Total Purchases Inward</span>
-            <h3 className="fw-bold text-dark m-0">{formatCurrency(totalPurchases)}</h3>
+        <div className="col-12 col-md-6">
+          <div className="starline-pastel-card lavender h-100">
+            <div className="d-flex align-items-center gap-3">
+              <div className="starline-card-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                  <circle cx="9" cy="21" r="1"></circle>
+                  <circle cx="20" cy="21" r="1"></circle>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+              </div>
+              <div className="d-flex flex-column">
+                <span className="starline-metric-num">{formatCurrency(totalPurchases)}</span>
+                <span className="starline-metric-label">Total Purchases Inward</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="col-sm-6">
-          <div className="card border-0 shadow-sm p-3" style={{ borderRadius: '12px' }}>
-            <span className="text-muted small fw-semibold">Pending Supplier Payables</span>
-            <h3 className="fw-bold text-danger m-0">{formatCurrency(totalPayables)}</h3>
+        <div className="col-12 col-md-6">
+          <div className="starline-pastel-card peach h-100">
+            <div className="d-flex align-items-center gap-3">
+              <div className="starline-card-icon-box" style={{ background: '#FEF3C7', color: '#D97706' }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+              </div>
+              <div className="d-flex flex-column">
+                <span className="starline-metric-num" style={{ color: '#D97706' }}>{formatCurrency(totalPayables)}</span>
+                <span className="starline-metric-label">Pending Supplier Payables</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
