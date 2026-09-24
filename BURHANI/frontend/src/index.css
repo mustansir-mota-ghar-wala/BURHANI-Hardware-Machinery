@@ -6500,14 +6500,203 @@ footer.glass-footer-wrapper {
   font-weight: 700;
 }
 
-/* Starline Global Card & Table Harmony for Child Pages */
+/* Starline Global Design System Harmony for All Business Pages */
+.starline-root h1,
+.starline-root h2,
+.starline-root h3,
+.starline-root h4,
+.starline-root h5,
+.starline-root h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-weight: 750 !important;
+  color: #111418 !important;
+  letter-spacing: -0.3px;
+}
+
 .starline-root .card {
-  border-radius: 20px !important;
-  border: 1px solid rgba(255, 255, 255, 0.9) !important;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03) !important;
+  background: #FFFFFF !important;
+  border-radius: 22px !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
 }
 
 .starline-root .btn {
-  border-radius: 12px;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  border-radius: 12px !important;
+  font-weight: 650 !important;
+  font-size: 0.85rem !important;
+  transition: all 0.15s ease !important;
 }
+
+/* Transform old ERP btn-warning into Starline dark pill or lime highlight */
+.starline-root .btn-warning {
+  background-color: #111418 !important;
+  border-color: #111418 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.starline-root .btn-warning:hover {
+  background-color: #2D323B !important;
+  border-color: #2D323B !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px);
+}
+
+.starline-root .btn-dark {
+  background-color: #111418 !important;
+  border-color: #111418 !important;
+  color: #FFFFFF !important;
+}
+
+.starline-root .btn-dark:hover {
+  background-color: #2D323B !important;
+  border-color: #2D323B !important;
+}
+
+.starline-root .btn-light {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E5E7EB !important;
+  color: #525866 !important;
+}
+
+.starline-root .btn-light:hover {
+  background-color: #F4F5F7 !important;
+  color: #111418 !important;
+}
+
+/* Form controls & inputs */
+.starline-root .form-control,
+.starline-root .form-select {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  border-radius: 12px !important;
+  border: 1px solid #E5E7EB !important;
+  background-color: #FFFFFF !important;
+  font-size: 0.86rem !important;
+  padding: 9px 14px !important;
+  color: #111418 !important;
+}
+
+.starline-root .form-control:focus,
+.starline-root .form-select:focus {
+  border-color: #111418 !important;
+  box-shadow: 0 0 0 3px rgba(235, 248, 109, 0.45) !important;
+}
+
+.starline-root .input-group-text {
+  border-radius: 12px !important;
+  border: 1px solid #E5E7EB !important;
+  background-color: #FFFFFF !important;
+}
+
+/* Tables across all business pages */
+.starline-root .table {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  color: #111418 !important;
+  margin-bottom: 0 !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.starline-root .table thead th {
+  background-color: #F8F9FA !important;
+  color: #687082 !important;
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.4px !important;
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #EDF0F3 !important;
+  border-top: none !important;
+}
+
+.starline-root .table tbody td {
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #F3F4F6 !important;
+  font-size: 0.84rem !important;
+  vertical-align: middle !important;
+}
+
+.starline-root .table tbody tr:hover td {
+  background-color: #F9FAFB !important;
+}
+
+/* Soft rounded badges */
+.starline-root .badge {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  border-radius: 8px !important;
+  padding: 5px 10px !important;
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.2px !important;
+}
+
+.starline-root .badge.bg-success {
+  background-color: #D1FAE5 !important;
+  color: #059669 !important;
+}
+
+.starline-root .badge.bg-danger {
+  background-color: #FEE2E2 !important;
+  color: #DC2626 !important;
+}
+
+.starline-root .badge.bg-warning {
+  background-color: #FEF3C7 !important;
+  color: #D97706 !important;
+}
+
+.starline-root .badge.bg-primary {
+  background-color: #E0E7FF !important;
+  color: #4F46E5 !important;
+}
+
+/* Starline Pill Navigation Tabs */
+.starline-pill-tab {
+  border-radius: 12px !important;
+  font-weight: 650 !important;
+  padding: 8px 18px !important;
+  font-size: 0.86rem !important;
+  border: 1px solid transparent !important;
+  text-decoration: none !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer;
+}
+
+.starline-pill-tab.active {
+  background-color: #EBF86D !important;
+  color: #111418 !important;
+  font-weight: 750 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+}
+
+.starline-pill-tab:not(.active) {
+  background-color: #FFFFFF !important;
+  color: #525866 !important;
+  border: 1px solid #E5E7EB !important;
+}
+
+.starline-pill-tab:not(.active):hover {
+  background-color: #F4F5F7 !important;
+  color: #111418 !important;
+}
+
+/* Modals */
+.starline-root .modal-content {
+  border-radius: 24px !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1) !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+.starline-root .modal-header {
+  border-bottom: 1px solid #F1F3F5 !important;
+  padding: 18px 24px !important;
+}
+
+.starline-root .modal-footer {
+  border-top: 1px solid #F1F3F5 !important;
+  padding: 16px 24px !important;
+}
+
 

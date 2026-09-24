@@ -99,26 +99,45 @@ export default function PaymentsPage() {
       {/* Header */}
       <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
         <div>
-          <h4 className="fw-bold m-0">Payments &amp; Cashbook Ledger</h4>
+          <h4 className="fw-bold m-0" style={{ letterSpacing: '-0.3px', color: '#111418' }}>Payments &amp; Cashbook Ledger</h4>
           <p className="text-muted small m-0">Record collections from customers and disbursements to suppliers.</p>
         </div>
-        <button onClick={openAddModal} className="btn btn-warning fw-bold d-flex align-items-center gap-1.5 shadow-sm" style={{ borderRadius: '10px' }}>
-          <i className="bi bi-plus-circle"></i> Record Payment Entry
+        <button onClick={openAddModal} className="btn btn-dark fw-bold d-flex align-items-center gap-2 shadow-sm px-3 py-2" style={{ borderRadius: '12px', background: '#111418', border: 'none' }}>
+          <i className="bi bi-plus-lg"></i> Record Payment Entry
         </button>
       </div>
 
-      {/* Metrics */}
+      {/* Starline Metrics Cards */}
       <div className="row g-3">
-        <div className="col-sm-6">
-          <div className="card border-0 shadow-sm p-3" style={{ borderRadius: '12px' }}>
-            <span className="text-muted small fw-semibold">Total Collections Received (Inflow)</span>
-            <h3 className="fw-bold text-success m-0">{formatCurrency(totalReceived)}</h3>
+        <div className="col-12 col-md-6">
+          <div className="starline-pastel-card mint h-100">
+            <div className="d-flex align-items-center gap-3">
+              <div className="starline-card-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                  <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+              </div>
+              <div className="d-flex flex-column">
+                <span className="starline-metric-num" style={{ color: '#059669' }}>{formatCurrency(totalReceived)}</span>
+                <span className="starline-metric-label">Total Collections Received (Inflow)</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="col-sm-6">
-          <div className="card border-0 shadow-sm p-3" style={{ borderRadius: '12px' }}>
-            <span className="text-muted small fw-semibold">Total Payments Outward (Outflow)</span>
-            <h3 className="fw-bold text-dark m-0">{formatCurrency(totalPaid)}</h3>
+        <div className="col-12 col-md-6">
+          <div className="starline-pastel-card lavender h-100">
+            <div className="d-flex align-items-center gap-3">
+              <div className="starline-card-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                  <rect x="2" y="7" width="20" height="14" rx="2"></rect>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+              </div>
+              <div className="d-flex flex-column">
+                <span className="starline-metric-num">{formatCurrency(totalPaid)}</span>
+                <span className="starline-metric-label">Total Payments Outward (Outflow)</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

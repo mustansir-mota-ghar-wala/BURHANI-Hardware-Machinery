@@ -49,35 +49,44 @@ export default function ReportsPage() {
         </button>
       </div>
 
-      {/* Tabs */}
-      <div className="d-flex gap-2 border-bottom pb-2">
+      {/* Starline Pill Navigation Tabs */}
+      <div className="d-flex gap-2">
         <button
           onClick={() => setActiveTab('gst')}
-          className={`btn fw-bold px-4 py-2 ${activeTab === 'gst' ? 'btn-dark' : 'btn-light text-muted'}`}
-          style={{ borderRadius: '10px' }}>
+          className={`starline-pill-tab ${activeTab === 'gst' ? 'active' : ''}`}>
           <i className="bi bi-receipt-cutoff me-2"></i> GST Tax Filing Summary
         </button>
         <button
           onClick={() => setActiveTab('outstanding')}
-          className={`btn fw-bold px-4 py-2 ${activeTab === 'outstanding' ? 'btn-dark' : 'btn-light text-muted'}`}
-          style={{ borderRadius: '10px' }}>
+          className={`starline-pill-tab ${activeTab === 'outstanding' ? 'active' : ''}`}>
           <i className="bi bi-hourglass-split me-2"></i> Outstanding Balances
         </button>
       </div>
 
       {loading ? (
         <div className="text-center py-5">
-          <div className="spinner-border text-warning" role="status"></div>
+          <div className="spinner-border text-dark" role="status"></div>
         </div>
       ) : activeTab === 'gst' && gstData ? (
         <div className="d-flex flex-column gap-4">
-          {/* GST Summary Cards */}
+          {/* Starline GST Summary Cards */}
           <div className="row g-3">
             <div className="col-12 col-md-4">
-              <div className="card border-0 shadow-sm p-3 h-100" style={{ borderRadius: '14px', background: 'linear-gradient(135deg, #ffffff 0%, #fff7ed 100%)' }}>
-                <span className="text-muted small fw-bold text-uppercase">Output GST (Sales)</span>
-                <h3 className="fw-bold text-dark mt-1 mb-2">{formatCurrency(gstData.summary.output_total)}</h3>
-                <div className="small text-muted d-flex justify-content-between">
+              <div className="starline-pastel-card peach h-100">
+                <div className="d-flex align-items-center gap-3 mb-2">
+                  <div className="starline-card-icon-box">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                    </svg>
+                  </div>
+                  <div>
+                    <span className="starline-metric-label">Output GST (Sales)</span>
+                    <div className="starline-metric-num">{formatCurrency(gstData.summary.output_total)}</div>
+                  </div>
+                </div>
+                <div className="small text-muted d-flex justify-content-between pt-1 border-top border-secondary border-opacity-10">
                   <span>CGST: {formatCurrency(gstData.summary.output_cgst)}</span>
                   <span>SGST: {formatCurrency(gstData.summary.output_sgst)}</span>
                 </div>
@@ -85,10 +94,20 @@ export default function ReportsPage() {
             </div>
 
             <div className="col-12 col-md-4">
-              <div className="card border-0 shadow-sm p-3 h-100" style={{ borderRadius: '14px', background: 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)' }}>
-                <span className="text-muted small fw-bold text-uppercase">Input Tax Credit (Purchases)</span>
-                <h3 className="fw-bold text-success mt-1 mb-2">{formatCurrency(gstData.summary.input_total)}</h3>
-                <div className="small text-muted d-flex justify-content-between">
+              <div className="starline-pastel-card mint h-100">
+                <div className="d-flex align-items-center gap-3 mb-2">
+                  <div className="starline-card-icon-box">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                      <circle cx="12" cy="12" r="9"></circle>
+                      <polyline points="12 6 12 12 14 14"></polyline>
+                    </svg>
+                  </div>
+                  <div>
+                    <span className="starline-metric-label">Input Tax Credit (Purchases)</span>
+                    <div className="starline-metric-num" style={{ color: '#059669' }}>{formatCurrency(gstData.summary.input_total)}</div>
+                  </div>
+                </div>
+                <div className="small text-muted d-flex justify-content-between pt-1 border-top border-secondary border-opacity-10">
                   <span>CGST: {formatCurrency(gstData.summary.input_cgst)}</span>
                   <span>SGST: {formatCurrency(gstData.summary.input_sgst)}</span>
                 </div>
@@ -96,11 +115,21 @@ export default function ReportsPage() {
             </div>
 
             <div className="col-12 col-md-4">
-              <div className="card border-0 shadow-sm p-3 h-100" style={{ borderRadius: '14px', background: 'linear-gradient(135deg, #ffffff 0%, #fef2f2 100%)' }}>
-                <span className="text-muted small fw-bold text-uppercase">Net GST Liability / Credit</span>
-                <h3 className={`fw-bold mt-1 mb-2 ${gstData.summary.net_payable > 0 ? 'text-danger' : 'text-success'}`}>
-                  {formatCurrency(gstData.summary.net_payable)}
-                </h3>
+              <div className="starline-pastel-card lavender h-100">
+                <div className="d-flex align-items-center gap-3 mb-2">
+                  <div className="starline-card-icon-box" style={gstData.summary.net_payable > 0 ? { background: '#FEE2E2', color: '#DC2626' } : {}}>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                      <line x1="12" y1="1" x2="12" y2="23"></line>
+                      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <span className="starline-metric-label">Net GST Liability / Credit</span>
+                    <div className="starline-metric-num" style={gstData.summary.net_payable > 0 ? { color: '#DC2626' } : { color: '#059669' }}>
+                      {formatCurrency(gstData.summary.net_payable)}
+                    </div>
+                  </div>
+                </div>
                 <span className="small text-muted">
                   {gstData.summary.net_payable > 0 ? 'Tax payable to government' : 'Surplus input tax credit carried forward'}
                 </span>

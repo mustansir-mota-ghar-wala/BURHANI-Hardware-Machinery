@@ -174,32 +174,67 @@ export default function ProductsPage() {
       {/* Header */}
       <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
         <div>
-          <h4 className="fw-bold m-0">Inventory &amp; Stock Management</h4>
+          <h4 className="fw-bold m-0" style={{ letterSpacing: '-0.3px', color: '#111418' }}>Inventory &amp; Stock Management</h4>
           <p className="text-muted small m-0">Manage items, stock counts, cost pricing, and GST tax slabs.</p>
         </div>
-        <button onClick={openAddModal} className="btn btn-warning fw-bold d-flex align-items-center gap-1.5 shadow-sm" style={{ borderRadius: '10px' }}>
-          <i className="bi bi-plus-circle"></i> Add Product
+        <button onClick={openAddModal} className="btn btn-dark fw-bold d-flex align-items-center gap-2 shadow-sm px-3 py-2" style={{ borderRadius: '12px', background: '#111418', border: 'none' }}>
+          <i className="bi bi-plus-lg"></i> Add Product
         </button>
       </div>
 
-      {/* Summary Cards */}
+      {/* Starline Summary Pastel Cards */}
       <div className="row g-3">
-        <div className="col-sm-6 col-md-4">
-          <div className="card border-0 shadow-sm p-3" style={{ borderRadius: '12px' }}>
-            <span className="text-muted small fw-semibold">Total Catalog Items</span>
-            <h4 className="fw-bold text-dark m-0">{products.length} Items</h4>
+        <div className="col-12 col-md-4">
+          <div className="starline-pastel-card lavender h-100">
+            <div className="d-flex align-items-center gap-3">
+              <div className="starline-card-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+              </div>
+              <div className="d-flex flex-column">
+                <span className="starline-metric-num">{products.length} Items</span>
+                <span className="starline-metric-label">Total Catalog Items</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="col-sm-6 col-md-4">
-          <div className="card border-0 shadow-sm p-3" style={{ borderRadius: '12px' }}>
-            <span className="text-muted small fw-semibold">Inventory Valuation (Cost)</span>
-            <h4 className="fw-bold text-success m-0">{formatCurrency(stockValue)}</h4>
+        <div className="col-12 col-md-4">
+          <div className="starline-pastel-card peach h-100">
+            <div className="d-flex align-items-center gap-3">
+              <div className="starline-card-icon-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4.5"></path>
+                  <line x1="12" y1="7" x2="12" y2="17"></line>
+                </svg>
+              </div>
+              <div className="d-flex flex-column">
+                <span className="starline-metric-num">{formatCurrency(stockValue)}</span>
+                <span className="starline-metric-label">Inventory Valuation (Cost)</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="col-sm-6 col-md-4">
-          <div className="card border-0 shadow-sm p-3" style={{ borderRadius: '12px' }}>
-            <span className="text-muted small fw-semibold">Low Stock Warnings</span>
-            <h4 className={`fw-bold m-0 ${lowStockCount > 0 ? 'text-danger' : 'text-muted'}`}>{lowStockCount} Items</h4>
+        <div className="col-12 col-md-4">
+          <div className="starline-pastel-card mint h-100">
+            <div className="d-flex align-items-center gap-3">
+              <div className="starline-card-icon-box" style={lowStockCount > 0 ? { background: '#FEE2E2', color: '#DC2626' } : {}}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                  <line x1="12" y1="9" x2="12" y2="13"></line>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+              </div>
+              <div className="d-flex flex-column">
+                <span className="starline-metric-num" style={lowStockCount > 0 ? { color: '#DC2626' } : {}}>
+                  {lowStockCount} Items
+                </span>
+                <span className="starline-metric-label">Low Stock Warnings</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
