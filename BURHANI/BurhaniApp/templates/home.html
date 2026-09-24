@@ -1,4 +1,6 @@
+{% extends 'base.html' %}
 {% load static %}
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 
@@ -670,9 +672,664 @@
                     <i class="bi bi-list"></i>
                 </button>
             </div>
-        </div>
-    </header>
+=======
 
+{% block title %}Burhani Hardware & Machinery | Chainsaw, Welding Machine, Power Tools{% endblock %}
+{% block meta_description %}Burhani Hardware & Machinery sells chainsaw lakdi kaatne ki machine, welding machines, power
+tools, agricultural equipment, spray pumps, LD pipe, and openwell paani motors.{% endblock %}
+{% block meta_keywords %}Burhani Hardware, Burhani Hardware Machinery, chainsaw, lakdi kaatne ki machine, welding
+machine, power tools, agricultural equipment, spray pump, dava chirakne ki tanki, LD pipe, openwell motor, paani ki
+motor{% endblock %}
+
+{% block extra_css %}
+:root {
+--gg-header: #0a110f;
+--gg-bg: #f8f9fa;
+--gg-accent: #e67e22;
+--gg-card: #ffffff;
+--gg-text: #1a1a1a;
+--gg-white: #ffffff;
+--gg-yellow: #ffc107;
+--gg-glass: rgba(255, 255, 255, 0.9);
+--gg-border: rgba(0, 0, 0, 0.08);
+}
+
+body {
+background-color: var(--gg-bg);
+color: var(--gg-text);
+font-family: 'Inter', sans-serif;
+margin: 0;
+overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+.heading-font {
+font-family: 'Playfair Display', serif;
+font-weight: 900;
+color: var(--gg-header);
+}
+
+header {
+background-color: var(--gg-header);
+color: var(--gg-white);
+padding: 1.2rem 0;
+position: sticky;
+top: 0;
+z-index: 1000;
+backdrop-filter: blur(20px);
+border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nav-links a {
+color: rgba(255, 255, 255, 0.7);
+text-decoration: none;
+text-transform: uppercase;
+font-size: 0.8rem;
+font-weight: 700;
+letter-spacing: 1px;
+margin-right: 2rem;
+transition: 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+color: var(--gg-yellow);
+}
+
+.logo-circle {
+background-color: var(--gg-yellow);
+width: 45px;
+height: 45px;
+border-radius: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+color: var(--gg-header);
+margin-right: 15px;
+transform: rotate(-3deg);
+box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+transition: 0.3s;
+}
+
+.logo-circle:hover {
+transform: rotate(0deg) scale(1.1);
+}
+
+.message-container {
+position: fixed;
+top: 5rem;
+right: 2rem;
+z-index: 1050;
+max-width: 350px;
+}
+
+.alert {
+border-radius: 16px;
+border: none;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(10px);
+animation: slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideInRight {
+from {
+transform: translateX(100%);
+opacity: 0;
+}
+
+to {
+transform: translateX(0);
+opacity: 1;
+}
+}
+
+/* Hero Container */
+.hero-container {
+padding: 1.5rem 0 0;
+display: grid;
+grid-template-columns: minmax(290px, 390px) 1fr;
+gap: 1rem;
+align-items: stretch;
+}
+
+.hero-box {
+background:
+linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.18)),
+url("{% static 'images/120534CD-5AF1-44FC-8322-939E9A693A33.jpg' %}");
+background-size: contain;
+background-position: center center;
+background-repeat: no-repeat;
+width: min(100%, 390px);
+aspect-ratio: 1440 / 1795;
+border-radius: 30px;
+border: 1px solid rgba(255, 255, 255, 0.9);
+display: flex;
+align-items: flex-end;
+justify-content: center;
+text-align: center;
+box-sizing: border-box;
+padding: 0 2rem 1.5rem;
+color: white;
+box-shadow: 0 28px 70px rgba(0, 0, 0, 0.18);
+animation: fadeIn 1s ease-out;
+}
+
+.hero-categories {
+background: white;
+border: 1px solid var(--gg-border);
+border-radius: 30px;
+padding: 1rem;
+box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
+display: flex;
+flex-direction: column;
+min-height: 0;
+height: 486px;
+overflow: hidden;
+}
+
+.hero-categories h2 {
+font-size: 1.45rem;
+margin-bottom: 0.65rem;
+}
+
+.hero-category-grid {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 0.75rem;
+overflow-y: auto;
+padding-right: 0.25rem;
+}
+
+.hero-category-card {
+min-height: 120px;
+border-radius: 18px;
+overflow: hidden;
+position: relative;
+text-decoration: none;
+color: white;
+background: var(--gg-header);
+}
+
+.hero-category-card:hover {
+color: white;
+}
+
+.hero-category-card img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+position: absolute;
+inset: 0;
+opacity: 1; /* Brighten image */
+transition: transform 0.4s ease;
+}
+
+.hero-category-card:hover img {
+transform: scale(1.08);
+}
+
+.hero-category-card span {
+position: absolute;
+left: 1rem;
+right: 1rem;
+bottom: 0.85rem;
+z-index: 1;
+font-weight: 800;
+text-transform: capitalize;
+color: rgba(255, 255, 255, 0.85); /* Slightly transparent */
+text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 768px) {
+.hero-category-card span {
+font-size: 0.85rem;
+}
+}
+
+@media (min-width: 769px) {
+.hero-container {
+padding-top: 1rem;
+}
+
+.hero-box {
+width: min(100%, 360px);
+}
+
+.hero-categories {
+height: 449px;
+}
+
+#categories .section-title {
+margin-top: 0.45rem;
+margin-bottom: 0.25rem;
+}
+
+.cat-slider-container {
+padding-top: 0.5rem;
+}
+}
+
+@media (max-width: 768px) {
+.hero-container {
+display: block;
+padding-top: 0 !important;
+padding-bottom: 0 !important;
+}
+
+.hero-box {
+height: auto !important;
+box-sizing: border-box;
+width: min(84%, 320px);
+margin: 0 auto;
+background-position: center center !important;
+border-radius: 22px;
+}
+
+.hero-categories {
+display: none;
+}
+
+#categories {
+padding-top: 0 !important;
+}
+
+#categories .section-title {
+font-size: 1.15rem !important;
+margin: 0.45rem 0 0.45rem !important;
+padding-bottom: 0.5rem !important;
+letter-spacing: 1.5px !important;
+}
+
+#categories .row {
+--bs-gutter-y: 0.75rem;
+}
+}
+
+@keyframes fadeIn {
+from {
+opacity: 0;
+transform: translateY(20px);
+}
+
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+.hero-search {
+background: white;
+border-radius: 16px;
+padding: 0.5rem;
+display: flex;
+align-items: center;
+max-width: 600px;
+margin: 0 auto 2rem;
+box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.hero-search input {
+border: none;
+flex-grow: 1;
+padding: 0.8rem 1.5rem;
+font-size: 1.1rem;
+outline: none;
+background: transparent;
+}
+
+.btn-terracotta {
+background-color: var(--gg-accent);
+color: white;
+padding: 1rem 2.5rem;
+border-radius: 14px;
+font-weight: 800;
+border: none;
+transition: 0.4s;
+text-transform: uppercase;
+letter-spacing: 1.5px;
+box-shadow: 0 10px 20px rgba(230, 126, 34, 0.2);
+}
+
+.btn-terracotta:hover {
+background-color: #d35400;
+transform: translateY(-4px);
+box-shadow: 0 15px 30px rgba(230, 126, 34, 0.3);
+}
+
+/* Category Slider */
+.cat-slider-container {
+overflow-x: auto;
+display: flex;
+gap: 1.5rem;
+padding: 1rem 0 2rem;
+scrollbar-width: none;
+-ms-overflow-style: none;
+scroll-snap-type: x mandatory;
+-webkit-overflow-scrolling: touch;
+}
+
+.cat-slider-container::-webkit-scrollbar {
+display: none;
+}
+
+.cat-slide-item {
+flex: 0 0 calc(22% - 1.2rem);
+/* Shows 4 full items and a peek of the 5th */
+min-width: 250px;
+scroll-snap-align: start;
+}
+
+@media (max-width: 992px) {
+.cat-slide-item {
+flex: 0 0 75%;
+/* 1.25 items on mobile */
+min-width: 200px;
+}
+}
+
+/* Slider Navigation */
+.slider-nav-container {
+position: relative;
+}
+
+.slider-btn {
+position: absolute;
+top: 55%;
+transform: translateY(-50%);
+width: 45px;
+height: 45px;
+background: white;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+z-index: 10;
+cursor: pointer;
+border: 1px solid var(--gg-border);
+color: var(--gg-header);
+transition: 0.3s;
+}
+
+.slider-btn:hover {
+background: var(--gg-accent);
+color: white;
+border-color: var(--gg-accent);
+}
+
+.btn-prev {
+left: -20px;
+}
+
+.btn-next {
+right: -20px;
+}
+
+@media (max-width: 1200px) {
+.slider-btn {
+display: none;
+}
+}
+
+.cat-card {
+background-color: white;
+border-radius: 24px;
+overflow: hidden;
+text-align: center;
+padding-bottom: 2rem;
+transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+border: 1px solid var(--gg-border);
+height: 100%;
+}
+
+.cat-card:hover {
+transform: translateY(-10px);
+box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+border-color: var(--gg-accent);
+}
+
+.cat-img {
+height: 160px;
+overflow: hidden;
+background: #f9f9f9;
+}
+
+.cat-img img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+transition: 0.6s;
+}
+
+.cat-card:hover .cat-img img {
+transform: scale(1.1);
+}
+
+/* Featured Section */
+.section-title {
+text-align: center;
+margin: 1.5rem 0 0.5rem;
+text-transform: uppercase;
+letter-spacing: 3px;
+font-weight: 900;
+position: relative;
+padding-bottom: 1rem;
+}
+
+.section-title::after {
+content: '';
+position: absolute;
+bottom: 0;
+left: 50%;
+transform: translateX(-50%);
+width: 60px;
+height: 4px;
+background: var(--gg-accent);
+border-radius: 2px;
+}
+
+#categories .section-title {
+margin-top: 0.85rem;
+margin-bottom: 0.35rem;
+}
+
+/* Product Cards */
+.prod-card {
+background: white;
+border-radius: 26px;
+overflow: hidden;
+transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+border: 1px solid var(--gg-border);
+height: 360px;
+/* Fixed height for consistent half/half split */
+display: flex;
+flex-direction: column;
+position: relative;
+}
+
+.prod-card:hover {
+transform: translateY(-12px);
+box-shadow: 0 40px 80px rgba(0, 0, 0, 0.12);
+}
+
+.prod-img {
+height: 50%;
+/* Exact half */
+width: 100%;
+overflow: hidden;
+position: relative;
+background: #f8f9fa;
+}
+
+.prod-img img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+/* Full bleed image */
+transition: transform 0.8s ease;
+padding: 0 !important;
+/* Remove padding for full bleed */
+}
+
+.prod-card:hover .prod-img img {
+transform: scale(1.15);
+}
+
+.prod-info {
+height: 50%;
+/* Exact half */
+padding: 0.8rem 1rem;
+text-align: center;
+display: flex;
+flex-direction: column;
+justify-content: center;
+background: white;
+}
+
+.prod-info h4 {
+font-size: 1.15rem;
+font-weight: 800;
+margin-bottom: 0.5rem;
+color: var(--gg-header);
+}
+
+.prod-price {
+font-weight: 900;
+font-size: 1.4rem;
+color: var(--gg-accent);
+margin-bottom: 1rem;
+}
+
+.btn-add {
+background-color: #198754;
+color: white;
+width: 100%;
+border-radius: 12px;
+padding: 0.8rem;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 1px;
+border: none;
+transition: 0.3s;
+}
+
+.btn-add:hover {
+background-color: var(--gg-accent);
+transform: translateY(-2px);
+}
+
+/* Footer */
+footer {
+background: var(--gg-header);
+color: white;
+padding: 5rem 0 2rem;
+margin-top: 5rem;
+}
+
+.footer-title {
+font-weight: 800;
+text-transform: uppercase;
+letter-spacing: 2px;
+margin-bottom: 2rem;
+font-size: 1rem;
+color: var(--gg-yellow);
+}
+
+.footer-links {
+list-style: none;
+padding: 0;
+}
+
+.footer-links li {
+margin-bottom: 1rem;
+}
+
+.footer-links a {
+color: rgba(255, 255, 255, 0.6);
+text-decoration: none;
+transition: 0.3s;
+font-weight: 500;
+}
+
+.footer-links a:hover {
+color: white;
+padding-left: 5px;
+}
+
+.social-icons {
+display: flex;
+gap: 1.5rem;
+}
+
+.social-icons a {
+width: 45px;
+height: 45px;
+background: rgba(255, 255, 255, 0.05);
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 12px;
+color: white;
+text-decoration: none;
+transition: 0.3s;
+}
+
+.social-icons a:hover {
+background: var(--gg-yellow);
+color: var(--gg-header);
+transform: translateY(-5px);
+}
+
+.copyright {
+border-top: 1px solid rgba(255, 255, 255, 0.05);
+margin-top: 4rem;
+padding-top: 2rem;
+text-align: center;
+color: rgba(255, 255, 255, 0.4);
+font-size: 0.9rem;
+}
+{% endblock %}
+
+{% block content %}
+{% if messages %}
+<div class="message-container">
+    {% for message in messages %}
+    <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'warning' %}warning{% elif message.tags == 'success' %}success{% elif message.tags == 'info' %}info{% else %}primary{% endif %} alert-dismissible fade show"
+        role="alert">
+        <i
+            class="bi {% if message.tags == 'error' %}bi-exclamation-octagon{% elif message.tags == 'warning' %}bi-exclamation-triangle{% elif message.tags == 'success' %}bi-check-circle{% else %}bi-info-circle{% endif %} me-2"></i>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Mobile Search Bar (Phase 2) -->
+<form action="{% url 'home' %}" method="GET" class="mobile-search-bar" id="mobileSearchForm">
+    <div style="position: relative; width: 100%; display: flex; align-items: center; pointer-events: auto;">
+        <input type="text" name="q" id="mobileSearchInput" placeholder="Search tools..." value="{{ query|default:'' }}"
+            style="width: 100%; padding-right: 105px;">
+        <div style="position: absolute; right: 10px; display: flex; gap: 4px; align-items: center;">
+            <button type="button" onclick="startMobileVoiceSearch()" id="mobileSearchMicBtn"
+                style="position: static; transform: none; background: rgba(211, 84, 0, 0.1); border-radius: 8px; border: none; font-size: 1.05rem; color: var(--gg-accent); opacity: 1; padding: 5px 8px; box-shadow: 0 2px 5px rgba(211, 84, 0, 0.15); height: 32px; display: flex; align-items: center; justify-content: center;"><i
+                    id="mobileSearchMicIcon" class="bi bi-mic-fill"></i></button>
+            <button type="button" onclick="document.getElementById('cameraInput').click()"
+                style="position: static; transform: none; background: rgba(211, 84, 0, 0.1); border-radius: 8px; border: none; font-size: 1.05rem; color: var(--gg-accent); opacity: 1; padding: 5px 8px; box-shadow: 0 2px 5px rgba(211, 84, 0, 0.15); height: 32px; display: flex; align-items: center; justify-content: center;"><i
+                    class="bi bi-camera-fill"></i></button>
+            <button type="submit"
+                style="position: static; transform: none; padding: 5px; right: auto; margin-left: 2px; color: var(--gg-header);"><i
+                    class="bi bi-search"></i></button>
+>>>>>>> 5f4e404b498b6ae481ae0ee129b014963a303982
+        </div>
+    </div>
+</form>
+<input type="file" accept="image/*" capture="environment" class="d-none" id="cameraInput"
+    onchange="handleVisualSearch(event)">
+
+<<<<<<< HEAD
     <!-- Mobile Offcanvas Menu (Bottom Sheet) -->
     <div class="offcanvas offcanvas-bottom-sheet text-bg-dark" tabindex="-1" id="mobileMenu">
         <div class="offcanvas-header border-bottom border-secondary">
@@ -695,105 +1352,74 @@
                 {% else %}
                     <a href="{% url 'login' %}" class="text-warning text-decoration-none fw-bold">Login</a>
                 {% endif %}
+=======
+<!-- Visual Search Loading Modal -->
+<div class="modal fade" id="visualSearchModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen-md-down">
+        <div class="modal-content text-center p-4">
+            <div id="vsLoading">
+                <div class="spinner-border text-warning mb-3" role="status"></div>
+                <h5>Analyzing your photo...</h5>
+                <p class="text-muted">Our AI is looking for matching tools in our inventory.</p>
             </div>
-        </div>
-    </div>
-    {% if messages %}
-    <div class="message-container">
-        {% for message in messages %}
-        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show"
-            role="alert">
-            <i
-                class="bi {% if message.tags == 'error' %}bi-exclamation-octagon{% else %}bi-check-circle{% endif %} me-2"></i>
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <!-- Mobile Search Bar (Phase 2) -->
-    <form action="{% url 'home' %}" method="GET" class="mobile-search-bar">
-        <input type="text" name="q" placeholder="Search for tools, machinery..." value="{{ query|default:'' }}">
-        <button type="submit"><i class="bi bi-search"></i></button>
-    </form>
-
-    <!-- Mobile Category Pills (Phase 2) -->
-    <div class="cat-pill-container">
-        <a href="{% url 'home' %}" class="cat-pill active">All Tools</a>
-        {% for category in categories %}
-        <a href="{% url 'product' category.id %}" class="cat-pill">{{ category.name }}</a>
-        {% endfor %}
-    </div>
-
-    {% if not query %}
-        <div class="container hero-container">
-            <div class="hero-box">
-                <div class="hero-content">
-                    <a href="#categories" class="btn-terracotta text-decoration-none">Explore Categories</a>
+            <div id="vsResults" class="d-none text-start">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold m-0">Similar Items Found</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-            </div>
-            <div class="hero-categories">
-                <h2 class="heading-font">Shop By Category</h2>
-                <div class="hero-category-grid">
-                    {% for category in categories %}
-                    <a href="{% url 'product' category.id %}" class="hero-category-card">
-                        {% if category.image %}
-                        <img src="{{ category.image.url }}" alt="{{ category.name }}">
-                        {% else %}
-                        <img src="{% static 'images/cat_hardware.png' %}" alt="Hardware">
-                        {% endif %}
-                        <span>{{ category.name }}</span>
-                    </a>
-                    {% endfor %}
-                </div>
+                <p class="text-muted small" id="vsKeywords"></p>
+                <div id="vsProductList" class="row g-2"></div>
+>>>>>>> 5f4e404b498b6ae481ae0ee129b014963a303982
             </div>
         </div>
-    {% else %}
-    <div class="container py-4 mt-2">
-        <div class="d-flex justify-content-between align-items-end mb-4">
-            <div>
-                <h1 class="heading-font display-4 mb-2">Search Results</h1>
-                <p class="text-muted lead">Showing results for "<span class="text-accent fw-bold">{{ query }}</span>"
-                </p>
-            </div>
-            <a href="{% url 'home' %}" class="btn btn-outline-dark rounded-pill px-4">Clear Search</a>
-        </div>
-        <hr class="opacity-10 mb-3">
     </div>
-    {% endif %}
-    <div class="container pb-2" id="categories">
-        <h2 class="section-title">Shop By Category</h2>
-        
-        <!-- Desktop Slider -->
-        <div class="d-none d-md-block slider-nav-container">
-            <button class="slider-btn btn-prev" id="catPrev"><i class="bi bi-chevron-left"></i></button>
-            <button class="slider-btn btn-next" id="catNext"><i class="bi bi-chevron-right"></i></button>
-            <div class="cat-slider-container" id="catSlider">
-                {% for category in categories %}
-                <div class="cat-slide-item">
-                    <a href="{% url 'product' category.id %}" style="text-decoration: none; color: inherit;">
-                        <div class="cat-card">
-                            <div class="cat-img">
-                                {% if category.image %}
-                                <img src="{{ category.image.url }}" alt="{{ category.name }}">
-                                {% else %}
-                                <img src="{% static 'images/cat_hardware.png' %}" alt="Hardware">
-                                {% endif %}
-                            </div>
-                            <h3 class="mt-3 fs-5" style="text-transform: capitalize;">{{ category.name }}</h3>
-                            <p class="small text-muted d-none d-md-block">Shop Essentials</p>
-                        </div>
-                    </a>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
+</div>
 
-        <!-- Mobile Grid (Current) -->
-        <div class="row g-3 d-flex d-md-none">
+<!-- Mobile Category Pills (Phase 2) -->
+{% if not query %}
+<div class="cat-pill-container">
+    {% for category in categories %}
+    <a href="{% url 'product' category.id %}" class="cat-pill">{{ category.name }}</a>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if not query %}
+<div class="container hero-container">
+    <div class="hero-box">
+        <div class="hero-content">
+            <a href="#categories" class="btn-terracotta text-decoration-none">Explore Categories</a>
+        </div>
+    </div>
+    <div class="hero-categories">
+        <h2 class="heading-font">Shop By Category</h2>
+        <div class="hero-category-grid">
             {% for category in categories %}
-            <div class="col-6">
+            <a href="{% url 'product' category.id %}" class="hero-category-card">
+                {% if category.image %}
+                <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                {% else %}
+                <img src="{% static 'images/cat_hardware.png' %}" alt="Hardware">
+                {% endif %}
+                <span>{{ category.name }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% else %}
+{% endif %}
+{% if not query %}
+<div class="container pb-2" id="categories">
+    <h2 class="section-title">Shop By Category</h2>
+
+    <!-- Desktop Slider -->
+    <div class="d-none d-md-block slider-nav-container">
+        <button class="slider-btn btn-prev" id="catPrev"><i class="bi bi-chevron-left"></i></button>
+        <button class="slider-btn btn-next" id="catNext"><i class="bi bi-chevron-right"></i></button>
+        <div class="cat-slider-container" id="catSlider">
+            {% for category in categories %}
+            <div class="cat-slide-item">
                 <a href="{% url 'product' category.id %}" style="text-decoration: none; color: inherit;">
                     <div class="cat-card">
                         <div class="cat-img">
@@ -811,177 +1437,233 @@
             {% endfor %}
         </div>
     </div>
-    <div class="container pb-4 pb-md-5 mt-1 pt-1 border-top border-2 border-light">
-        {% if query %}
-        <h2 class="section-title">Products Found ({{ products|length }})</h2>
-        {% else %}
-        <div class="d-flex justify-content-center align-items-center gap-2 flex-nowrap" style="margin: 0.5rem 0 1.5rem;">
-            <h2 class="section-title m-0 text-nowrap" style="margin: 0 !important; font-size: clamp(1.2rem, 5vw, 2rem);">New Arrivals</h2>
-            <span class="badge bg-danger rounded-pill shadow-sm px-2 py-1" style="font-size: 0.7rem; transform: translateY(-8px);">🔥 NEW</span>
-        </div>
-        {% endif %}
-        <div class="row g-3">
-            {% for product in products %}
-            <div class="col-6 col-md-3 col-lg-3">
-                <div class="prod-card touch-feedback">
-                    <div class="prod-img">
-                        {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+
+    <!-- Mobile Grid (Current) -->
+    <div class="row g-3 d-flex d-md-none">
+        {% for category in categories %}
+        <div class="col-6">
+            <a href="{% url 'product' category.id %}" style="text-decoration: none; color: inherit;">
+                <div class="cat-card">
+                    <div class="cat-img">
+                        {% if category.image %}
+                        <img src="{{ category.image.url }}" alt="{{ category.name }}">
                         {% else %}
-                        <img src="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=800&auto=format&fit=crop"
-                            alt="Power Tool">
+                        <img src="{% static 'images/cat_hardware.png' %}" alt="Hardware">
                         {% endif %}
                     </div>
-                    <div class="prod-info text-center">
-                        <h4>{{ product.name }}</h4>
-                        <div class="prod-price">₹{{ product.price }}</div>
-                        <a href="{% url 'add_to_cart' product.id %}" class="w-100"><button class="btn-add">Add to
-                                Cart</button></a>
-                        <a href="{% url 'add_to_cart' product.id %}" class="floating-cart-btn"><i
-                                class="bi bi-plus-lg"></i></a>
-                    </div>
+                    <h3 class="mt-3 fs-5" style="text-transform: capitalize;">{{ category.name }}</h3>
+                    <p class="small text-muted d-none d-md-block">Shop Essentials</p>
                 </div>
-            </div>
-            {% empty %}
-            <div class="col-12 text-center py-5">
-                <i class="bi bi-search fs-1 text-muted mb-3 d-block"></i>
-                <h3 class="fw-bold">No results found</h3>
-                <p class="text-muted">Try adjusting your search terms or browse categories.</p>
-                <a href="{% url 'home' %}" class="btn-terracotta text-decoration-none mt-3">View All Products</a>
-            </div>
-            {% endfor %}
+            </a>
         </div>
+        {% endfor %}
     </div>
-    {% if not query %}
-    <div class="container py-4 py-md-5" id="about">
-        <div class="row align-items-center g-4 g-lg-5">
-            <div class="col-lg-6">
-                <h2 class="heading-font mb-4 fs-1">Quality You Can Trust</h2>
-                <p class="lead text-muted">At Burhani Hardware, we pride ourselves on providing the highest quality
-                    industrial tools and machinery. With over 20 years of experience, we support professionals and
-                    hobbyists alike with the best equipment in the industry.</p>
-                <div class="d-flex gap-4 mt-5">
-                    <div class="text-center">
-                        <h4 class="fw-bold text-accent">5000+</h4>
-                        <p class="small text-muted">Products</p>
-                    </div>
-                    <div class="text-center">
-                        <h4 class="fw-bold text-accent">10k+</h4>
-                        <p class="small text-muted">Happy Clients</p>
-                    </div>
-                    <div class="text-center">
-                        <h4 class="fw-bold text-accent">24/7</h4>
-                        <p class="small text-muted">Support</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=800&auto=format&fit=crop"
-                    class="img-fluid rounded-4 shadow-lg" alt="Workshop">
-            </div>
-        </div>
+</div>
+{% endif %}
+<div class="container pb-4 pb-md-5 mt-1 pt-1 border-top border-2 border-light">
+    {% if query %}
+    <!-- Hidden on search -->
+    {% else %}
+    <div class="d-flex justify-content-center align-items-center gap-2 flex-nowrap" style="margin: 0.5rem 0 1.5rem;">
+        <h2 class="section-title m-0 text-nowrap" style="margin: 0 !important; font-size: clamp(1.2rem, 5vw, 2rem);">New
+            Arrivals</h2>
+        <span class="badge bg-danger rounded-pill shadow-sm px-2 py-1"
+            style="font-size: 0.7rem; transform: translateY(-8px);">🔥 NEW</span>
     </div>
     {% endif %}
-    <footer>
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-4">
-                    <div class="d-flex align-items-center mb-4">
-                        <div class="logo-circle">
-                            <i class="bi bi-tools fs-5"></i>
-                        </div>
-                        <span class="heading-font fs-4 text-white" style="letter-spacing: 1px;">BURHANI HARDWARE</span>
-                    </div>
-                    <p class="text-white-50 mb-4">Your one-stop shop for premium hardware, industrial machinery, and
-                        professional tools. Quality service since 2004.</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="bi bi-facebook"></i></a>
-                        <a href="#"><i class="bi bi-instagram"></i></a>
-                        <a href="#"><i class="bi bi-twitter-x"></i></a>
-                        <a href="#"><i class="bi bi-linkedin"></i></a>
-                    </div>
+    <div class="row g-3">
+        {% for product in products %}
+        <div class="col-6 col-md-3 col-lg-3">
+            <div class="prod-card touch-feedback">
+                <a href="{% url 'product_detail' product.id %}" class="prod-img d-block text-decoration-none">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=800&auto=format&fit=crop"
+                        alt="Power Tool">
+                    {% endif %}
+                </a>
+                <div class="prod-info text-center">
+                    <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                        <h4>{{ product.name }}</h4>
+                    </a>
+                    <div class="prod-price">₹{{ product.price }}</div>
+                    <a href="{% url 'add_to_cart' product.id %}" class="w-100"><button class="btn-add">Add to
+                            Cart</button></a>
+                    <a href="{% url 'add_to_cart' product.id %}" class="floating-cart-btn"><i
+                            class="bi bi-plus-lg"></i></a>
                 </div>
-                <div class="col-lg-2 offset-lg-1">
-                    <h5 class="footer-title">Quick Links</h5>
-                    <ul class="footer-links">
-                        <li><a href="{% url 'home' %}">Home</a></li>
-                        <li><a href="#categories">Shop Tools</a></li>
-                        <li><a href="{% url 'your_orders' %}">My Orders</a></li>
-                        <li><a href="{% url 'cart' %}">Shopping Cart</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-2">
-                    <h5 class="footer-title">Categories</h5>
-                    <ul class="footer-links">
-                        {% for cat in categories|slice:":4" %}
-                        <li><a href="{% url 'product' cat.id %}">{{ cat.name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="col-lg-3">
-                    <h5 class="footer-title">Contact Info</h5>
-                    <ul class="footer-links">
-                        <li><a href="#"><i class="bi bi-geo-alt me-2"></i> 123 Hardware Lane, Industrial Hub, IN</a>
-                        </li>
-                        <li><a href="#"><i class="bi bi-telephone me-2"></i> +91 98765 43210</a></li>
-                        <li><a href="#"><i class="bi bi-envelope me-2"></i> support@burhani.com</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                &copy; 2026 Burhani Hardware and Machinery. All rights reserved.
             </div>
         </div>
-    </footer>
-    <!-- Bottom App Bar -->
-    <nav class="bottom-app-bar">
-        <a href="{% url 'home' %}" class="bottom-app-bar-item active">
-            <i class="bi bi-house-door-fill"></i>
-            <span>Home</span>
-        </a>
-        <a href="{% url 'cart' %}" class="bottom-app-bar-item">
-            <i class="bi bi-cart"></i>
-            <span>Cart</span>
-        </a>
-        <a href="{% url 'your_orders' %}" class="bottom-app-bar-item">
-            <i class="bi bi-box-seam"></i>
-            <span>Orders</span>
-        </a>
-        <a href="#" class="bottom-app-bar-item" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
-            <i class="bi bi-person"></i>
-            <span>Menu</span>
-        </a>
-    </nav>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Auto-dismiss alerts
-        setTimeout(function () {
-            let alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function (alert) {
-                let bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            });
-        }, 5000);
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-search fs-1 text-muted mb-3 d-block"></i>
+            <h3 class="fw-bold">No results found</h3>
+            <p class="text-muted">Try adjusting your search terms or browse categories.</p>
+            <a href="{% url 'home' %}" class="btn-terracotta text-decoration-none mt-3">View All Products</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% if not query %}
+<div class="container py-4 py-md-5" id="about">
+    <div class="row align-items-center g-4 g-lg-5">
+        <div class="col-lg-6">
+            <h2 class="heading-font mb-4 fs-1">Quality You Can Trust</h2>
+            <p class="lead text-muted">At Burhani Hardware, we pride ourselves on providing the highest quality
+                industrial tools and machinery. With over 20 years of experience, we support professionals and
+                hobbyists alike with the best equipment in the industry.</p>
+            <div class="d-flex gap-4 mt-5">
+                <div class="text-center">
+                    <h4 class="fw-bold text-accent">5000+</h4>
+                    <p class="small text-muted">Products</p>
+                </div>
+                <div class="text-center">
+                    <h4 class="fw-bold text-accent">10k+</h4>
+                    <p class="small text-muted">Happy Clients</p>
+                </div>
+                <div class="text-center">
+                    <h4 class="fw-bold text-accent">24/7</h4>
+                    <p class="small text-muted">Support</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=800&auto=format&fit=crop"
+                class="img-fluid rounded-4 shadow-lg" alt="Workshop">
+        </div>
+    </div>
+</div>
+{% endif %}
 
-        // Category Slider Logic
-        document.addEventListener('DOMContentLoaded', function() {
-            const slider = document.getElementById('catSlider');
-            const btnPrev = document.getElementById('catPrev');
-            const btnNext = document.getElementById('catNext');
+{% endblock %}
 
-            if (slider && btnPrev && btnNext) {
-                const scrollAmount = 300; // Adjust based on item width
+{% block extra_js %}
+<script>
+    function startMobileVoiceSearch() {
+        const micIcon = document.getElementById('mobileSearchMicIcon');
+        const searchInput = document.getElementById('mobileSearchInput');
+        let originalPlaceholder = 'Search tools...';
 
-                btnPrev.addEventListener('click', () => {
-                    slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                });
-
-                btnNext.addEventListener('click', () => {
-                    slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                });
+        recordAndTranscribe({
+            onStart: () => {
+                if (micIcon) micIcon.className = 'spinner-grow spinner-grow-sm text-accent';
+                if (searchInput) {
+                    originalPlaceholder = searchInput.placeholder;
+                    searchInput.placeholder = 'Listening... Speak now';
+                    searchInput.style.boxShadow = '0 0 0 3px rgba(230, 126, 34, 0.4)';
+                }
+            },
+            onResult: (transcript) => {
+                transcript = transcript.replace(/[.,!?]+$/, "").trim();
+                if (searchInput && transcript) {
+                    searchInput.value = transcript;
+                    document.getElementById('mobileSearchForm').submit();
+                }
+            },
+            onError: (errorMsg) => {
+                alert("Voice error: " + errorMsg);
+            },
+            onEnd: () => {
+                if (micIcon && micIcon.className.includes('spinner')) {
+                    micIcon.className = 'bi bi-mic-fill';
+                }
+                if (searchInput) {
+                    searchInput.placeholder = originalPlaceholder;
+                    searchInput.style.boxShadow = 'none';
+                }
             }
         });
-    </script>
-</body>
+    }
+</script>
+<script>
+    // Auto-dismiss alerts
+    setTimeout(function () {
+        let alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function (alert) {
+            let bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
 
-</html>
+    // Category Slider Logic
+    document.addEventListener('DOMContentLoaded', function () {
+        const slider = document.getElementById('catSlider');
+        const btnPrev = document.getElementById('catPrev');
+        const btnNext = document.getElementById('catNext');
+
+        if (slider && btnPrev && btnNext) {
+            const scrollAmount = 300; // Adjust based on item width
+
+            btnPrev.addEventListener('click', () => {
+                slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            });
+
+            btnNext.addEventListener('click', () => {
+                slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            });
+        }
+    });
+    // Visual Search Logic
+    async function handleVisualSearch(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const modal = new bootstrap.Modal(document.getElementById('visualSearchModal'));
+        modal.show();
+
+        document.getElementById('vsLoading').classList.remove('d-none');
+        document.getElementById('vsResults').classList.add('d-none');
+        document.getElementById('vsProductList').innerHTML = '';
+        document.getElementById('vsKeywords').textContent = '';
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+            const response = await fetch('/api/visual-search/', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                document.getElementById('vsLoading').classList.add('d-none');
+                document.getElementById('vsResults').classList.remove('d-none');
+                document.getElementById('vsKeywords').textContent = "Keywords identified: " + data.keywords.join(', ');
+
+                const list = document.getElementById('vsProductList');
+                if (data.products.length === 0) {
+                    list.innerHTML = '<div class="col-12 text-center py-3"><p class="text-muted mb-0">No matching tools found in our inventory.</p></div>';
+                } else {
+                    data.products.forEach(p => {
+                        const imgHtml = p.image ? `<img src="${p.image}" class="img-fluid rounded" style="height:80px; object-fit:cover; width:100%;">` : '<div class="bg-light h-100 rounded d-flex align-items-center justify-content-center"><i class="bi bi-image text-muted"></i></div>';
+                        list.innerHTML += `
+                                <div class="col-6 col-md-3 mb-2">
+                                    <a href="#" class="text-decoration-none" onclick="openQuickView(${p.id}); return false;">
+                                        <div class="card h-100 border-0 shadow-sm">
+                                            <div class="card-body p-2 text-center">
+                                                ${imgHtml}
+                                                <h6 class="mt-2 mb-1 text-dark text-truncate" style="font-size:0.8rem;">${p.name}</h6>
+                                                <p class="mb-0 fw-bold text-accent" style="font-size:0.9rem;">₹${p.price}</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            `;
+                    });
+                }
+            } else {
+                document.getElementById('vsLoading').classList.remove('d-none');
+                document.getElementById('vsLoading').innerHTML = `<div class="alert alert-danger">Error: ${data.message}</div>`;
+            }
+        } catch (err) {
+            document.getElementById('vsLoading').classList.remove('d-none');
+            document.getElementById('vsLoading').innerHTML = `<div class="alert alert-danger">Connection error. Please try again.</div>`;
+        }
+
+        // Reset input so the same file can be selected again
+        event.target.value = '';
+    }
+</script>
+{% endblock %}

@@ -1,1 +1,1 @@
-web: gunicorn BURHANI.wsgi
+web: gunicorn BURHANI.wsgi --timeout 120
