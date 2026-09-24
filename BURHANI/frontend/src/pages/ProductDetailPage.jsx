@@ -137,7 +137,7 @@ export default function ProductDetailPage({ setToasts }) {
     <div className="scenic-app-wrapper">
       <div className="glass-canvas-container">
         {/* Breadcrumb Header */}
-        <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-white">
+        <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-white">
           <div>
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb small mb-1">
@@ -162,7 +162,7 @@ export default function ProductDetailPage({ setToasts }) {
         </div>
 
         {/* ── Concept 1: Floating Machinery Hero Stage & Luxury Glass Info Card ── */}
-        <div className="row g-4 mb-5 align-items-center">
+        <div className="row g-4 mb-4 align-items-center justify-content-center">
           {/* Left Column: 3D Illuminated Pedestal Stage */}
           <div className="col-lg-6">
             <div className="concept1-stage">
