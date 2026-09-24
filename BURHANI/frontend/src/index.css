@@ -4148,16 +4148,16 @@ footer {
   }
 }
 
-/* Strict original size: 84px × 86px with 20px radius */
+/* Modern Landscape Squircle: Wider width (126px) with slightly increased height (98px) */
 .squircle-cat-card {
   flex: 0 0 auto;
-  width: 84px;
-  height: 86px;
-  border-radius: 20px;
+  width: 126px;
+  height: 98px;
+  border-radius: 22px;
   position: relative;
   overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
   cursor: pointer;
   padding: 0;
   display: flex;
@@ -4165,58 +4165,22 @@ footer {
   align-items: center;
   justify-content: flex-end;
   background: #ffffff;
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s, border-color 0.2s;
   text-decoration: none;
 }
 
 .squircle-cat-card:hover,
 .squircle-cat-card.active {
   transform: translateY(-4px);
-  box-shadow: 0 10px 22px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.28);
   border-color: #10b981;
 }
 
-/* Special "All" Category Squircle Card (Matching Reference Design) */
-.squircle-cat-card.all-card {
-  background: #ffffff !important;
-  border: 2px solid #10b981 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 6px !important;
-  padding: 8px 4px !important;
-}
-
-.squircle-cat-card.all-card .squircle-icon-wrap {
-  width: auto !important;
-  height: auto !important;
-  font-size: 1.45rem !important;
-  color: #059669 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  margin: 0 !important;
-  line-height: 1 !important;
-}
-
-.squircle-cat-card.all-card .squircle-card-name {
-  color: #064e3b !important;
-  font-size: 0.78rem !important;
-  font-weight: 700 !important;
-  position: static !important;
-  text-shadow: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  line-height: 1.1 !important;
-  width: auto !important;
-}
-
-.squircle-cat-card.all-card:hover,
+/* "All" Category Squircle Card with full visual matching other categories */
 .squircle-cat-card.all-card.active {
-  background: #ecfdf5 !important;
-  border-color: #059669 !important;
-  box-shadow: 0 8px 22px rgba(16, 185, 129, 0.25) !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 12px 26px rgba(16, 185, 129, 0.35) !important;
+  transform: translateY(-4px);
 }
 
 /* Full-bleed visual filling the entire card */
@@ -4227,7 +4191,7 @@ footer {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.25s ease;
+  transition: transform 0.28s ease;
 }
 
 .squircle-cat-card:hover .squircle-card-bg-img {
@@ -4238,7 +4202,7 @@ footer {
 .squircle-card-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 30%, rgba(5, 22, 16, 0.85) 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 30%, rgba(5, 22, 16, 0.88) 100%);
   pointer-events: none;
 }
 
@@ -4247,19 +4211,20 @@ footer {
   position: relative;
   z-index: 2;
   width: 100%;
-  padding: 0 4px 6px;
-  font-size: 0.67rem;
-  font-weight: 700;
+  padding: 0 8px 8px;
+  font-size: 0.78rem;
+  font-weight: 750;
   color: #ffffff;
   text-align: center;
-  line-height: 1.15;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  line-height: 1.2;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
   white-space: normal;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   font-family: 'Inter', sans-serif;
+  letter-spacing: -0.1px;
 }
 
 .squircle-icon-wrap {
@@ -4772,6 +4737,205 @@ footer {
   color: #64748b;
   font-weight: 500;
   margin-top: 1px;
+}
+
+/* ── User Avatar in Dock ── */
+.dock-icon-bubble.user-avatar-bubble {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  font-size: 1.05rem !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35) !important;
+}
+
+.mobile-avatar-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+/* ── Modern Account Popover Menu ── */
+.dock-account-popover {
+  position: fixed;
+  left: 248px;
+  bottom: 28px;
+  width: 290px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.16);
+  padding: 16px;
+  z-index: 1060;
+  animation: popoverSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popoverSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.account-popover-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.account-popover-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+  flex-shrink: 0;
+}
+
+.account-popover-user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.account-popover-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.account-popover-subtext {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.account-popover-close-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: #f1f5f9;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.account-popover-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.account-popover-divider {
+  height: 1px;
+  background: rgba(15, 23, 42, 0.08);
+  margin: 10px 0;
+}
+
+.account-popover-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.account-popover-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  text-decoration: none !important;
+  color: #1e293b !important;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.15s;
+}
+
+.account-popover-item:hover {
+  background: #f8fafc;
+  transform: translateX(2px);
+}
+
+.account-popover-item-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.account-popover-item-icon.blue {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.account-popover-item-icon.emerald {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.account-popover-item-icon.red {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.account-popover-item-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.account-popover-item-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.account-popover-item-desc {
+  font-size: 0.68rem;
+  color: #64748b;
+  margin-top: 1px;
+}
+
+@media (max-width: 991.98px) {
+  .dock-account-popover {
+    left: 16px;
+    right: 16px;
+    bottom: 84px;
+    width: auto;
+    max-width: 360px;
+    margin: 0 auto;
+  }
 }
 
 /* ── AI Assistant Glass Modal Dock Panel ── */

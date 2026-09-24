@@ -97,6 +97,8 @@ const CATEGORY_HERO_ITEMS = [
 ];
 
 const CATEGORY_IMAGE_MAP = {
+  'all': '/static/category_images/cat_all.png',
+  'all categories': '/static/category_images/cat_all.png',
   'power tools': '/static/category_images/cat_power_tools.png',
   'power': '/static/category_images/cat_power_tools.png',
   'chain saw': '/static/category_images/cat_chainsaw.png',
@@ -157,7 +159,7 @@ export default function HomePage({ setToasts }) {
 
   const addToCart = async (productId, e) => {
     e.stopPropagation();
-    if (!user?.is_authenticated) {
+    if (!user || (!user.is_authenticated && !user.username)) {
       navigate('/login');
       return;
     }
@@ -257,7 +259,7 @@ export default function HomePage({ setToasts }) {
       e.stopPropagation();
       if (isActive) {
         setSelectedCatId(item.catFilter || item.name);
-        const el = document.querySelector('.section-header-row') || document.querySelector('.category-strip-section');
+        const el = document.querySelector('.products-minimal-grid') || document.querySelector('.category-strip-section');
         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } else if (layerClass.includes('layer-left')) {
         handlePrevDeck();
@@ -340,7 +342,7 @@ export default function HomePage({ setToasts }) {
                   className="hero-explore-cat-btn"
                   onClick={() => {
                     setSelectedCatId(activeCategory.catFilter || activeCategory.name);
-                    const el = document.querySelector('.section-header-row') || document.querySelector('.category-strip-section');
+                    const el = document.querySelector('.products-minimal-grid') || document.querySelector('.category-strip-section');
                     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }}
                   title={`Browse ${activeCategory.name} products`}
@@ -416,16 +418,24 @@ export default function HomePage({ setToasts }) {
             </div>
 
             <div className="category-scroll-strip">
-              {/* "All" Card */}
+              {/* "All" Card with generated category image */}
               <button
                 type="button"
                 className={`squircle-cat-card all-card ${selectedCatId === null ? 'active' : ''}`}
                 onClick={() => setSelectedCatId(null)}
                 title="All Categories"
               >
-                <div className="squircle-icon-wrap">
-                  <i className="bi bi-grid-fill"></i>
-                </div>
+                <img
+                  src="/static/category_images/cat_all.png"
+                  alt="All Categories"
+                  className="squircle-card-bg-img"
+                  onError={(e) => {
+                    if (e.target.src.includes('/static/')) {
+                      e.target.src = e.target.src.replace('/static/', '/media/');
+                    }
+                  }}
+                />
+                <div className="squircle-card-scrim"></div>
                 <span className="squircle-card-name">All</span>
               </button>
 
@@ -459,16 +469,6 @@ export default function HomePage({ setToasts }) {
             </div>
           </div>
         </section>
-
-        {/* ── Recommended For You Section Header ── */}
-        <div className="section-header-row">
-          <h2 className="section-title">
-            {selectedCatId ? `${selectedCatId}` : 'Recommended For You'}
-          </h2>
-          <Link to={selectedCatId ? `/` : '/product/1'} className="section-view-all">
-            View All
-          </Link>
-        </div>
 
         {/* ── Product Cards Grid ── */}
         {loading ? (

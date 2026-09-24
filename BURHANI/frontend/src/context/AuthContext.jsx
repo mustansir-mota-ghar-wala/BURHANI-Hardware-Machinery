@@ -11,15 +11,16 @@ export function AuthProvider({ children }) {
   const fetchUser = useCallback(async () => {
     try {
       const data = await apiGet('/api/react/user/');
-      if (data.is_authenticated) {
+      if (data && (data.is_authenticated || data.username)) {
         setUser({
+          is_authenticated: true,
           username: data.username,
           first_name: data.first_name,
-          is_staff: data.is_staff,
-          is_superuser: data.is_superuser,
-          is_owner: data.is_owner,
+          is_staff: Boolean(data.is_staff),
+          is_superuser: Boolean(data.is_superuser),
+          is_owner: Boolean(data.is_owner),
         });
-        setCartCount(data.cart_count);
+        setCartCount(data.cart_count || 0);
       } else {
         setUser(false);
         setCartCount(0);
@@ -34,9 +35,14 @@ export function AuthProvider({ children }) {
   useEffect(() => { fetchUser(); }, [fetchUser]);
 
   const logout = async () => {
-    await apiPost('/api/react/logout/');
-    setUser(false);
-    setCartCount(0);
+    try {
+      await apiPost('/api/react/logout/');
+    } catch (err) {
+      console.error('Logout error:', err);
+    } finally {
+      setUser(false);
+      setCartCount(0);
+    }
   };
 
   return (
