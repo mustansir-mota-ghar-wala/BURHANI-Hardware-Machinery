@@ -1,0 +1,134 @@
+{% extends 'BusinessApp/base.html' %}
+
+{% block title %}Sales History{% endblock %}
+{% block header_title %}Sales Log{% endblock %}
+
+{% block header_actions %}
+    <a href="{% url 'business_sale_add' %}" class="btn btn-primary btn-premium">
+        <i class="bi bi-plus-lg me-2"></i>New Invoice
+    </a>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card p-3 border-0 shadow-sm bg-white">
+            <div class="d-flex align-items-center gap-3">
+                <div class="rounded-circle bg-purple-subtle p-3">
+                    <i class="bi bi-receipt text-purple" style="font-size: 1.5rem; color: var(--accent);"></i>
+                </div>
+                <div>
+                    <small class="text-uppercase text-muted fw-800" style="font-size: 0.6rem;">Total Sales Count</small>
+                    <h4 class="fw-800 mb-0">{{ sales.count }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 border-0 shadow-sm bg-white">
+            <div class="d-flex align-items-center gap-3">
+                <div class="rounded-circle bg-success-subtle p-3">
+                    <i class="bi bi-cash-stack text-success" style="font-size: 1.5rem;"></i>
+                </div>
+                <div>
+                    <small class="text-uppercase text-muted fw-800" style="font-size: 0.6rem;">Total Revenue</small>
+                    <h4 class="fw-800 mb-0">₹{{ total_revenue|floatformat:0 }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 border-0 shadow-sm bg-white">
+            <div class="d-flex align-items-center gap-3">
+                <div class="rounded-circle bg-danger-subtle p-3">
+                    <i class="bi bi-clock-history text-danger" style="font-size: 1.5rem;"></i>
+                </div>
+                <div>
+                    <small class="text-uppercase text-muted fw-800" style="font-size: 0.6rem;">Outstanding</small>
+                    <h4 class="fw-800 mb-0 text-danger">₹{{ total_outstanding|floatformat:0 }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card p-0 overflow-hidden border-0 shadow-sm">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-white">
+        <h6 class="fw-800 mb-0 text-muted px-2">Transactions History</h6>
+        <div class="d-flex gap-2">
+            <input type="text" id="saleSearch" class="form-control form-control-sm rounded-pill px-3" placeholder="Search Bill # or Customer" style="width: 250px;">
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-premium table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 100px;">Bill ID</th>
+                    <th>Date & Time</th>
+                    <th>Customer Name</th>
+                    <th>Bill Amount</th>
+                    <th>Paid</th>
+                    <th>Balance</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="saleTableBody">
+                {% for sale in sales %}
+                <tr class="sale-row">
+                    <td class="fw-800" style="color: var(--accent);">#{{ sale.id }}</td>
+                    <td>
+                        <div class="fw-bold small">{{ sale.sale_date|date:"d M Y" }}</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">{{ sale.sale_date|time:"H:i" }}</div>
+                    </td>
+                    <td class="fw-600">{{ sale.customer.name|default:"Cash / Walk-in" }}</td>
+                    <td class="fw-800">₹{{ sale.total_amount|floatformat:2 }}</td>
+                    <td class="text-success fw-bold">₹{{ sale.paid_amount|floatformat:2 }}</td>
+                    <td class="{% if sale.balance_amount > 0 %}text-danger fw-bold{% else %}text-muted{% endif %}">
+                        ₹{{ sale.balance_amount|floatformat:2 }}
+                    </td>
+                    <td class="text-center">
+                        {% if sale.balance_amount == 0 %}
+                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2" style="font-size: 0.7rem;">PAID</span>
+                        {% elif sale.paid_amount > 0 %}
+                            <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-2" style="font-size: 0.7rem;">PARTIAL</span>
+                        {% else %}
+                            <span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2" style="font-size: 0.7rem;">UNPAID</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <div class="btn-group">
+                            <a href="#" class="btn btn-light btn-sm rounded-circle p-2" title="Print Bill">
+                                <i class="bi bi-printer text-primary"></i>
+                            </a>
+                            <a href="#" class="btn btn-light btn-sm rounded-circle p-2 ms-2" title="View Items">
+                                <i class="bi bi-eye text-info"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center py-5">
+                        <i class="bi bi-receipt-cutoff display-1 text-light"></i>
+                        <p class="text-muted mt-3">No sales records found.</p>
+                        <a href="{% url 'business_sale_add' %}" class="btn btn-primary btn-premium mt-2">Create First Invoice</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.getElementById('saleSearch').addEventListener('keyup', function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('.sale-row');
+        rows.forEach(row => {
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(filter) ? '' : 'none';
+        });
+    });
+</script>
+{% endblock %}

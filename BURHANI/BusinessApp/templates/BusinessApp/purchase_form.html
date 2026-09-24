@@ -1,0 +1,359 @@
+{% extends 'BusinessApp/base.html' %}
+
+{% block title %}New Purchase Bill{% endblock %}
+
+{% block content %}
+<style>
+    .billing-card {
+        background: white;
+        border-radius: 12px;
+        padding: 15px 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .custom-input {
+        border: 1px solid #dcdde1;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    .add-btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .item-row {
+        background: #f8f9fb;
+        border: 1px solid #f1f2f6;
+        border-radius: 8px;
+        padding: 8px 15px;
+        margin-bottom: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .footer-summary {
+        background: #f8f9fb;
+        border-radius: 10px;
+        padding: 12px 20px;
+        margin-top: 20px;
+        border: 1px solid #f1f2f6;
+    }
+
+    .total-text {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--accent);
+    }
+
+    .save-btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 8px;
+        font-weight: 700;
+    }
+</style>
+
+<div class="container-fluid py-2">
+    <form method="post" id="purchase-form">
+        {% csrf_token %}
+        <div class="billing-card">
+            <div class="small fw-bold text-secondary text-uppercase mb-2"
+                style="letter-spacing: 0.5px; font-size: 0.7rem;">Supplier & Details</div>
+            <div class="row g-2 mb-2">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <select name="supplier" id="supplier-select" class="form-select custom-input">
+                            <option value="">Search Supplier...</option>
+                            {% for s in suppliers %}
+                            <option value="{{ s.id }}">{{ s.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" class="btn btn-outline-primary border-start-0"
+                            style="border-radius: 0 10px 10px 0;" data-bs-toggle="modal"
+                            data-bs-target="#quickAddPartyModal">
+                            <i class="bi bi-person-plus-fill"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="invoice_no" class="form-control custom-input" placeholder="Invoice Number">
+                </div>
+                <div class="col-md-3">
+                    <select name="payment_mode" class="form-select custom-input">
+                        <option value="bank">Mode: Bank</option>
+                        <option value="cash">Mode: Cash</option>
+                        <option value="upi">Mode: UPI</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="date" name="purchase_date" class="form-control custom-input"
+                        value="{{ today|date:'Y-m-d' }}">
+                </div>
+            </div>
+
+            <hr class="my-3" style="border-top: 1px solid #dfe4ea; opacity: 1;">
+            <div class="small fw-bold text-secondary text-uppercase mb-2"
+                style="letter-spacing: 0.5px; font-size: 0.7rem;">Items</div>
+
+            <button type="button" class="add-btn mt-1" data-bs-toggle="modal" data-bs-target="#addItemModal">
+                <i class="bi bi-plus-circle me-1"></i> ADD ITEM TO BILL
+            </button>
+
+            <div id="items-container" style="max-height: 45vh; overflow-y: auto;">
+                {{ formset.management_form }}
+                <div id="empty-msg" class="text-center py-3 text-secondary small">
+                    No items added.
+                </div>
+            </div>
+
+            <div class="footer-summary">
+                <div class="row align-items-center g-2">
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-baseline">
+                            <small class="text-uppercase opacity-50 fw-bold me-2"
+                                style="font-size: 0.65rem;">Total:</small>
+                            <div class="total-text">₹<span id="grand-total">0.00</span></div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-white border-end-0">Paid: ₹</span>
+                            <input type="number" name="paid_amount" id="paid-amount"
+                                class="form-control custom-input border-start-0 fw-bold" step="0.01" value="0">
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button type="submit" class="save-btn w-100">
+                            <i class="bi bi-check-lg me-1"></i> RECORD PURCHASE
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden Template -->
+        <div style="display:none;">
+            <div id="item-template" class="item-row">
+                <div class="d-flex align-items-center">
+                    <div class="fw-bold product-name-display small me-3"></div>
+                    <div class="small text-secondary qty-display" style="font-size: 0.75rem;"></div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="fw-bold total-display text-primary me-3 small"></div>
+                    <button type="button" class="btn btn-link text-danger p-0 remove-row" style="font-size: 0.8rem;">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                    <div class="hidden-inputs" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modals outside Form -->
+<div class="modal fade" id="addItemModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">Add Item</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body py-2">
+                <select id="modal-product" class="form-select custom-input mb-2">
+                    <option value="">Search Product...</option>
+                    {% for p in products %}
+                    <option value="{{ p.id }}" data-price="{{ p.purchase_price }}" data-gst="{{ p.gst_percent }}">{{ p.name }}</option>
+                    {% endfor %}
+                </select>
+                <div class="text-center my-2 small text-secondary">--- OR NEW ---</div>
+                <input type="text" id="modal-new-name" class="form-control custom-input mb-2"
+                    placeholder="Product Name">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <select id="modal-category" class="form-select custom-input">
+                            <option value="">Category</option>
+                            {% for c in categories %}
+                            <option value="{{ c.id }}">{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <select id="modal-gst" class="form-select custom-input">
+                            <option value="18">18% GST</option>
+                            <option value="12">12% GST</option>
+                            <option value="5">5% GST</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row g-2 mt-2">
+                    <div class="col-6">
+                        <input type="number" id="modal-qty" class="form-control custom-input" value="1"
+                            placeholder="Qty">
+                    </div>
+                    <div class="col-6">
+                        <input type="number" id="modal-price" class="form-control custom-input" placeholder="Price">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary w-100" id="confirm-add-item">ADD ITEM</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="quickAddPartyModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">Quick Add Supplier</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body py-3">
+                <input type="text" id="quick-party-name" class="form-control custom-input mb-2"
+                    placeholder="Supplier Name">
+                <input type="text" id="quick-party-phone" class="form-control custom-input" placeholder="Phone Number">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary w-100" id="confirm-quick-add">SAVE & SELECT</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('items-container');
+        const emptyMsg = document.getElementById('empty-msg');
+        const confirmBtn = document.getElementById('confirm-add-item');
+        const totalForms = document.querySelector('input[id$="TOTAL_FORMS"]');
+        const prefix = totalForms ? totalForms.name.replace('-TOTAL_FORMS', '') : 'purchaseitem_set';
+        const grandTotalSpan = document.getElementById('grand-total');
+        const paidInput = document.getElementById('paid-amount');
+        const modal = new bootstrap.Modal(document.getElementById('addItemModal'));
+        const quickAddModal = new bootstrap.Modal(document.getElementById('quickAddPartyModal'));
+
+        const supplierTS = new TomSelect("#supplier-select", { create: true, createFilter: /.{2,}/, dropdownParent: 'body' });
+        const productTS = new TomSelect("#modal-product", { 
+            create: false, 
+            dropdownParent: 'body',
+            onChange: function(val) {
+                const opt = document.querySelector(`#modal-product option[value="${val}"]`);
+                if (opt) {
+                    document.getElementById('modal-price').value = opt.dataset.price;
+                    document.getElementById('modal-gst').value = opt.dataset.gst;
+                }
+            }
+        });
+
+        function updateTotals() {
+            let total = 0;
+            document.querySelectorAll('.hidden-total').forEach(input => {
+                let val = parseFloat(input.value);
+                if (!isNaN(val)) total += val;
+            });
+            grandTotalSpan.innerText = total.toFixed(2);
+            if (paidInput.dataset.auto !== 'false') paidInput.value = total.toFixed(2);
+        }
+
+        function reIndexItems() {
+            const rows = container.querySelectorAll('.item-row:not(#item-template)');
+            rows.forEach((row, index) => {
+                row.querySelectorAll('input').forEach(input => {
+                    const name = input.getAttribute('name');
+                    if (name) input.setAttribute('name', `${prefix}-${index}-${name.split('-').pop()}`);
+                });
+            });
+            totalForms.value = rows.length;
+        }
+
+        confirmBtn.addEventListener('click', function() {
+            const prodId = document.getElementById('modal-product').value;
+            const prodName = productTS.getItem(prodId) ? productTS.getItem(prodId).innerText : '';
+            const newName = document.getElementById('modal-new-name').value;
+            const qty = document.getElementById('modal-qty').value;
+            const price = document.getElementById('modal-price').value;
+            const catId = document.getElementById('modal-category').value;
+            const gst = document.getElementById('modal-gst').value;
+
+            if (!prodId && !newName) return;
+            if (!price || price <= 0) return;
+
+            const newItem = document.getElementById('item-template').cloneNode(true);
+            newItem.removeAttribute('id');
+            const lineTotal = (qty * price).toFixed(2);
+            newItem.querySelector('.product-name-display').innerText = prodId ? prodName : newName;
+            newItem.querySelector('.qty-display').innerText = `${qty} x ₹${parseFloat(price).toFixed(2)}`;
+            newItem.querySelector('.total-display').innerText = "₹" + lineTotal;
+
+            newItem.querySelector('.hidden-inputs').innerHTML = `
+                <input type="hidden" name="${prefix}-0-product" value="${prodId}">
+                <input type="hidden" name="${prefix}-0-new_product_name" value="${newName}">
+                <input type="hidden" name="${prefix}-0-new_category" value="${catId}">
+                <input type="hidden" name="${prefix}-0-new_gst_percent" value="${gst}">
+                <input type="hidden" name="${prefix}-0-quantity" value="${qty}">
+                <input type="hidden" name="${prefix}-0-price_incl_gst" value="${price}">
+                <input type="hidden" class="hidden-total" value="${lineTotal}">
+                <input type="hidden" name="${prefix}-0-show_on_website" value="on">
+            `;
+
+            if (emptyMsg) emptyMsg.style.display = 'none';
+            container.appendChild(newItem);
+            reIndexItems();
+            updateTotals();
+            productTS.clear();
+            document.getElementById('modal-new-name').value = '';
+            modal.hide();
+        });
+
+        container.addEventListener('click', function(e) {
+            if(e.target.closest('.remove-row')) {
+                e.target.closest('.item-row').remove();
+                reIndexItems();
+                updateTotals();
+                if (container.querySelectorAll('.item-row:not(#item-template)').length === 0) {
+                    if (emptyMsg) emptyMsg.style.display = 'block';
+                }
+            }
+        });
+
+        paidInput.addEventListener('input', () => { paidInput.dataset.auto = 'false'; });
+
+        document.getElementById('confirm-quick-add').addEventListener('click', function() {
+            const name = document.getElementById('quick-party-name').value;
+            const phone = document.getElementById('quick-party-phone').value;
+            if (!name) return;
+
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('phone', phone);
+            formData.append('party_type', 'supplier');
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+            fetch("{% url 'business_party_quick_add' %}", { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    supplierTS.addOption({ value: data.id, text: data.name });
+                    supplierTS.addItem(data.id);
+                    document.getElementById('quick-party-name').value = '';
+                    document.getElementById('quick-party-phone').value = '';
+                    quickAddModal.hide();
+                } else alert("Error adding supplier.");
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -8,13 +8,18 @@ from django.core.exceptions import ValidationError
 from django.db.models import Sum, Q
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from .models import Category, Product, Cart, Order, Order_Item
+from allauth.socialaccount.models import SocialApp
+from .models import Category, Product, Cart, Order, Order_Item, UserProfile, Sale, SaleItem
 import razorpay
 import time
 import requests
 import random
 import json
 from django.http import JsonResponse
+
+
+def google_login_available():
+    return SocialApp.objects.filter(provider='google').exists()
 
 
 def register(request):
@@ -57,10 +62,11 @@ def register(request):
         )
         new_user.set_password(password)
         new_user.save()
+        UserProfile.objects.create(user=new_user, role='customer', phone=username)
         messages.success(request, 'Account created successfully')
         return redirect('login')
 
-    return render(request, 'register.html')
+    return render(request, 'register.html', {'google_login_available': google_login_available()})
 
 
 def Login(request):
@@ -77,9 +83,15 @@ def Login(request):
             messages.error(request, 'Invalid Credentials')
         else:
             login(request, user)
-            return redirect('/')
+            profile, created = UserProfile.objects.get_or_create(
+                user=user,
+                defaults={'role': 'owner' if user.is_superuser else 'customer', 'phone': username}
+            )
+            if user.is_superuser or profile.role == 'owner':
+                return redirect('business_dashboard')
+            return redirect('home')
 
-    return render(request, 'login.html')
+    return render(request, 'login.html', {'google_login_available': google_login_available()})
 
 
 def Logout(request):
@@ -91,7 +103,7 @@ def Logout(request):
 def home(request):
     query = request.GET.get('q')
     categories = Category.objects.all()
-    products = Product.objects.all()
+    products = Product.objects.filter(show_on_website=True)
 
     if query:
         products = products.filter(
@@ -114,7 +126,7 @@ def home(request):
 def product(request, id):
     categories = Category.objects.all().order_by('name')
     selected_category = get_object_or_404(Category, id=id)
-    products = Product.objects.filter(category=selected_category)
+    products = Product.objects.filter(category=selected_category, show_on_website=True)
 
     context = {
         'categories': categories,
@@ -273,6 +285,15 @@ def payment_callback(request):
             order.save()
 
             user_cart = Cart.objects.filter(user=order.user)
+            sale = Sale.objects.create(
+                customer=None,
+                total_amount=order.bill,
+                paid_amount=order.bill,
+                balance_amount=0,
+                payment_mode='online',
+                created_by=order.user,
+                order=order
+            )
             for item in user_cart:
                 Order_Item.objects.create(
                     order=order,
@@ -280,6 +301,20 @@ def payment_callback(request):
                     product_quantity=item.product_quantity,
                     product_total=item.product_total
                 )
+                SaleItem.objects.create(
+                    sale=sale,
+                    product=item.product,
+                    quantity=item.product_quantity,
+                    price=item.product.price,
+                    gst_percent=item.product.gst_percent,
+                    total=item.product_total
+                )
+                # REAL WORLD ERP: Deduct stock when website order is paid
+                try:
+                    item.product.stock_qty -= item.product_quantity
+                    item.product.save()
+                except Exception:
+                    pass
             user_cart.delete()
 
             messages.success(request, "Payment successful! Order placed.")
@@ -346,6 +381,30 @@ def place_order(request):
                 product_quantity=item.product_quantity,
                 product_total=item.product_total
             )
+        sale = Sale.objects.create(
+            customer=None,
+            total_amount=new_order.bill,
+            paid_amount=0,
+            balance_amount=new_order.bill,
+            payment_mode='cash',
+            created_by=user,
+            order=new_order
+        )
+        for item in user_cart:
+            SaleItem.objects.create(
+                sale=sale,
+                product=item.product,
+                quantity=item.product_quantity,
+                price=item.product.price,
+                gst_percent=item.product.gst_percent,
+                total=item.product_total
+            )
+            # REAL WORLD ERP: Deduct stock when COD order is placed
+            try:
+                item.product.stock_qty -= item.product_quantity
+                item.product.save()
+            except Exception:
+                pass
 
         user_cart.delete()
         messages.success(request, 'Order placed successfully! (Cash on Delivery)')

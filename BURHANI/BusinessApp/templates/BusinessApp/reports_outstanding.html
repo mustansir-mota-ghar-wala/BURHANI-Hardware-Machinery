@@ -1,0 +1,67 @@
+{% extends 'BusinessApp/base.html' %}
+
+{% block title %}Outstanding Reports{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card">
+            <h5 class="fw-bold mb-4 text-danger"><i class="bi bi-arrow-down-left"></i> Payables (Suppliers)</h5>
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Supplier</th>
+                            <th>Phone</th>
+                            <th class="text-end">Due Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in suppliers %}
+                        <tr>
+                            <td class="fw-semibold">{{ s.name }}</td>
+                            <td>{{ s.phone }}</td>
+                            <td class="text-end fw-bold text-danger">₹{{ s.balance|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center py-4 text-secondary">No outstanding payables</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <h5 class="fw-bold mb-4 text-success"><i class="bi bi-arrow-up-right"></i> Receivables (Customers)</h5>
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th class="text-end">Due Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in customers %}
+                        <tr>
+                            <td class="fw-semibold">{{ c.name }}</td>
+                            <td>{{ c.phone }}</td>
+                            <td class="text-end fw-bold text-success">₹{{ c.balance|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center py-4 text-secondary">No outstanding receivables</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

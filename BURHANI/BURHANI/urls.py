@@ -29,6 +29,7 @@ urlpatterns = [
     path('payment-callback/', payment_callback, name='payment_callback'),
 
     path('accounts/', include('allauth.urls')),
+    path('business/', include('BusinessApp.urls')),
 ]
 
 if settings.DEBUG:

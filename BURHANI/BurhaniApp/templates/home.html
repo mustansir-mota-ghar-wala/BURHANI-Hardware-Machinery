@@ -646,10 +646,15 @@
             <div class="d-flex align-items-center gap-3">
                 <div class="d-none d-lg-flex gap-3 fs-5 align-items-center me-3">
                     {% if user.is_authenticated %}
-                    <span class="fs-6 fw-bold text-white-50">Hi, {% firstof user.first_name user.username %}</span>
-                    <a href="{% url 'logout' %}" class="text-white text-decoration-none fs-6 fw-bold">LOGOUT</a>
+                        {% if user.is_staff %}
+                        <a href="{% url 'business_dashboard' %}" class="btn btn-warning btn-sm fw-bold rounded-pill px-3">
+                            <i class="bi bi-speedometer2 me-1"></i> BUSINESS PANEL
+                        </a>
+                        {% endif %}
+                        <span class="fs-6 fw-bold text-white-50">Hi, {% firstof user.first_name user.username %}</span>
+                        <a href="{% url 'logout' %}" class="text-white text-decoration-none fs-6 fw-bold">LOGOUT</a>
                     {% else %}
-                    <a href="{% url 'login' %}" class="text-white text-decoration-none fs-6 fw-bold">LOGIN</a>
+                        <a href="{% url 'login' %}" class="text-white text-decoration-none fs-6 fw-bold">LOGIN</a>
                     {% endif %}
                 </div>
                 <a href="{% url 'cart' %}" class="text-white fs-5">
@@ -682,10 +687,13 @@
                 <a href="#about" class="text-white text-decoration-none">About Us</a>
                 <hr class="border-secondary">
                 {% if user.is_authenticated %}
-                <span class="text-white-50 fs-6">Hi, {% firstof user.first_name user.username %}</span>
-                <a href="{% url 'logout' %}" class="text-danger text-decoration-none fw-bold">Logout</a>
+                    {% if user.is_staff %}
+                    <a href="{% url 'business_dashboard' %}" class="text-warning text-decoration-none fw-bold"><i class="bi bi-speedometer2 me-2"></i>BUSINESS PANEL</a>
+                    {% endif %}
+                    <span class="text-white-50 fs-6">Hi, {% firstof user.first_name user.username %}</span>
+                    <a href="{% url 'logout' %}" class="text-danger text-decoration-none fw-bold">Logout</a>
                 {% else %}
-                <a href="{% url 'login' %}" class="text-warning text-decoration-none fw-bold">Login</a>
+                    <a href="{% url 'login' %}" class="text-warning text-decoration-none fw-bold">Login</a>
                 {% endif %}
             </div>
         </div>
