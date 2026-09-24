@@ -1,9 +1,22 @@
 from django.contrib import admin
-from .models import Category, Product, Cart, Order, ProductImage, ProductVideo
+from .models import (
+    Category, Product, Cart, Order, Order_Item, ProductImage, ProductVideo,
+    UserProfile, Party, Sale, SaleItem, Purchase, PurchaseItem, Payment, Transaction
+)
 # Register your models here.
 
 admin.site.register(Category)
 admin.site.register(Cart)
+admin.site.register(Order_Item)
+admin.site.register(UserProfile)
+admin.site.register(Party)
+admin.site.register(Sale)
+admin.site.register(SaleItem)
+admin.site.register(Purchase)
+admin.site.register(PurchaseItem)
+admin.site.register(Payment)
+admin.site.register(Transaction)
+
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage

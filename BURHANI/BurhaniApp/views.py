@@ -8,7 +8,8 @@ from django.core.exceptions import ValidationError
 from django.db.models import Sum, Q
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from .models import Category, Product, Cart, Order, Order_Item
+from allauth.socialaccount.models import SocialApp
+from .models import Category, Product, Cart, Order, Order_Item, UserProfile, Sale, SaleItem
 import razorpay
 import time
 import requests
@@ -64,240 +65,11 @@ def sitemap_xml(request):
     return HttpResponse(content, content_type='application/xml')
 
 
-def register(request):
-    if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        username = request.POST.get('username')  # This is the phone number
-        password = request.POST.get('password')
-        user_otp = request.POST.get('otp')
-        saved_otp = request.session.get('verification_otp')
-
-        # 1. Validate Phone Number Length
-        phone_digits = ''.join(filter(str.isdigit, str(username)))
-        if len(phone_digits) != 10:
-            messages.error(request, 'Phone number must be 10 digits.')
-            return redirect('register')
-
-        # 2. Validate OTP
-        if user_otp != "000000" and user_otp != saved_otp:
-            messages.error(request, 'Invalid OTP. Please try again.')
-            return redirect('register')
-
-        # 3. Check if User Exists
-        user = User.objects.filter(username=username)
-        if user.exists():
-            messages.info(request, 'Phone number already registered.')
-            return redirect('register')
-
-        # 4. Strong Password Validation
-        try:
-            validate_password(password)
-        except ValidationError as e:
-            for error in e.messages:
-                messages.error(request, error)
-            return redirect('register')
-
-        # Create the user
-        new_user = User.objects.create(
-            first_name=first_name,
-            username=username,
-        )
-        new_user.set_password(password)
-        new_user.save()
-        messages.success(request, 'Account created successfully')
-        return redirect('login')
-
-    return render(request, 'register.html')
+def google_login_available():
+    return SocialApp.objects.filter(provider='google').exists()
 
 
-def Login(request):
-    if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
 
-        if not User.objects.filter(username=username).exists():
-            messages.info(request, 'Username not exists, Register Yourself')
-            return redirect('register')
-
-        user = authenticate(username=username, password=password)
-        if user is None:
-            messages.error(request, 'Invalid Credentials')
-        else:
-            login(request, user)
-            return redirect('/')
-
-    return render(request, 'login.html')
-
-
-def Logout(request):
-    logout(request)
-    messages.success(request, 'Logged out successfully')
-    return redirect('login')
-
-
-def home(request):
-    query = request.GET.get('q')
-    categories = Category.objects.all()
-    products = Product.objects.all()
-
-    if query:
-        from django.db.models import Q
-        query_words = query.split()
-        product_q = Q()
-        category_q = Q()
-        for word in query_words:
-            # Ignore extremely common filler words from voice search
-            if word.lower() not in ['show', 'me', 'a', 'the', 'some', 'for']:
-                product_q |= Q(name__icontains=word) | Q(category__name__icontains=word)
-                category_q |= Q(name__icontains=word)
-        
-        products = products.filter(product_q).distinct()
-        categories = categories.filter(category_q).distinct()
-
-    if not query:
-        products = products.order_by('-id')[:100]
-
-    context = {
-        'categories': categories,
-        'products': products,
-        'query': query
-    }
-    return render(request, 'home.html', context)
-
-
-def product(request, id):
-    categories = Category.objects.all().order_by('name')
-    selected_category = get_object_or_404(Category, id=id)
-    products = Product.objects.filter(category=selected_category)
-
-    context = {
-        'categories': categories,
-        'selected_category': selected_category,
-        'products': products
-    }
-    return render(request, 'product.html', context)
-
-
-@login_required(login_url='login')
-def add_to_cart(request, id):
-    product = get_object_or_404(Product, id=id)
-
-    cart_item, created = Cart.objects.get_or_create(
-        user=request.user,
-        product=product,
-        defaults={
-            'product_quantity': 1,
-            'product_total': product.price
-        }
-    )
-
-    if not created:
-        cart_item.product_quantity += 1
-        cart_item.product_total = cart_item.product_quantity * product.price
-        cart_item.save()
-
-    return redirect('cart')
-
-
-@login_required(login_url='login')
-def cart(request):
-    user = request.user
-    cart_items = Cart.objects.filter(user=user)
-    total_data = cart_items.aggregate(total=Sum('product_total'))
-    grand_total = total_data['total'] if total_data['total'] else 0
-
-    context = {
-        'cart': cart_items,
-        'grand_total': grand_total
-    }
-    return render(request, 'cart.html', context)
-
-
-@login_required(login_url='login')
-def remove_from_cart(request, id):
-    cart_item = get_object_or_404(Cart, id=id, user=request.user)
-    cart_item.delete()
-    return redirect('cart')
-
-
-@login_required(login_url='login')
-def decrease_product(request, id):
-    product = get_object_or_404(Product, id=id)
-    cart_item = Cart.objects.filter(user=request.user, product=product).first()
-
-    if cart_item:
-        if cart_item.product_quantity > 1:
-            cart_item.product_quantity -= 1
-            cart_item.product_total = cart_item.product_quantity * product.price
-            cart_item.save()
-        else:
-            cart_item.delete()
-
-    return redirect('cart')
-
-
-@login_required(login_url='login')
-def checkout(request):
-    user = request.user
-    cart_items = Cart.objects.filter(user=user)
-
-    if not cart_items.exists():
-        messages.warning(request, "Your cart is empty.")
-        return redirect('cart')
-
-    # Server-side price recalculation: use DB product price × quantity, ignore stored product_total
-    total = 0
-    for item in cart_items:
-        correct_total = item.product.price * item.product_quantity
-        if item.product_total != correct_total:
-            item.product_total = correct_total
-            item.save()
-        total += correct_total
-    grand_total = total
-    order_amount = int(grand_total * 100)
-    order_currency = 'INR'
-    order_receipt = f"receipt_{user.id}_{int(time.time())}"
-
-    try:
-        client = razorpay.Client(
-            auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
-        )
-
-        razorpay_order = client.order.create({
-            'amount': order_amount,
-            'currency': order_currency,
-            'receipt': order_receipt,
-        })
-
-        razorpay_order_id = razorpay_order['id']
-
-    except Exception as e:
-        print("RAZORPAY ORDER CREATION ERROR:", str(e))
-        messages.error(request, "Unable to start online payment right now. Please try again later.")
-        return redirect('cart')
-
-    new_order = Order.objects.create(
-        user=user,
-        address='',
-        bill=grand_total,
-        razorpay_order_id=razorpay_order_id,
-        payment_status='Pending'
-    )
-
-    last_order = Order.objects.filter(user=user).exclude(address='').order_by('-id').first()
-    last_address = last_order.address if last_order else ''
-
-    context = {
-        'cart': cart_items,
-        'grand_total': grand_total,
-        'razorpay_order_id': razorpay_order_id,
-        'razorpay_key_id': settings.RAZORPAY_KEY_ID,
-        'amount': order_amount,
-        'order_instance': new_order,
-        'last_address': last_address
-    }
-
-    return render(request, 'checkout.html', context)
 
 
 @csrf_exempt
@@ -333,6 +105,15 @@ def payment_callback(request):
             order.save()
 
             user_cart = Cart.objects.filter(user=order.user)
+            sale = Sale.objects.create(
+                customer=None,
+                total_amount=order.bill,
+                paid_amount=order.bill,
+                balance_amount=0,
+                payment_mode='online',
+                created_by=order.user,
+                order=order
+            )
             for item in user_cart:
                 Order_Item.objects.create(
                     order=order,
@@ -340,6 +121,20 @@ def payment_callback(request):
                     product_quantity=item.product_quantity,
                     product_total=item.product_total
                 )
+                SaleItem.objects.create(
+                    sale=sale,
+                    product=item.product,
+                    quantity=item.product_quantity,
+                    price=item.product.price,
+                    gst_percent=item.product.gst_percent,
+                    total=item.product_total
+                )
+                # REAL WORLD ERP: Deduct stock when website order is paid
+                try:
+                    item.product.stock_qty -= item.product_quantity
+                    item.product.save()
+                except Exception:
+                    pass
             user_cart.delete()
 
             from django.http import HttpResponseRedirect
@@ -475,6 +270,30 @@ def place_order(request):
                 product_quantity=item.product_quantity,
                 product_total=item.product_total
             )
+        sale = Sale.objects.create(
+            customer=None,
+            total_amount=new_order.bill,
+            paid_amount=0,
+            balance_amount=new_order.bill,
+            payment_mode='cash',
+            created_by=user,
+            order=new_order
+        )
+        for item in user_cart:
+            SaleItem.objects.create(
+                sale=sale,
+                product=item.product,
+                quantity=item.product_quantity,
+                price=item.product.price,
+                gst_percent=item.product.gst_percent,
+                total=item.product_total
+            )
+            # REAL WORLD ERP: Deduct stock when COD order is placed
+            try:
+                item.product.stock_qty -= item.product_quantity
+                item.product.save()
+            except Exception:
+                pass
 
         user_cart.delete()
         return JsonResponse({'status': 'success', 'message': 'Order placed successfully!'})
@@ -482,86 +301,7 @@ def place_order(request):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
 
-@login_required(login_url='login')
-def your_orders(request):
-    orders = Order.objects.filter(
-        user=request.user,
-        payment_status__in=['Paid', 'Pending (COD)', 'Refunded', 'Cancelled']
-    ).order_by('-created_at')
 
-    context = {'orders': orders}
-    return render(request, 'your_order.html', context)
-
-
-@login_required(login_url='login')
-def cancel_order(request, id):
-    if request.method == "POST":
-        order = get_object_or_404(Order, id=id, user=request.user)
-        
-        # Only allow cancellation if not yet shipped
-        cancellable_statuses = ['Placed', 'Processing']
-        if order.delivery_status not in cancellable_statuses:
-            messages.error(request, 'This order cannot be cancelled as it has already been shipped or delivered.')
-            return redirect('your_orders')
-        
-        # --- Handle Refund for Online Payments (Razorpay) ---
-        refund_issued = False
-        if order.payment_status == 'Paid' and order.razorpay_payment_id:
-            try:
-                client = razorpay.Client(
-                    auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
-                )
-                # Process refund through Razorpay API
-                refund = client.payment.refund(order.razorpay_payment_id, {
-                    'amount': order.bill * 100,  # amount in paise
-                    'speed': 'normal',
-                    'notes': {
-                        'order_id': str(order.id),
-                        'reason': 'Customer cancelled order'
-                    }
-                })
-                
-                if refund.get('status') == 'processed':
-                    refund_issued = True
-                elif refund.get('status') == 'pending':
-                    refund_issued = True  # Will be processed, mark as refund initiated
-                    
-            except Exception as e:
-                print(f"REFUND ERROR for Order #{order.id}: {str(e)}")
-                messages.error(request, f'Refund failed: {str(e)}. Please contact support for manual refund.')
-                # Still proceed with cancellation, but log the issue
-                # The admin can manually process the refund from Razorpay dashboard
-        
-        # Restore cart items (so customer can re-order if they want)
-        for item in order.order_item_set.all():
-            cart_item, created = Cart.objects.get_or_create(
-                user=request.user,
-                product=item.product,
-                defaults={
-                    'product_quantity': item.product_quantity,
-                    'product_total': item.product_total
-                }
-            )
-            if not created:
-                cart_item.product_quantity += item.product_quantity
-                cart_item.product_total = cart_item.product_quantity * item.product.price
-                cart_item.save()
-        
-        # Mark order as cancelled
-        order.delivery_status = 'Cancelled'
-        order.payment_status = 'Refunded' if refund_issued else 'Cancelled'
-        order.save()
-        
-        # Delete order items
-        order.order_item_set.all().delete()
-        
-        if refund_issued:
-            messages.success(request, f'Order #{order.id} cancelled. Refund of ₹{order.bill} has been initiated to your payment source.')
-        else:
-            messages.success(request, f'Order #{order.id} has been cancelled successfully.')
-        return redirect('your_orders')
-    
-    return redirect('your_orders')
 
 
 def send_otp(request):
@@ -645,40 +385,7 @@ def verify_otp(request):
             return JsonResponse({'status': 'error', 'message': str(e)})
 
 
-def product_detail(request, id):
-    product = get_object_or_404(Product, id=id)
-    related_products = Product.objects.filter(category=product.category).exclude(id=id)
-    categories = Category.objects.all().order_by('name')
-    additional_images = product.images.all()
-    
-    context = {
-        'product': product,
-        'additional_images': additional_images,
-        'related_products': related_products,
-        'categories': categories,
-    }
-    return render(request, 'product_detail.html', context)
 
-
-@login_required(login_url='login')
-def buy_now(request, id):
-    product = get_object_or_404(Product, id=id)
-    
-    cart_item, created = Cart.objects.get_or_create(
-        user=request.user,
-        product=product,
-        defaults={
-            'product_quantity': 1,
-            'product_total': product.price
-        }
-    )
-    
-    if not created:
-        cart_item.product_quantity += 1
-        cart_item.product_total = cart_item.product_quantity * product.price
-        cart_item.save()
-        
-    return redirect('checkout')
 
 @csrf_exempt
 def chat_api(request):
@@ -1073,13 +780,21 @@ def api_user_info(request):
     """Return current user info."""
     if request.user.is_authenticated:
         cart_count = Cart.objects.filter(user=request.user).count()
+        is_owner = (
+            request.user.is_superuser
+            or request.user.is_staff
+            or (hasattr(request.user, 'profile') and request.user.profile.role == 'owner')
+        )
         return JsonResponse({
             'is_authenticated': True,
             'username': request.user.username,
             'first_name': request.user.first_name,
             'cart_count': cart_count,
+            'is_staff': request.user.is_staff,
+            'is_superuser': request.user.is_superuser,
+            'is_owner': is_owner,
         })
-    return JsonResponse({'is_authenticated': False, 'cart_count': 0})
+    return JsonResponse({'is_authenticated': False, 'cart_count': 0, 'is_staff': False, 'is_owner': False})
 
 
 @csrf_exempt

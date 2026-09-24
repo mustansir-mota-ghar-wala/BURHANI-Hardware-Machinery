@@ -79,14 +79,31 @@ export default function Navbar({ query, setQuery, mobileMenuOpen, setMobileMenuO
           </Link>
 
           {/* Desktop nav links */}
-          <div className="d-none d-lg-flex nav-links">
+          <div className="d-none d-lg-flex nav-links align-items-center">
             <Link to="/" className={isActive('/') ? 'active' : ''}>Home</Link>
             <a href="/#categories">Shop Tools</a>
             <Link to="/your_orders" className={isActive('/your_orders') ? 'active' : ''}>My Orders</Link>
             <a href="/#about">About Us</a>
+            {user && (user.is_owner || user.is_staff) && (
+              <a href="/business/"
+                className="d-flex align-items-center gap-1 text-decoration-none fw-bold text-warning"
+                style={{ fontSize: '0.88rem', letterSpacing: '0.5px' }}>
+                <i className="bi bi-speedometer2"></i> Business Panel
+              </a>
+            )}
           </div>
 
           <div className="d-flex align-items-center gap-3">
+            {/* Business Panel Header Button for staff/owner */}
+            {user && (user.is_owner || user.is_staff) && (
+              <a href="/business/"
+                className="d-none d-md-flex align-items-center gap-1.5 text-decoration-none fw-bold text-dark bg-warning px-3 py-2"
+                style={{ borderRadius: '12px', fontSize: '0.78rem', letterSpacing: '0.8px', textTransform: 'uppercase', whiteSpace: 'nowrap', boxShadow: '0 2px 10px rgba(255, 193, 7, 0.35)' }}>
+                <i className="bi bi-speedometer2"></i>
+                <span>Business Panel</span>
+              </a>
+            )}
+
             {/* Contact button */}
             <a href="tel:+917742752753"
               className="d-flex align-items-center gap-2 text-decoration-none fw-bold text-dark bg-warning px-3 py-2"
@@ -245,6 +262,28 @@ export default function Navbar({ query, setQuery, mobileMenuOpen, setMobileMenuO
 
                 <div className="my-1 border-top border-light-subtle opacity-75"></div>
 
+                {/* Business Panel for mobile */}
+                {user && (user.is_owner || user.is_staff) && (
+                  <a href="/business/"
+                    className="d-flex align-items-center justify-content-between text-decoration-none text-dark"
+                    style={{
+                      background: 'rgba(255, 193, 7, 0.15)',
+                      borderRadius: '12px',
+                      border: '1px solid rgba(255, 193, 7, 0.4)',
+                      padding: '12px 16px',
+                    }}
+                    onClick={() => setMobileMenuOpen(false)}>
+                    <div className="d-flex align-items-center gap-3">
+                      <span className="d-flex align-items-center justify-content-center rounded-3"
+                        style={{ width: '34px', height: '34px', background: '#ffc107', color: '#000', flexShrink: 0 }}>
+                        <i className="bi bi-speedometer2 fs-5"></i>
+                      </span>
+                      <span className="fw-bold text-dark" style={{ fontSize: '0.92rem' }}>Business Panel</span>
+                    </div>
+                    <i className="bi bi-chevron-right text-black-50 small"></i>
+                  </a>
+                )}
+
                 {/* Auth section */}
                 {user ? (
                   <div className="d-flex align-items-center justify-content-between"
@@ -266,12 +305,21 @@ export default function Navbar({ query, setQuery, mobileMenuOpen, setMobileMenuO
                     </button>
                   </div>
                 ) : (
-                  <Link to="/login"
-                    className="btn btn-warning w-100 py-2 fw-bold d-flex align-items-center justify-content-center gap-2"
-                    style={{ borderRadius: '12px', fontSize: '0.88rem' }}
-                    onClick={() => setMobileMenuOpen(false)}>
-                    <i className="bi bi-box-arrow-in-right fs-5"></i> Login
-                  </Link>
+                  <>
+                    <Link to="/login"
+                      className="btn btn-warning w-100 py-2 fw-bold d-flex align-items-center justify-content-center gap-2"
+                      style={{ borderRadius: '12px', fontSize: '0.88rem' }}
+                      onClick={() => setMobileMenuOpen(false)}>
+                      <i className="bi bi-box-arrow-in-right fs-5"></i> Login
+                    </Link>
+                    <a href="/business/"
+                      className="d-flex align-items-center justify-content-between text-decoration-none text-muted py-2 px-1"
+                      style={{ fontSize: '0.8rem' }}
+                      onClick={() => setMobileMenuOpen(false)}>
+                      <span><i className="bi bi-shield-lock me-2 text-warning"></i>Business Management Panel</span>
+                      <i className="bi bi-chevron-right small text-muted"></i>
+                    </a>
+                  </>
                 )}
               </div>
             </div>

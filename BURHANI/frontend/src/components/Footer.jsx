@@ -30,6 +30,7 @@ export default function Footer() {
               <li><a href="/#categories">Shop Tools</a></li>
               <li><Link to="/your_orders">My Orders</Link></li>
               <li><a href="/#about">About Us</a></li>
+              <li><a href="/business/" style={{ color: '#ffc107', fontWeight: 600 }}><i className="bi bi-speedometer2 me-1"></i>Business Panel</a></li>
             </ul>
           </div>
 
