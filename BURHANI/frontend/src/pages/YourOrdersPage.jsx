@@ -3,26 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { apiGet, apiPost } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 
-const STEPS = ['Placed', 'Processing', 'Shipped', 'Delivered'];
-const STEP_ICONS = ['bi-check', 'bi-gear', 'bi-truck', 'bi-house'];
-
-function getStepIndex(deliveryStatus) {
-  if (deliveryStatus === 'Delivered') return 3;
-  if (['Shipped', 'Out for Delivery'].includes(deliveryStatus)) return 2;
-  if (deliveryStatus === 'Processing') return 1;
-  return 0;
-}
-
-function getStatusClass(paymentStatus) {
-  if (paymentStatus === 'Paid') return 'status-paid';
-  if (paymentStatus === 'Refunded') return 'status-refunded';
-  if (paymentStatus === 'Cancelled') return 'status-cancelled';
-  return 'status-pending';
-}
-
-function getCardTheme(deliveryStatus, index) {
-  if (deliveryStatus === 'Cancelled') return 'order-theme-cancelled';
-  return 'order-theme-green';
+function getStatusBadge(status) {
+  const s = (status || '').toLowerCase();
+  if (s.includes('delivered') || s.includes('paid')) {
+    return <span className="badge rounded-pill bg-success-subtle text-success px-3 py-2 fw-bold">{status}</span>;
+  }
+  if (s.includes('cancel') || s.includes('refund')) {
+    return <span className="badge rounded-pill bg-danger-subtle text-danger px-3 py-2 fw-bold">{status}</span>;
+  }
+  return <span className="badge rounded-pill bg-warning-subtle text-warning-emphasis px-3 py-2 fw-bold">{status}</span>;
 }
 
 export default function YourOrdersPage({ setToasts }) {
@@ -46,110 +35,155 @@ export default function YourOrdersPage({ setToasts }) {
     if (!confirm('Are you sure you want to cancel this order?')) return;
     const res = await apiPost(`/api/react/orders/cancel/${orderId}/`);
     if (res.status === 'success') {
-      setToasts(t => [...t, { tag: 'success', text: res.message }]);
+      setToasts((t) => [...t, { tag: 'success', text: res.message }]);
       fetchOrders();
     } else {
-      setToasts(t => [...t, { tag: 'error', text: res.message }]);
+      setToasts((t) => [...t, { tag: 'error', text: res.message }]);
     }
   };
 
-  if (loading) return <div className="text-center py-5"><div className="spinner-border text-warning" role="status"></div></div>;
-
   return (
-    <div className="container py-3 px-3">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h1 className="fs-4 fw-bold mb-0">My Orders</h1>
-        <span className="badge bg-dark rounded-pill">{orders.length} Total</span>
-      </div>
+    <div className="scenic-app-wrapper">
+      <div className="glass-canvas-container">
+        {/* Header */}
+        <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-white">
+          <div>
+            <span className="text-success fw-bold small text-uppercase letter-spacing-1">Customer Dashboard</span>
+            <h2 className="section-title m-0">Order History &amp; Tracking</h2>
+          </div>
+          <Link to="/" className="section-view-all d-flex align-items-center gap-1">
+            <i className="bi bi-arrow-left"></i> Back to Store
+          </Link>
+        </div>
 
-      {orders.length > 0 ? orders.map((order, index) => (
-        <div key={order.id} className={`order-card ${getCardTheme(order.delivery_status, index)}`}>
-          {/* Header */}
-          <div className="order-header-compact">
-            <div>
-              <div className="text-muted" style={{ fontSize: '0.7rem' }}>
-                Order #{String(order.id).padStart(5, '0')}
+        {loading ? (
+          <div className="text-center py-5">
+            <div className="spinner-border text-success" role="status"></div>
+            <p className="mt-2 text-muted">Retrieving your order records...</p>
+          </div>
+        ) : orders.length === 0 ? (
+          <div className="text-center py-5">
+            <div
+              style={{
+                maxWidth: '420px',
+                margin: '0 auto',
+                background: 'rgba(255,255,255,0.85)',
+                borderRadius: '28px',
+                padding: '40px 24px',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.04)',
+              }}
+            >
+              <div
+                style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '50%',
+                  background: '#f0fdf4',
+                  color: '#16a34a',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.8rem',
+                  marginBottom: '16px',
+                }}
+              >
+                <i className="bi bi-box-seam"></i>
               </div>
-              <div className="fw-bold" style={{ fontSize: '0.9rem' }}>{order.created_at}</div>
-            </div>
-            <div className="text-end">
-              <div className={`status-badge-small ${getStatusClass(order.payment_status)}`}>
-                {order.payment_status}
-              </div>
-              <div className="fw-bold mt-1" style={{ color: 'var(--gg-accent)' }}>₹{order.bill}</div>
+              <h4 className="fw-bold text-dark mb-2">No orders placed yet</h4>
+              <p className="text-muted small mb-4">
+                You haven't ordered any machinery or tools yet. Browse our store to make your first purchase.
+              </p>
+              <Link to="/" className="btn btn-success rounded-pill px-4 py-2 fw-semibold">
+                Shop Hardware
+              </Link>
             </div>
           </div>
+        ) : (
+          <div className="d-flex flex-column gap-4">
+            {orders.map((ord) => (
+              <div
+                key={ord.id}
+                className="p-4"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.92)',
+                  borderRadius: '26px',
+                  border: '1px solid rgba(255, 255, 255, 0.85)',
+                  boxShadow: '0 10px 26px rgba(0, 0, 0, 0.04)',
+                }}
+              >
+                {/* Order Top Bar */}
+                <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 pb-3 border-bottom mb-3">
+                  <div>
+                    <span className="text-muted small">Order ID: </span>
+                    <strong className="text-dark">#{ord.id}</strong>
+                    <span className="text-muted ms-3 small">&bull; Placed on {ord.created_at}</span>
+                  </div>
 
-          {/* Tracking / Cancelled */}
-          {order.delivery_status === 'Cancelled' ? (
-            <div className="track-cancelled">
-              <i className="bi bi-x-octagon-fill me-2" style={{ fontSize: '1.5rem', color: '#dc3545' }}></i>
-              <span style={{ fontWeight: 800, fontSize: '0.85rem', color: '#dc3545', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                Order Cancelled
-                {order.payment_status === 'Refunded' && ` — Refund of ₹${order.bill} Initiated`}
-              </span>
-            </div>
-          ) : (
-            <div className="track-stepper-compact">
-              {STEPS.map((step, i) => (
-                <div key={step} className={`track-step-compact ${i <= getStepIndex(order.delivery_status) ? 'active' : ''}`}>
-                  <div className="track-dot"><i className={`bi ${STEP_ICONS[i]}`}></i></div>
-                  <div className="track-label-compact">{step}</div>
+                  <div className="d-flex align-items-center gap-2">
+                    {getStatusBadge(ord.delivery_status || ord.payment_status)}
+                    <span className="fs-5 fw-bold text-dark ms-2">₹{ord.bill}</span>
+                  </div>
                 </div>
-              ))}
-            </div>
-          )}
 
-          {/* Items */}
-          <div className="mt-3">
-            <h6 className="text-muted fw-bold" style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Items</h6>
-            {order.items.map(item => (
-              <div key={item.id} className="order-item-compact">
-                {item.product.image
-                  ? <img src={item.product.image} className="product-thumb-small" alt={item.product.name} />
-                  : <div className="product-thumb-small d-flex align-items-center justify-content-center bg-light">
-                      <i className="bi bi-box" style={{ fontSize: '1rem' }}></i>
+                {/* Items in this Order */}
+                <div className="d-flex flex-column gap-2 mb-3">
+                  {ord.items?.map((item) => (
+                    <div
+                      key={item.id}
+                      className="d-flex align-items-center justify-content-between p-2 rounded-3"
+                      style={{ background: '#f8fafc' }}
+                    >
+                      <div className="d-flex align-items-center gap-3">
+                        <div
+                          style={{
+                            width: '48px',
+                            height: '48px',
+                            borderRadius: '10px',
+                            background: '#ffffff',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          <img
+                            src={item.product?.image || '/static/images/cat_hardware.jpg'}
+                            alt={item.product?.name}
+                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                          />
+                        </div>
+                        <div>
+                          <div className="fw-semibold text-dark small">{item.product?.name}</div>
+                          <div className="text-muted small">Qty: {item.product_quantity} &times; ₹{item.product?.price}</div>
+                        </div>
+                      </div>
+                      <div className="fw-bold small text-dark">₹{item.product_total}</div>
                     </div>
-                }
-                <div className="flex-grow-1">
-                  <div className="fw-bold" style={{ fontSize: '0.8rem', lineHeight: 1.2 }}>{item.product.name}</div>
-                  <div className="text-muted" style={{ fontSize: '0.7rem' }}>Qty: {item.product_quantity} × ₹{item.product.price}</div>
+                  ))}
                 </div>
-                <div className="fw-bold" style={{ fontSize: '0.8rem' }}>₹{item.product_total}</div>
+
+                {/* Footer Details & Actions */}
+                <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2">
+                  <div className="small text-muted">
+                    <i className="bi bi-geo-alt me-1 text-success"></i>
+                    <span>Delivery Address: {ord.address || 'Standard Delivery'}</span>
+                  </div>
+
+                  {['Placed', 'Processing'].includes(ord.delivery_status) && (
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-danger rounded-pill px-3"
+                      onClick={() => cancelOrder(ord.id)}
+                    >
+                      Cancel Order
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>
-
-          {/* Footer */}
-          <div className="mt-2 pt-2 border-top d-flex justify-content-between align-items-center">
-            <div>
-              <div className="text-muted" style={{ fontSize: '0.65rem', textTransform: 'uppercase' }}>Shipping To:</div>
-              <div style={{ fontSize: '0.75rem', color: '#555' }}>
-                {order.address ? order.address.substring(0, 60) + (order.address.length > 60 ? '...' : '') : 'N/A'}
-              </div>
-            </div>
-            {['Placed', 'Processing'].includes(order.delivery_status) && (
-              <button onClick={() => cancelOrder(order.id)}
-                className="btn btn-outline-danger btn-sm fw-bold"
-                style={{ borderRadius: '10px', fontSize: '0.7rem', padding: '6px 14px' }}>
-                <i className="bi bi-x-circle me-1"></i>Cancel
-              </button>
-            )}
-            {order.delivery_status === 'Cancelled' && (
-              <span className="badge bg-danger rounded-pill" style={{ fontSize: '0.7rem' }}>CANCELLED</span>
-            )}
-          </div>
-        </div>
-      )) : (
-        <div className="text-center py-5">
-          <div style={{ fontSize: '3rem', color: '#ddd', marginBottom: '1rem' }}>
-            <i className="bi bi-bag-x"></i>
-          </div>
-          <h3 className="heading-font">No Orders Yet</h3>
-          <p className="text-muted small mb-4">Your future tools will appear here once you place an order.</p>
-          <Link to="/" className="btn-terracotta text-decoration-none">Start Shopping</Link>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
