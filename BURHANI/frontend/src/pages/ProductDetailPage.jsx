@@ -98,6 +98,41 @@ export default function ProductDetailPage({ setToasts }) {
     if (distance < -50) handlePrevImage();
   };
 
+  // Generate smart specifications matching Concept 1
+  const getProductSpecs = (p) => {
+    const cat = (p.category?.name || '').toLowerCase();
+    const name = (p.name || '').toLowerCase();
+
+    let power = '1750W';
+    if (cat.includes('weld') || name.includes('weld')) power = '200A / 220V';
+    else if (cat.includes('pump') || name.includes('pump')) power = '1.0 HP';
+    else if (cat.includes('chain') || name.includes('saw')) power = '58cc 2-Stroke';
+    else if (cat.includes('grind') || name.includes('grind')) power = '850W Heavy';
+    else if (cat.includes('drill') || name.includes('drill')) power = '650W Corded';
+
+    let impact = '45J';
+    if (cat.includes('weld') || name.includes('weld')) impact = 'IGBT Inverter';
+    else if (cat.includes('pump') || name.includes('pump')) impact = '3500 L/hr';
+    else if (cat.includes('chain') || name.includes('saw')) impact = '11,000 RPM';
+    else if (cat.includes('drill') || cat.includes('grind')) impact = '2800 RPM';
+
+    let weight = '16kg';
+    if (name.includes('16kg')) weight = '16kg';
+    else if (cat.includes('pump') || name.includes('pump')) weight = '8.5kg';
+    else if (cat.includes('weld') || name.includes('weld')) weight = '5.8kg';
+    else if (cat.includes('hand') || name.includes('drill')) weight = '2.4kg';
+    else if (cat.includes('chain')) weight = '6.2kg';
+
+    return [
+      { label: 'Power', val: power, icon: 'bi-lightning-charge-fill' },
+      { label: 'Impact', val: impact, icon: 'bi-hammer' },
+      { label: 'Weight', val: weight, icon: 'bi-box-seam' },
+      { label: 'Warranty', val: '1 Year', icon: 'bi-shield-check' },
+    ];
+  };
+
+  const specs = getProductSpecs(product);
+
   return (
     <div className="scenic-app-wrapper">
       <div className="glass-canvas-container">
@@ -126,24 +161,36 @@ export default function ProductDetailPage({ setToasts }) {
           </Link>
         </div>
 
-        {/* Main Product Showcase Row */}
-        <div className="row g-4 mb-5">
-          {/* Left Column: Image Card */}
+        {/* ── Concept 1: Floating Machinery Hero Stage & Luxury Glass Info Card ── */}
+        <div className="row g-4 mb-5 align-items-center">
+          {/* Left Column: 3D Illuminated Pedestal Stage */}
           <div className="col-lg-6">
-            <div className="detail-image-card">
+            <div className="concept1-stage">
               <div 
-                className="detail-main-img-wrap"
+                className="concept1-pedestal-container"
                 onClick={() => setIsFullscreen(true)}
                 onTouchStart={onTouchStartHandler}
                 onTouchMove={onTouchMoveHandler}
                 onTouchEnd={onTouchEndHandler}
-                title="Click to view fullscreen"
+                title="Click to view fullscreen zoom"
               >
+                {/* 3D Circular Illuminated Pedestal */}
+                <div className="concept1-pedestal-base"></div>
+                <div className="concept1-pedestal-glow"></div>
+                
+                {/* 360 Degree Orbit Ring & Badge */}
+                <div className="concept1-orbit-ring"></div>
+                <div className="concept1-orbit-badge">
+                  <i className="bi bi-arrow-repeat"></i> 360&deg;
+                </div>
+
+                {/* Floating Machinery Image */}
                 <img
                   src={activeImg || 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=800'}
                   alt={product.name}
-                  className="detail-main-img"
+                  className="concept1-floating-image"
                 />
+
                 <button 
                   className="detail-zoom-btn"
                   onClick={(e) => { e.stopPropagation(); setIsFullscreen(true); }}
@@ -154,36 +201,15 @@ export default function ProductDetailPage({ setToasts }) {
                 </button>
               </div>
 
-              {/* Navigation Arrows for Multiple Images */}
+              {/* Floating Thumbnail Selector Pills */}
               {allImages.length > 1 && (
-                <div className="detail-img-controls">
-                  <button 
-                    type="button" 
-                    onClick={handlePrevImage} 
-                    className="detail-img-arrow left"
-                    title="Previous Image"
-                  >
-                    <i className="bi bi-chevron-left"></i>
-                  </button>
-                  <button 
-                    type="button" 
-                    onClick={handleNextImage} 
-                    className="detail-img-arrow right"
-                    title="Next Image"
-                  >
-                    <i className="bi bi-chevron-right"></i>
-                  </button>
-                </div>
-              )}
-
-              {/* Thumbnail Strip */}
-              {allImages.length > 1 && (
-                <div className="detail-thumbnails-row">
+                <div className="concept1-thumbnails-strip">
                   {allImages.map((img, i) => (
                     <div 
                       key={i} 
                       onClick={() => { setActiveImg(img); setActiveImgIndex(i); }} 
-                      className={`detail-thumb-box ${activeImg === img ? 'active' : ''}`}
+                      className={`concept1-thumb-pill ${activeImg === img ? 'active' : ''}`}
+                      title={`Photo ${i + 1}`}
                     >
                       <img src={img} alt={`Thumbnail ${i + 1}`} />
                     </div>
@@ -193,77 +219,77 @@ export default function ProductDetailPage({ setToasts }) {
             </div>
           </div>
 
-          {/* Right Column: Info Card */}
+          {/* Right Column: Concept 1 Luxury Glass Info Card */}
           <div className="col-lg-6">
-            <div className="detail-info-card">
-              {product.category && (
-                <div className="detail-cat-badge">
-                  <i className="bi bi-tag-fill me-1"></i>
-                  {product.category.name}
-                </div>
-              )}
+            <div className="concept1-info-card">
+              {/* Category Pill Tag */}
+              <div className="concept1-tag-badge">
+                <i className="bi bi-lightning-charge-fill me-1"></i>
+                {product.category?.name || 'POWER TOOLS'}
+              </div>
 
-              <h2 className="detail-prod-title">{product.name}</h2>
+              {/* Bold Product Heading */}
+              <h2 className="concept1-title">{product.name}</h2>
 
-              <div className="detail-price-row">
-                <span className="detail-price">₹{product.price}</span>
-                <span className="detail-tax-badge">INCL. GST</span>
+              {/* Price & GST Tag */}
+              <div className="concept1-price-row">
+                <span className="concept1-price">₹{product.price}</span>
+                <span className="concept1-gst-badge">GST inclusive</span>
                 {product.brand && (
-                  <span className="detail-brand-badge">Brand: {product.brand}</span>
+                  <span className="badge bg-light text-dark fw-bold border ms-1">{product.brand}</span>
                 )}
               </div>
 
-              {/* Action Buttons */}
-              <div className="detail-actions-row">
+              {/* 4 Technical Specification Micro-Cards (2x2 Grid) */}
+              <div className="concept1-specs-grid">
+                {specs.map((item, idx) => (
+                  <div key={idx} className="concept1-spec-card">
+                    <div className="concept1-spec-icon">
+                      <i className={`bi ${item.icon}`}></i>
+                    </div>
+                    <div className="concept1-spec-text">
+                      <span className="concept1-spec-label">{item.label}</span>
+                      <span className="concept1-spec-val">{item.val}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Dual Action Buttons (Add to Cart & Buy Now) */}
+              <div className="concept1-cta-row">
                 <button 
                   onClick={addToCart} 
-                  className="detail-btn-cart"
+                  className="concept1-btn-cart"
                   type="button"
                 >
-                  <i className="bi bi-cart-plus-fill"></i> ADD TO CART
+                  <i className="bi bi-cart-plus-fill"></i> Add to Cart
                 </button>
                 <button 
                   onClick={buyNow} 
-                  className="detail-btn-buy"
+                  className="concept1-btn-buy"
                   type="button"
                 >
-                  <i className="bi bi-lightning-charge-fill"></i> BUY NOW
+                  <i className="bi bi-lightning-charge-fill"></i> Buy Now
                 </button>
               </div>
 
-              {/* WhatsApp Direct Inquiry */}
+              {/* WhatsApp Quick Inquiry Button */}
               <a 
-                href={`https://wa.me/917742752753?text=${encodeURIComponent(`Hi, I'm interested in ${product.name} (₹${product.price}). Please share details.`)}`} 
+                href={`https://wa.me/917742752753?text=${encodeURIComponent(`Hi, I'm interested in ${product.name} (₹${product.price}). Please share more details.`)}`} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="detail-btn-whatsapp"
+                className="concept1-btn-whatsapp"
               >
-                <i className="bi bi-whatsapp"></i> ENQUIRE ON WHATSAPP
+                <i className="bi bi-whatsapp"></i> WhatsApp Inquiry
               </a>
 
-              {/* Product Description */}
+              {/* Description Snippet if present */}
               {product.description && (
-                <div className="detail-description-box">
-                  <h5 className="detail-desc-heading">Product Overview</h5>
-                  <p className="detail-desc-text">{product.description}</p>
+                <div className="detail-description-box mt-4 mb-0">
+                  <h6 className="detail-desc-heading">Overview</h6>
+                  <p className="detail-desc-text small text-muted">{product.description}</p>
                 </div>
               )}
-
-              {/* Trust Badges */}
-              <div className="detail-trust-row">
-                <div className="trust-item">
-                  <i className="bi bi-shield-check"></i>
-                  <span>100% Genuine</span>
-                </div>
-                <div className="trust-item">
-                  <i className="bi bi-truck"></i>
-                  <span>Fast Dispatch</span>
-                </div>
-                <div className="trust-item">
-                  <i className="bi bi-headset"></i>
-                  <span>Expert Support</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
