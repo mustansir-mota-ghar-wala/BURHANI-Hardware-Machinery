@@ -3,6 +3,112 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { apiGet, apiPost } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 
+const CATEGORY_HERO_ITEMS = [
+  {
+    id: 1,
+    name: 'Power Tools',
+    catFilter: 'Power Tools',
+    image: '/media/category_images/cat_power_tools.png',
+    tag: 'Power Tools & Cordless',
+    heading: 'Heavy-Duty & Cordless Power Tools',
+    description: 'High-torque drill machines, rotary hammers, angle grinders & precision industrial cutters engineered for extreme endurance.',
+  },
+  {
+    id: 2,
+    name: 'Chain Saw',
+    catFilter: 'Chain Saw',
+    image: '/media/category_images/cat_chainsaw.png',
+    tag: 'Chainsaws & Forestry',
+    heading: 'Precision Cutting & Heavy-Duty Saws',
+    description: 'Powerful 58cc 2-stroke petrol chainsaws, electric tree pruners & high-strength diamond chain blades for clean lumber cuts.',
+  },
+  {
+    id: 3,
+    name: 'Welding Machine',
+    catFilter: 'Welding Machine',
+    image: '/media/category_images/cat_welding.png',
+    tag: 'Welding & Fabrication',
+    heading: 'Inverter ARC & TIG Welding Machinery',
+    description: 'Next-gen IGBT inverter welders, plasma cutting equipment, electrodes & heavy industrial fabrication accessories.',
+  },
+  {
+    id: 4,
+    name: 'Water Pumps',
+    catFilter: 'Water Pumps',
+    image: '/media/category_images/cat_machinery.png',
+    tag: 'Pumps & Motors',
+    heading: 'Agricultural & Submersible Water Pumps',
+    description: 'High-discharge submersible pumps, monoblock induction motors & pressure booster systems for commercial and farm use.',
+  },
+  {
+    id: 5,
+    name: 'Wires And Cables',
+    catFilter: 'Wires And Cables',
+    image: '/media/category_images/cat_hardware.png',
+    tag: 'Electrical & Cabling',
+    heading: 'Pure Copper Heavy-Duty Wiring & Cables',
+    description: 'ISI certified flame-retardant industrial cables, submersible wires & heavy-load multi-strand electrical power lines.',
+  },
+  {
+    id: 6,
+    name: 'Spare parts',
+    catFilter: 'Spare parts',
+    image: '/media/category_images/cat_spare_parts.png',
+    tag: 'Genuine Spares',
+    heading: 'Precision Spares & Replacement Parts',
+    description: 'Authentic armatures, carbon brushes, high-speed bearings, carburetors and precision machinery parts to keep your equipment running.',
+  },
+  {
+    id: 7,
+    name: 'Hand Tools',
+    catFilter: 'Hand Tools',
+    image: '/media/category_images/cat_hand_tools.png',
+    tag: 'Hand Tools & Kits',
+    heading: 'Industrial Hand Tools & Toolkits',
+    description: 'Chrome vanadium spanners, impact socket sets, heavy-duty pliers, torque wrenches & precision hand tools for craftsmen.',
+  },
+  {
+    id: 8,
+    name: 'Pneumatic Tools',
+    catFilter: 'Pneumatic Tools',
+    image: '/media/category_images/cat_pneumatic.png',
+    tag: 'Air & Pneumatics',
+    heading: 'High-Pressure Pneumatic Air Tools',
+    description: 'Industrial air compressors, pneumatic impact wrenches, air nailers, spray guns & durable high-pressure fittings.',
+  },
+  {
+    id: 9,
+    name: 'Safety Equipment',
+    catFilter: 'Safety Equipment',
+    image: '/media/category_images/cat_safety.png',
+    tag: 'Workplace Safety',
+    heading: 'Certified Industrial Protection & Safety Gear',
+    description: 'Heavy-duty safety helmets, impact-resistant goggles, cut-resistant gloves & protective high-visibility workwear.',
+  },
+  {
+    id: 10,
+    name: 'Lubricants & Oils',
+    catFilter: 'Lubricants',
+    image: '/media/category_images/cat_lubricants.png',
+    tag: 'Maintenance & Fluids',
+    heading: 'High-Grade Lubricants & Maintenance Oils',
+    description: 'High-performance 2T engine lubricants, chain oils, industrial anti-rust grease sprays & precision machinery fluids.',
+  },
+];
+
+const CATEGORY_IMAGE_MAP = {
+  'power tools': '/media/category_images/cat_power_tools.png',
+  'chain saw': '/media/category_images/cat_chainsaw.png',
+  'welding machine': '/media/category_images/cat_welding.png',
+  'water pumps': '/media/category_images/cat_machinery.png',
+  'wires and cables': '/media/category_images/cat_hardware.png',
+  'spare parts': '/media/category_images/cat_spare_parts.png',
+  'hand tools': '/media/category_images/cat_hand_tools.png',
+  'pneumatic tools': '/media/category_images/cat_pneumatic.png',
+  'safety equipment': '/media/category_images/cat_safety.png',
+  'lubricants': '/media/category_images/cat_lubricants.png',
+};
+
 export default function HomePage({ setToasts }) {
   const [data, setData] = useState({ categories: [], products: [], query: '' });
   const [loading, setLoading] = useState(true);
@@ -62,69 +168,23 @@ export default function HomePage({ setToasts }) {
   };
 
   const filteredProducts = selectedCatId
-    ? data.products.filter((p) => p.category_id === selectedCatId || p.category === selectedCatId)
+    ? data.products.filter((p) => {
+        const catStr = (typeof p.category === 'object' ? p.category?.name : p.category) || '';
+        return (
+          p.category_id === selectedCatId ||
+          catStr.toLowerCase() === selectedCatId.toLowerCase() ||
+          p.name.toLowerCase().includes(selectedCatId.toLowerCase())
+        );
+      })
     : data.products;
 
-  // Curated 10 latest updated products from different categories for interactive deck
-  const heroDeckItems = React.useMemo(() => {
-    if (!data.products || data.products.length === 0) {
-      return [
-        { id: 1, name: 'Powerbuilt Chain Saw 58cc', category: 'Chain Saw', price: '7,000', image: '/static/images/cat_chainsaw.jpg' },
-        { id: 2, name: 'Grinder Bosch Professional', category: 'Power Tools', price: '2,100', image: '/static/images/cat_powertools.jpg' },
-        { id: 3, name: 'Inverter ARC Welding Machine', category: 'Welding Machine', price: '4,500', image: '/static/images/cat_machinery.jpg' },
-        { id: 4, name: 'Heavy Duty Drill Machine', category: 'Power Tools', price: '3,200', image: '/static/images/hero_powertools.jpg' },
-        { id: 5, name: 'Submersible Water Pump 1HP', category: 'Water Pumps', price: '6,200', image: '/static/images/cat_machinery.jpg' },
-        { id: 6, name: 'Copper Core Electrical Wire 90m', category: 'Electrical', price: '1,850', image: '/static/images/cat_powertools.jpg' },
-        { id: 7, name: 'Industrial Safety Helmet & Visor', category: 'Safety Equipment', price: '850', image: '/static/images/cat_chainsaw.jpg' },
-        { id: 8, name: 'Heavy Duty Hand Tool Set 82-pc', category: 'Hand Tools', price: '2,900', image: '/static/images/hero_powertools.jpg' },
-        { id: 9, name: 'Diamond Cutting Disc 4-inch', category: 'Abrasives', price: '450', image: '/static/images/cat_machinery.jpg' },
-        { id: 10, name: 'Carburetor Spare for Chain Saw', category: 'Spare Parts', price: '1,150', image: '/static/images/cat_chainsaw.jpg' },
-      ];
-    }
-
-    // Group latest products by category
-    const categoryGroups = {};
-    for (const p of data.products) {
-      const cat = (typeof p.category === 'object' ? p.category?.name : p.category) || 'General';
-      if (!categoryGroups[cat]) {
-        categoryGroups[cat] = [];
-      }
-      categoryGroups[cat].push(p);
-    }
-
-    const selected = [];
-    const selectedIds = new Set();
-    const catNames = Object.keys(categoryGroups);
-
-    // Round-robin selection across different categories to guarantee maximum diversity
-    const maxPerGroup = Math.max(...catNames.map((k) => categoryGroups[k].length), 1);
-    for (let r = 0; r < maxPerGroup; r++) {
-      for (const cat of catNames) {
-        if (selected.length >= 10) break;
-        const prod = categoryGroups[cat][r];
-        if (prod && !selectedIds.has(prod.id)) {
-          selected.push(prod);
-          selectedIds.add(prod.id);
-        }
-      }
-      if (selected.length >= 10) break;
-    }
-
-    // If still under 10, fill with remaining latest products
-    if (selected.length < 10) {
-      for (const p of data.products) {
-        if (selected.length >= 10) break;
-        if (!selectedIds.has(p.id)) {
-          selected.push(p);
-          selectedIds.add(p.id);
-        }
-      }
-    }
-
-    return selected.slice(0, 10);
-  }, [data.products]);
+  // Curated category items with images from media/category_images and synced descriptions
+  const heroDeckItems = CATEGORY_HERO_ITEMS;
 
   const [deckIndex, setDeckIndex] = useState(0);
+
+  // Active category synced with the front center card
+  const activeCategory = heroDeckItems[deckIndex] || heroDeckItems[0];
 
   // Auto-switch hero deck every 4 seconds (resets timer upon user interaction)
   useEffect(() => {
@@ -170,7 +230,9 @@ export default function HomePage({ setToasts }) {
     const handleCardClick = (e) => {
       e.stopPropagation();
       if (isActive) {
-        navigate(`/item/${item.id}`);
+        setSelectedCatId(item.catFilter || item.name);
+        const el = document.querySelector('.section-header-row') || document.querySelector('.category-strip-section');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } else if (layerClass.includes('layer-left')) {
         handlePrevDeck();
       } else if (layerClass.includes('layer-right')) {
@@ -187,13 +249,13 @@ export default function HomePage({ setToasts }) {
         key={`${item.id}-${layerClass}`}
         className={`hero-deck-card ${layerClass} ${isActive ? 'active-card' : ''}`}
         onClick={handleCardClick}
-        title={isActive ? `View ${item.name} details` : `Switch to ${item.name}`}
+        title={isActive ? `Explore ${item.name} products` : `Switch to ${item.name}`}
       >
         <div className="deck-card-image-full">
           <img
-            src={item.image || '/static/images/cat_powertools.jpg'}
+            src={item.image}
             alt={item.name}
-            onError={(e) => { e.target.src = '/static/images/cat_powertools.jpg'; }}
+            onError={(e) => { e.target.src = '/media/category_images/cat_power_tools.png'; }}
           />
         </div>
         <div className="deck-card-name-overlay">
@@ -225,29 +287,49 @@ export default function HomePage({ setToasts }) {
           </div>
         )}
 
-        {/* ── Top Hero Banner (Matching Reference Design with Card Deck) ── */}
+        {/* ── Top Hero Banner (Categories 3D Card Deck + Dynamic Left Description) ── */}
         {!query && (
-          <section className="reference-hero-banner" aria-label="Featured Hardware">
-            <div className="hero-banner-content">
-              <div className="hero-pill-tag">Burhani Hardware</div>
+          <section className="reference-hero-banner" aria-label="Featured Hardware Categories">
+            <div className="hero-banner-content" key={activeCategory.id || deckIndex}>
+              <div className="hero-pill-tag">
+                <i className="bi bi-tag-fill me-1"></i>
+                {activeCategory.tag}
+              </div>
               <h1 className="hero-banner-heading">
-                Heavy-Duty Tools &amp;<br />Industrial Machinery
+                {activeCategory.heading}
               </h1>
               <p className="hero-banner-subtext">
-                Engineered for performance. Heavy industrial machinery, cordless power tools &amp; genuine spare parts.
+                {activeCategory.description}
               </p>
+
+              <div className="hero-action-row mb-3">
+                <button
+                  type="button"
+                  className="hero-explore-cat-btn"
+                  onClick={() => {
+                    setSelectedCatId(activeCategory.catFilter || activeCategory.name);
+                    const el = document.querySelector('.section-header-row') || document.querySelector('.category-strip-section');
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  title={`Browse ${activeCategory.name} products`}
+                >
+                  <span>Explore {activeCategory.name}</span>
+                  <i className="bi bi-arrow-right"></i>
+                </button>
+              </div>
 
               {/* Carousel indicator dots synced with 4-second deck */}
               <div className="hero-dots-row">
-                {heroDeckItems.map((_, i) => (
+                {heroDeckItems.map((cat, i) => (
                   <span
-                    key={i}
+                    key={cat.id || i}
                     className={`hero-dot ${deckIndex === i ? 'active' : ''}`}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       setDeckIndex(i);
                     }}
+                    title={`View ${cat.name}`}
                     style={{ cursor: 'pointer' }}
                   ></span>
                 ))}
@@ -316,8 +398,18 @@ export default function HomePage({ setToasts }) {
                 onClick={() => setSelectedCatId(selectedCatId === cat.name ? null : cat.name)}
                 title={cat.name}
               >
-                {cat.image ? (
-                  <img src={cat.image} alt={cat.name} className="squircle-card-bg-img" />
+                {cat.image || CATEGORY_IMAGE_MAP[cat.name.toLowerCase()] ? (
+                  <img
+                    src={cat.image || CATEGORY_IMAGE_MAP[cat.name.toLowerCase()]}
+                    alt={cat.name}
+                    className="squircle-card-bg-img"
+                    onError={(e) => {
+                      const fallback = CATEGORY_IMAGE_MAP[cat.name.toLowerCase()];
+                      if (fallback && !e.target.src.endsWith(fallback)) {
+                        e.target.src = fallback;
+                      }
+                    }}
+                  />
                 ) : (
                   <div className="squircle-icon-wrap">
                     <i className={`bi ${getCategoryIcon(cat.name)}`}></i>
