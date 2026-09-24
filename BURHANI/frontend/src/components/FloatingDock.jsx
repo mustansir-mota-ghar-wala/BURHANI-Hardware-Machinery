@@ -23,6 +23,12 @@ export default function FloatingDock() {
   const [language, setLanguage] = useState('english');
   const messagesEndRef = useRef(null);
 
+  // User Account Popover state
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
+
+  const isAuthenticated = Boolean(user && (user.is_authenticated || user.username));
+
   const isActive = (path) => location.pathname === path;
 
   useEffect(() => {
@@ -30,6 +36,25 @@ export default function FloatingDock() {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, aiChatOpen]);
+
+  // Close account menu popover when clicking outside
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        if (!e.target.closest('.user-menu-toggle-btn')) {
+          setUserMenuOpen(false);
+        }
+      }
+    };
+    if (userMenuOpen) {
+      document.addEventListener('mousedown', handleOutsideClick);
+      document.addEventListener('touchstart', handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('touchstart', handleOutsideClick);
+    };
+  }, [userMenuOpen]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -203,46 +228,27 @@ export default function FloatingDock() {
           <div style={{ flex: 1 }}></div>
 
           {/* 6. User Profile / Account Item */}
-          {user?.is_authenticated ? (
-            <div className="dropdown dropend w-100">
+          {isAuthenticated ? (
+            <div className="w-100 position-relative">
               <button
-                className="dock-row-link w-100 border-0 bg-transparent text-start"
+                className={`dock-row-link user-menu-toggle-btn w-100 border-0 bg-transparent text-start ${userMenuOpen ? 'active' : ''}`}
                 type="button"
-                data-bs-toggle="dropdown"
-                title="Account Menu"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setUserMenuOpen((prev) => !prev);
+                }}
+                title={`Account: ${user.first_name || user.username} - Click for menu`}
               >
-                <div className="avatar-circle flex-shrink-0">
+                <div className="dock-icon-bubble user-avatar-bubble">
                   {(user.first_name || user.username || 'U')[0].toUpperCase()}
                 </div>
                 <div className="dock-expanded-text">
                   <span className="dock-item-title text-truncate">{user.first_name || user.username}</span>
-                  <span className="dock-item-desc">Account &amp; session</span>
+                  <span className="dock-item-desc">
+                    {userMenuOpen ? 'Click to close menu' : 'Account & session'}
+                  </span>
                 </div>
               </button>
-              <ul className="dropdown-menu shadow-lg border-0 glass-dropdown py-2" style={{ minWidth: '190px' }}>
-                <li className="px-3 py-1">
-                  <div className="fw-bold text-dark">{user.first_name || user.username}</div>
-                  <small className="text-muted">{user.username}</small>
-                </li>
-                <li><hr className="dropdown-divider" /></li>
-                <li>
-                  <Link to="/your_orders" className="dropdown-item py-2">
-                    <i className="bi bi-box-seam me-2 text-primary"></i>Your Orders
-                  </Link>
-                </li>
-                {(user.is_staff || user.is_owner || user.is_superuser) && (
-                  <li>
-                    <Link to="/business" className="dropdown-item py-2">
-                      <i className="bi bi-speedometer2 me-2 text-success"></i>Business Panel
-                    </Link>
-                  </li>
-                )}
-                <li>
-                  <button onClick={logout} className="dropdown-item py-2 text-danger border-0 bg-transparent">
-                    <i className="bi bi-box-arrow-right me-2"></i>Sign Out
-                  </button>
-                </li>
-              </ul>
             </div>
           ) : (
             <Link to="/login" className="dock-row-link" title="Sign In">
@@ -258,6 +264,87 @@ export default function FloatingDock() {
 
         </div>
       </aside>
+
+      {/* ── Modern User Account Popover Card (Desktop & Mobile) ── */}
+      {isAuthenticated && userMenuOpen && (
+        <div className="dock-account-popover" ref={userMenuRef}>
+          <div className="account-popover-header">
+            <div className="account-popover-avatar">
+              {(user.first_name || user.username || 'U')[0].toUpperCase()}
+            </div>
+            <div className="account-popover-user-info">
+              <div className="account-popover-name text-truncate">
+                {user.first_name || user.username}
+              </div>
+              <div className="account-popover-subtext text-truncate">
+                {user.username}
+              </div>
+            </div>
+            <button
+              type="button"
+              className="account-popover-close-btn"
+              onClick={() => setUserMenuOpen(false)}
+              title="Close account menu"
+            >
+              <i className="bi bi-x"></i>
+            </button>
+          </div>
+
+          <div className="account-popover-divider"></div>
+
+          <div className="account-popover-menu-list">
+            <Link
+              to="/your_orders"
+              className="account-popover-item"
+              onClick={() => setUserMenuOpen(false)}
+            >
+              <div className="account-popover-item-icon blue">
+                <i className="bi bi-box-seam-fill"></i>
+              </div>
+              <div className="account-popover-item-text">
+                <span className="account-popover-item-title">Your Orders</span>
+                <span className="account-popover-item-desc">Track and view history</span>
+              </div>
+              <i className="bi bi-chevron-right ms-auto text-muted small"></i>
+            </Link>
+
+            {(user.is_staff || user.is_owner || user.is_superuser) && (
+              <Link
+                to="/business"
+                className="account-popover-item"
+                onClick={() => setUserMenuOpen(false)}
+              >
+                <div className="account-popover-item-icon emerald">
+                  <i className="bi bi-speedometer2"></i>
+                </div>
+                <div className="account-popover-item-text">
+                  <span className="account-popover-item-title">Business Panel</span>
+                  <span className="account-popover-item-desc">Store ERP &amp; inventory</span>
+                </div>
+                <i className="bi bi-chevron-right ms-auto text-muted small"></i>
+              </Link>
+            )}
+
+            <button
+              type="button"
+              className="account-popover-item sign-out-btn"
+              onClick={async () => {
+                setUserMenuOpen(false);
+                await logout();
+                navigate('/');
+              }}
+            >
+              <div className="account-popover-item-icon red">
+                <i className="bi bi-box-arrow-right"></i>
+              </div>
+              <div className="account-popover-item-text">
+                <span className="account-popover-item-title text-danger">Sign Out</span>
+                <span className="account-popover-item-desc">End your active session</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ── Top-Right Floating Bag Button with Hover Tooltip ── */}
       <div className="floating-cart-pill-wrapper">
@@ -470,18 +557,18 @@ export default function FloatingDock() {
           <i className="bi bi-box-seam"></i>
           <span>Orders</span>
         </Link>
-        {user?.is_authenticated ? (
-          (user.is_staff || user.is_owner || user.is_superuser) ? (
-            <Link to="/business" className={`mobile-dock-item ${isActive('/business') ? 'active' : ''}`}>
-              <i className="bi bi-speedometer2 text-success"></i>
-              <span>ERP</span>
-            </Link>
-          ) : (
-            <button type="button" onClick={logout} className="mobile-dock-item">
-              <i className="bi bi-box-arrow-right text-danger"></i>
-              <span>Exit</span>
-            </button>
-          )
+        {isAuthenticated ? (
+          <button
+            type="button"
+            onClick={() => setUserMenuOpen((prev) => !prev)}
+            className={`mobile-dock-item user-menu-toggle-btn ${userMenuOpen ? 'active' : ''}`}
+            title="Account Menu"
+          >
+            <div className="mobile-avatar-circle">
+              {(user.first_name || user.username || 'U')[0].toUpperCase()}
+            </div>
+            <span>Account</span>
+          </button>
         ) : (
           <Link to="/login" className={`mobile-dock-item ${isActive('/login') ? 'active' : ''}`}>
             <i className="bi bi-person"></i>
