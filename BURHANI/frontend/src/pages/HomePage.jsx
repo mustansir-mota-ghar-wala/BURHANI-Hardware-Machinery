@@ -8,7 +8,7 @@ const CATEGORY_HERO_ITEMS = [
     id: 1,
     name: 'Power Tools',
     catFilter: 'Power Tools',
-    image: '/media/category_images/cat_power_tools.png',
+    image: '/static/category_images/cat_power_tools.png',
     tag: 'Power Tools & Cordless',
     heading: 'Heavy-Duty & Cordless Power Tools',
     description: 'High-torque drill machines, rotary hammers, angle grinders & precision industrial cutters engineered for extreme endurance.',
@@ -17,7 +17,7 @@ const CATEGORY_HERO_ITEMS = [
     id: 2,
     name: 'Chain Saw',
     catFilter: 'Chain Saw',
-    image: '/media/category_images/cat_chainsaw.png',
+    image: '/static/category_images/cat_chainsaw.png',
     tag: 'Chainsaws & Forestry',
     heading: 'Precision Cutting & Heavy-Duty Saws',
     description: 'Powerful 58cc 2-stroke petrol chainsaws, electric tree pruners & high-strength diamond chain blades for clean lumber cuts.',
@@ -26,7 +26,7 @@ const CATEGORY_HERO_ITEMS = [
     id: 3,
     name: 'Welding Machine',
     catFilter: 'Welding Machine',
-    image: '/media/category_images/cat_welding.png',
+    image: '/static/category_images/cat_welding.png',
     tag: 'Welding & Fabrication',
     heading: 'Inverter ARC & TIG Welding Machinery',
     description: 'Next-gen IGBT inverter welders, plasma cutting equipment, electrodes & heavy industrial fabrication accessories.',
@@ -35,7 +35,7 @@ const CATEGORY_HERO_ITEMS = [
     id: 4,
     name: 'Water Pumps',
     catFilter: 'Water Pumps',
-    image: '/media/category_images/cat_machinery.png',
+    image: '/static/category_images/cat_machinery.png',
     tag: 'Pumps & Motors',
     heading: 'Agricultural & Submersible Water Pumps',
     description: 'High-discharge submersible pumps, monoblock induction motors & pressure booster systems for commercial and farm use.',
@@ -44,7 +44,7 @@ const CATEGORY_HERO_ITEMS = [
     id: 5,
     name: 'Wires And Cables',
     catFilter: 'Wires And Cables',
-    image: '/media/category_images/cat_hardware.png',
+    image: '/static/category_images/cat_hardware.png',
     tag: 'Electrical & Cabling',
     heading: 'Pure Copper Heavy-Duty Wiring & Cables',
     description: 'ISI certified flame-retardant industrial cables, submersible wires & heavy-load multi-strand electrical power lines.',
@@ -53,7 +53,7 @@ const CATEGORY_HERO_ITEMS = [
     id: 6,
     name: 'Spare parts',
     catFilter: 'Spare parts',
-    image: '/media/category_images/cat_spare_parts.png',
+    image: '/static/category_images/cat_spare_parts.png',
     tag: 'Genuine Spares',
     heading: 'Precision Spares & Replacement Parts',
     description: 'Authentic armatures, carbon brushes, high-speed bearings, carburetors and precision machinery parts to keep your equipment running.',
@@ -62,7 +62,7 @@ const CATEGORY_HERO_ITEMS = [
     id: 7,
     name: 'Hand Tools',
     catFilter: 'Hand Tools',
-    image: '/media/category_images/cat_hand_tools.png',
+    image: '/static/category_images/cat_hand_tools.png',
     tag: 'Hand Tools & Kits',
     heading: 'Industrial Hand Tools & Toolkits',
     description: 'Chrome vanadium spanners, impact socket sets, heavy-duty pliers, torque wrenches & precision hand tools for craftsmen.',
@@ -71,7 +71,7 @@ const CATEGORY_HERO_ITEMS = [
     id: 8,
     name: 'Pneumatic Tools',
     catFilter: 'Pneumatic Tools',
-    image: '/media/category_images/cat_pneumatic.png',
+    image: '/static/category_images/cat_pneumatic.png',
     tag: 'Air & Pneumatics',
     heading: 'High-Pressure Pneumatic Air Tools',
     description: 'Industrial air compressors, pneumatic impact wrenches, air nailers, spray guns & durable high-pressure fittings.',
@@ -80,7 +80,7 @@ const CATEGORY_HERO_ITEMS = [
     id: 9,
     name: 'Safety Equipment',
     catFilter: 'Safety Equipment',
-    image: '/media/category_images/cat_safety.png',
+    image: '/static/category_images/cat_safety.png',
     tag: 'Workplace Safety',
     heading: 'Certified Industrial Protection & Safety Gear',
     description: 'Heavy-duty safety helmets, impact-resistant goggles, cut-resistant gloves & protective high-visibility workwear.',
@@ -89,7 +89,7 @@ const CATEGORY_HERO_ITEMS = [
     id: 10,
     name: 'Lubricants & Oils',
     catFilter: 'Lubricants',
-    image: '/media/category_images/cat_lubricants.png',
+    image: '/static/category_images/cat_lubricants.png',
     tag: 'Maintenance & Fluids',
     heading: 'High-Grade Lubricants & Maintenance Oils',
     description: 'High-performance 2T engine lubricants, chain oils, industrial anti-rust grease sprays & precision machinery fluids.',
@@ -97,16 +97,42 @@ const CATEGORY_HERO_ITEMS = [
 ];
 
 const CATEGORY_IMAGE_MAP = {
-  'power tools': '/media/category_images/cat_power_tools.png',
-  'chain saw': '/media/category_images/cat_chainsaw.png',
-  'welding machine': '/media/category_images/cat_welding.png',
-  'water pumps': '/media/category_images/cat_machinery.png',
-  'wires and cables': '/media/category_images/cat_hardware.png',
-  'spare parts': '/media/category_images/cat_spare_parts.png',
-  'hand tools': '/media/category_images/cat_hand_tools.png',
-  'pneumatic tools': '/media/category_images/cat_pneumatic.png',
-  'safety equipment': '/media/category_images/cat_safety.png',
-  'lubricants': '/media/category_images/cat_lubricants.png',
+  'power tools': '/static/category_images/cat_power_tools.png',
+  'power': '/static/category_images/cat_power_tools.png',
+  'chain saw': '/static/category_images/cat_chainsaw.png',
+  'chainsaw': '/static/category_images/cat_chainsaw.png',
+  'welding machine': '/static/category_images/cat_welding.png',
+  'welding': '/static/category_images/cat_welding.png',
+  'water pumps': '/static/category_images/cat_machinery.png',
+  'water pump': '/static/category_images/cat_machinery.png',
+  'machinery': '/static/category_images/cat_machinery.png',
+  'wires and cables': '/static/category_images/cat_hardware.png',
+  'wires & cables': '/static/category_images/cat_hardware.png',
+  'spare parts': '/static/category_images/cat_spare_parts.png',
+  'spare part': '/static/category_images/cat_spare_parts.png',
+  'hand tools': '/static/category_images/cat_hand_tools.png',
+  'pneumatic tools': '/static/category_images/cat_pneumatic.png',
+  'safety equipment': '/static/category_images/cat_safety.png',
+  'lubricants': '/static/category_images/cat_lubricants.png',
+  'precision': '/static/category_images/cat_precision.png',
+};
+
+const getCategoryImageUrl = (cat) => {
+  if (!cat) return '/static/category_images/cat_power_tools.png';
+  const name = (cat.name || '').toLowerCase().trim();
+  if (CATEGORY_IMAGE_MAP[name]) return CATEGORY_IMAGE_MAP[name];
+  if (name.includes('power')) return '/static/category_images/cat_power_tools.png';
+  if (name.includes('chain') || name.includes('saw')) return '/static/category_images/cat_chainsaw.png';
+  if (name.includes('weld')) return '/static/category_images/cat_welding.png';
+  if (name.includes('pump') || name.includes('water')) return '/static/category_images/cat_machinery.png';
+  if (name.includes('wire') || name.includes('cable')) return '/static/category_images/cat_hardware.png';
+  if (name.includes('spare') || name.includes('part')) return '/static/category_images/cat_spare_parts.png';
+  if (name.includes('hand')) return '/static/category_images/cat_hand_tools.png';
+  if (name.includes('pneu') || name.includes('air')) return '/static/category_images/cat_pneumatic.png';
+  if (name.includes('safe')) return '/static/category_images/cat_safety.png';
+  if (name.includes('lub')) return '/static/category_images/cat_lubricants.png';
+  if (name.includes('precis')) return '/static/category_images/cat_precision.png';
+  return cat.image || '/static/category_images/cat_power_tools.png';
 };
 
 export default function HomePage({ setToasts }) {
@@ -255,7 +281,13 @@ export default function HomePage({ setToasts }) {
           <img
             src={item.image}
             alt={item.name}
-            onError={(e) => { e.target.src = '/media/category_images/cat_power_tools.png'; }}
+            onError={(e) => {
+              if (e.target.src.includes('/static/')) {
+                e.target.src = e.target.src.replace('/static/', '/media/');
+              } else if (!e.target.src.includes('cat_power_tools.png')) {
+                e.target.src = '/static/category_images/cat_power_tools.png';
+              }
+            }}
           />
         </div>
         <div className="deck-card-name-overlay">
@@ -373,54 +405,58 @@ export default function HomePage({ setToasts }) {
           </section>
         )}
 
-        {/* ── Horizontal Squircle Category Strip (Full Image + Clear Name) ── */}
-        <section className="category-strip-section" aria-label="Product Categories">
-          <div className="category-scroll-strip">
-            {/* "All" Card */}
-            <button
-              type="button"
-              className={`squircle-cat-card all-card ${selectedCatId === null ? 'active' : ''}`}
-              onClick={() => setSelectedCatId(null)}
-              title="All Categories"
-            >
-              <div className="squircle-icon-wrap">
-                <i className="bi bi-grid-fill"></i>
-              </div>
-              <span className="squircle-card-name">All</span>
-            </button>
+        {/* ── Horizontal Squircle Category Strip (Browse by Categories in Same Row) ── */}
+        <section className="category-strip-section" aria-label="Browse by Categories">
+          <div className="category-inline-row">
+            <div className="category-strip-label-inline">
+              <i className="bi bi-grid-3x3-gap-fill text-success"></i>
+              <span className="category-strip-label-text">
+                Browse by<br className="d-none d-md-inline" /> Categories
+              </span>
+            </div>
 
-            {/* Dynamic Categories: Full image filling card, name written clearly on it */}
-            {data.categories.map((cat) => (
+            <div className="category-scroll-strip">
+              {/* "All" Card */}
               <button
-                key={cat.id}
                 type="button"
-                className={`squircle-cat-card ${selectedCatId === cat.name ? 'active' : ''}`}
-                onClick={() => setSelectedCatId(selectedCatId === cat.name ? null : cat.name)}
-                title={cat.name}
+                className={`squircle-cat-card all-card ${selectedCatId === null ? 'active' : ''}`}
+                onClick={() => setSelectedCatId(null)}
+                title="All Categories"
               >
-                {cat.image || CATEGORY_IMAGE_MAP[cat.name.toLowerCase()] ? (
+                <div className="squircle-icon-wrap">
+                  <i className="bi bi-grid-fill"></i>
+                </div>
+                <span className="squircle-card-name">All</span>
+              </button>
+
+              {/* Dynamic Categories: Full image filling card, name written clearly on it */}
+              {data.categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  className={`squircle-cat-card ${selectedCatId === cat.name ? 'active' : ''}`}
+                  onClick={() => setSelectedCatId(selectedCatId === cat.name ? null : cat.name)}
+                  title={cat.name}
+                >
                   <img
-                    src={cat.image || CATEGORY_IMAGE_MAP[cat.name.toLowerCase()]}
+                    src={getCategoryImageUrl(cat)}
                     alt={cat.name}
                     className="squircle-card-bg-img"
                     onError={(e) => {
-                      const fallback = CATEGORY_IMAGE_MAP[cat.name.toLowerCase()];
-                      if (fallback && !e.target.src.endsWith(fallback)) {
-                        e.target.src = fallback;
+                      if (e.target.src.includes('/static/')) {
+                        e.target.src = e.target.src.replace('/static/', '/media/');
+                      } else if (!e.target.src.includes('cat_power_tools.png')) {
+                        e.target.src = '/static/category_images/cat_power_tools.png';
                       }
                     }}
                   />
-                ) : (
-                  <div className="squircle-icon-wrap">
-                    <i className={`bi ${getCategoryIcon(cat.name)}`}></i>
-                  </div>
-                )}
-                <div className="squircle-card-scrim"></div>
-                <span className="squircle-card-name">
-                  {cat.name.replace(/ tools| equipment/i, '')}
-                </span>
-              </button>
-            ))}
+                  <div className="squircle-card-scrim"></div>
+                  <span className="squircle-card-name">
+                    {cat.name}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
         </section>
 

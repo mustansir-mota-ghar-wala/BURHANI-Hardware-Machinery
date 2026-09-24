@@ -4082,7 +4082,39 @@ footer {
 
 /* ── 5. Category Squircle Scroll Strip (Full Visual Cards) ── */
 .category-strip-section {
-  margin-bottom: 22px;
+  margin-bottom: 24px;
+}
+
+/* Row aligning "Browse by Categories" and category squircle cards in one horizontal line */
+.category-inline-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+}
+
+.category-strip-label-inline {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 18px;
+  border-right: 2px solid rgba(15, 23, 42, 0.08);
+}
+
+.category-strip-label-inline i {
+  font-size: 1.6rem;
+  color: #059669;
+}
+
+.category-strip-label-text {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.2;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
 }
 
 .category-scroll-strip {
@@ -4091,10 +4123,29 @@ footer {
   overflow-x: auto;
   padding: 6px 2px 14px;
   scrollbar-width: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: center;
 }
 
 .category-scroll-strip::-webkit-scrollbar {
   display: none;
+}
+
+@media (max-width: 640px) {
+  .category-inline-row {
+    gap: 10px;
+  }
+  .category-strip-label-inline {
+    padding-right: 10px;
+    gap: 8px;
+  }
+  .category-strip-label-inline i {
+    font-size: 1.3rem;
+  }
+  .category-strip-label-text {
+    font-size: 0.85rem;
+  }
 }
 
 /* Strict original size: 84px × 86px with 20px radius */
