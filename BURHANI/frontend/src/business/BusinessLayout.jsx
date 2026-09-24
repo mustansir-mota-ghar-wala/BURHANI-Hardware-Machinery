@@ -1,20 +1,94 @@
 import React, { useState } from 'react';
-import { NavLink, Outlet, Link, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function BusinessLayout() {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const navItems = [
-    { to: '/business', end: true, icon: 'bi-speedometer2', label: 'Dashboard' },
-    { to: '/business/products', icon: 'bi-box-seam', label: 'Inventory & Stock' },
-    { to: '/business/sales', icon: 'bi-receipt', label: 'Sales & Invoices' },
-    { to: '/business/purchases', icon: 'bi-truck', label: 'Purchases & Inward' },
-    { to: '/business/parties', icon: 'bi-people', label: 'Customers & Suppliers' },
-    { to: '/business/payments', icon: 'bi-cash-coin', label: 'Payments & Ledger' },
-    { to: '/business/reports', icon: 'bi-file-earmark-bar-graph', label: 'GST & Reports' },
+    {
+      to: '/business',
+      end: true,
+      label: 'Dashboard',
+      icon: (
+        <svg className="starline-nav-icon" viewBox="0 0 24 24" fill="currentColor">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+        </svg>
+      ),
+    },
+    {
+      to: '/business/products',
+      label: 'Inventory & Stock',
+      icon: (
+        <svg className="starline-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+      ),
+    },
+    {
+      to: '/business/sales',
+      label: 'Sales & Invoices',
+      icon: (
+        <svg className="starline-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+      ),
+    },
+    {
+      to: '/business/purchases',
+      label: 'Purchases & Inward',
+      icon: (
+        <svg className="starline-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+      ),
+    },
+    {
+      to: '/business/parties',
+      label: 'Customers & Parties',
+      icon: (
+        <svg className="starline-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      ),
+    },
+    {
+      to: '/business/payments',
+      label: 'Payments & Ledger',
+      icon: (
+        <svg className="starline-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="2" y="7" width="20" height="14" rx="2"></rect>
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+        </svg>
+      ),
+    },
+    {
+      to: '/business/reports',
+      label: 'GST & Reports',
+      icon: (
+        <svg className="starline-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+      ),
+    },
   ];
 
   const handleLogout = async () => {
@@ -22,139 +96,191 @@ export default function BusinessLayout() {
     navigate('/login');
   };
 
+  // Determine header greeting/title based on current route
+  const getHeaderInfo = () => {
+    const path = location.pathname;
+    if (path === '/business') {
+      const displayName = user?.first_name || user?.username || 'Mustansir';
+      return {
+        title: `Welcome, ${displayName}! 🎉`,
+        sub: "Here's what happening in your store.",
+      };
+    }
+    if (path.startsWith('/business/products')) {
+      return { title: 'Inventory & Catalog', sub: 'Manage product stock levels, pricing, and barcodes.' };
+    }
+    if (path.startsWith('/business/sales')) {
+      return { title: 'Sales & Invoices', sub: 'Create tax invoices, manage receivables, and track sales.' };
+    }
+    if (path.startsWith('/business/purchases')) {
+      return { title: 'Purchases & Inward', sub: 'Supplier bills, purchase orders, and stock replenishment.' };
+    }
+    if (path.startsWith('/business/parties')) {
+      return { title: 'Customers & Suppliers', sub: 'Ledgers, outstanding dues, and party directories.' };
+    }
+    if (path.startsWith('/business/payments')) {
+      return { title: 'Payments & Ledger', sub: 'Cashbook, bank accounts, and settlement history.' };
+    }
+    if (path.startsWith('/business/reports')) {
+      return { title: 'GST & Business Reports', sub: 'GSTR-1, GSTR-3B tax calculations and profit statements.' };
+    }
+    return { title: 'Business ERP', sub: 'Store Management System' };
+  };
+
+  const headerInfo = getHeaderInfo();
+
   return (
-    <div className="d-flex" style={{ minHeight: '100vh', background: '#f8fafc', color: '#0f172a' }}>
-      {/* ── Sidebar Backdrop (Mobile) ── */}
+    <div className="starline-root d-flex" style={{ minHeight: '100vh', width: '100%' }}>
+      {/* ── Mobile Backdrop ── */}
       {sidebarOpen && (
         <div
           className="position-fixed top-0 start-0 w-100 h-100 d-lg-none"
-          style={{ background: 'rgba(0,0,0,0.5)', zIndex: 1040 }}
+          style={{ background: 'rgba(0,0,0,0.4)', zIndex: 1040, backdropFilter: 'blur(3px)' }}
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* ── Sidebar ── */}
+      {/* ── Starline Left Sidebar ── */}
       <aside
-        className={`d-flex flex-column position-fixed top-0 start-0 h-100 ${sidebarOpen ? 'translate-middle-x-0' : ''}`}
+        className={`starline-sidebar position-fixed top-0 start-0 h-100 ${sidebarOpen ? 'translate-middle-x-0' : ''}`}
         style={{
-          width: '260px',
-          background: '#0f172a',
-          color: '#e2e8f0',
+          width: '235px',
+          background: '#E7E9ED',
+          borderRight: '1px solid rgba(0,0,0,0.04)',
           zIndex: 1045,
-          transition: 'transform 0.3s ease',
-          transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
-          ...(window.innerWidth >= 992 ? { transform: 'none' } : {}),
+          transition: 'transform 0.25s ease',
+          transform: sidebarOpen ? 'translateX(0)' : undefined,
+          overflowY: 'auto',
         }}>
         {/* Brand */}
-        <div className="p-3 border-bottom border-secondary border-opacity-25 d-flex align-items-center justify-content-between">
-          <Link to="/business" className="d-flex align-items-center gap-2 text-decoration-none text-white">
-            <div className="d-flex align-items-center justify-content-center rounded-3 bg-warning text-dark fw-bold" style={{ width: '38px', height: '38px' }}>
-              <i className="bi bi-tools fs-5"></i>
-            </div>
-            <div>
-              <div className="fw-bold fs-6 lh-1">BURHANI</div>
-              <small className="text-warning text-uppercase" style={{ fontSize: '0.65rem', letterSpacing: '1px' }}>Smart Business ERP</small>
-            </div>
+        <div className="d-flex align-items-center justify-content-between mb-2">
+          <Link to="/business" className="starline-brand-row">
+            <svg className="starline-brand-icon" viewBox="0 0 24 24" fill="none" stroke="#111418" strokeWidth="2.6" strokeLinecap="round">
+              <line x1="12" y1="2" x2="12" y2="22"></line>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+              <line x1="19.07" y1="4.93" x2="4.93" y2="19.07"></line>
+            </svg>
+            <span className="starline-brand-text">Burhani ERP</span>
           </Link>
-          <button className="btn btn-sm btn-link text-white-50 d-lg-none p-0" onClick={() => setSidebarOpen(false)}>
+          <button className="btn btn-sm btn-link text-muted d-lg-none p-0" onClick={() => setSidebarOpen(false)}>
             <i className="bi bi-x-lg fs-5"></i>
           </button>
         </div>
 
         {/* Navigation items */}
-        <div className="flex-grow-1 py-3 px-2 overflow-y-auto">
-          <div className="text-uppercase text-secondary fw-bold px-3 mb-2" style={{ fontSize: '0.68rem', letterSpacing: '0.5px' }}>
-            Main Menu
-          </div>
-          <nav className="nav flex-column gap-1">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.end}
-                onClick={() => setSidebarOpen(false)}
-                className={({ isActive }) =>
-                  `nav-link d-flex align-items-center gap-3 px-3 py-2.5 rounded-3 fw-medium transition-all ${
-                    isActive
-                      ? 'bg-warning text-dark fw-bold shadow-sm'
-                      : 'text-light text-opacity-75 hover-bg-slate'
-                  }`
-                }
-                style={{ fontSize: '0.9rem' }}>
-                <i className={`bi ${item.icon} fs-5`}></i>
-                <span>{item.label}</span>
-              </NavLink>
-            ))}
-          </nav>
-        </div>
+        <nav className="starline-nav-list flex-grow-1">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              onClick={() => setSidebarOpen(false)}
+              className={({ isActive }) => `starline-nav-item ${isActive ? 'active' : ''}`}>
+              {item.icon}
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
+        </nav>
 
-        {/* Footer profile & return to store */}
-        <div className="p-3 border-top border-secondary border-opacity-25 bg-black bg-opacity-20">
+        {/* Bottom Actions */}
+        <div className="pt-3 border-top border-secondary border-opacity-10 d-flex flex-column gap-2">
           <Link
             to="/"
-            className="btn btn-outline-warning btn-sm w-100 d-flex align-items-center justify-content-center gap-2 mb-3 fw-semibold"
-            style={{ borderRadius: '10px' }}>
-            <i className="bi bi-arrow-left"></i> Back to Storefront
+            className="starline-nav-item"
+            style={{ color: '#525866' }}>
+            <svg className="starline-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span>Live Storefront</span>
           </Link>
-
-          <div className="d-flex align-items-center justify-content-between">
-            <div className="d-flex align-items-center gap-2 overflow-hidden">
-              <div className="rounded-circle bg-warning text-dark fw-bold d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '32px', height: '32px', fontSize: '0.85rem' }}>
-                {(user?.username || 'A')[0].toUpperCase()}
-              </div>
-              <div className="text-truncate">
-                <div className="fw-semibold text-white small text-truncate">{user?.first_name || user?.username}</div>
-                <div className="text-secondary small" style={{ fontSize: '0.7rem' }}>Business Owner</div>
-              </div>
-            </div>
-            <button onClick={handleLogout} className="btn btn-sm btn-link text-danger p-0" title="Logout">
-              <i className="bi bi-box-arrow-right fs-5"></i>
-            </button>
-          </div>
+          <button
+            onClick={handleLogout}
+            className="starline-nav-item border-0 bg-transparent text-start w-100"
+            style={{ color: '#EF4444' }}>
+            <svg className="starline-nav-icon" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            <span>Logout</span>
+          </button>
         </div>
       </aside>
 
-      {/* ── Main Content Area ── */}
-      <div className="flex-grow-1 d-flex flex-column" style={{ marginLeft: window.innerWidth >= 992 ? '260px' : '0', minWidth: 0 }}>
-        {/* Top Navbar */}
-        <header className="bg-white border-bottom border-light-subtle px-3 py-2.5 sticky-top d-flex align-items-center justify-content-between shadow-sm">
+      {/* ── Main Workspace ── */}
+      <div
+        className="flex-grow-1 d-flex flex-column"
+        style={{
+          marginLeft: '235px',
+          padding: '24px 28px',
+          minWidth: 0,
+          background: '#E7E9ED',
+        }}>
+        {/* Top Header Row with Starline Pill */}
+        <div className="starline-header-row">
           <div className="d-flex align-items-center gap-3">
             <button
               className="btn btn-light d-lg-none d-flex align-items-center justify-content-center p-2 rounded-3 border"
               onClick={() => setSidebarOpen(true)}>
               <i className="bi bi-list fs-5"></i>
             </button>
-            <div className="d-none d-sm-block">
-              <span className="badge bg-warning text-dark fw-bold px-2 py-1 me-2">ERP PANEL</span>
-              <span className="text-muted small">Burhani Hardware &amp; Machinery</span>
+            <div>
+              <h1 className="starline-greeting-title">{headerInfo.title}</h1>
+              <p className="starline-greeting-sub">{headerInfo.sub}</p>
             </div>
           </div>
 
-          <div className="d-flex align-items-center gap-2">
-            <Link to="/" className="btn btn-sm btn-light border fw-semibold d-flex align-items-center gap-1.5" style={{ borderRadius: '8px' }}>
-              <i className="bi bi-shop text-warning"></i>
-              <span className="d-none d-md-inline">Live Store</span>
-            </Link>
-            <div className="vr mx-1 opacity-25"></div>
-            <div className="d-flex align-items-center gap-2 text-dark small fw-semibold">
-              <span className="d-none d-sm-inline">Hi, {user?.first_name || user?.username}</span>
-              <button onClick={handleLogout} className="btn btn-sm btn-outline-danger py-1 px-2 fw-semibold" style={{ borderRadius: '8px', fontSize: '0.78rem' }}>
-                Logout
-              </button>
+          {/* Floating White Pill */}
+          <div className="starline-header-pill">
+            <button className="starline-pill-btn" title="Search" onClick={() => navigate('/business/products')}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+            <button className="starline-pill-btn" title="Theme">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+            </button>
+            <button className="starline-pill-btn" title="Low Stock Notifications" onClick={() => navigate('/business/products?low_stock=true')}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span className="starline-notif-badge">2</span>
+            </button>
+            <button className="starline-pill-btn" title="Calendar / Sales" onClick={() => navigate('/business/sales')}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </button>
+            <div className="starline-avatar-bubble">
+              {(user?.first_name || user?.username || 'M')[0].toUpperCase()}
             </div>
           </div>
-        </header>
+        </div>
 
-        {/* Child Page Content */}
-        <main className="flex-grow-1 p-3 p-md-4">
+        {/* Content Outlet */}
+        <main className="flex-grow-1">
           <Outlet />
         </main>
       </div>
 
       <style>{`
-        .hover-bg-slate:hover {
-          background: rgba(255, 255, 255, 0.08) !important;
-          color: #ffffff !important;
+        @media (max-width: 991px) {
+          .starline-sidebar {
+            transform: translateX(-100%);
+          }
+          div[style*="margin-left: 235px"] {
+            margin-left: 0 !important;
+            padding: 16px 14px !important;
+          }
         }
       `}</style>
     </div>

@@ -92,10 +92,38 @@ def dashboard_api(request):
         for s in Sale.objects.select_related('customer').order_by('-id')[:6]
     ]
 
+    total_sales_count = Sale.objects.count()
+    total_customers_count = Party.objects.filter(party_type='customer').count()
+    total_all_revenue = Sale.objects.aggregate(total=Sum('total_amount'))['total'] or Decimal('0.00')
+    month_start = today.replace(day=1)
+    month_sales = Sale.objects.filter(sale_date__date__gte=month_start).aggregate(total=Sum('total_amount'))['total'] or Decimal('0.00')
+
+    top_items = SaleItem.objects.values('product__id', 'product__name', 'product__barcode').annotate(
+        total_qty=Sum('quantity')
+    ).order_by('-total_qty')[:5]
+    top_products = [
+        {
+            'id': item['product__id'],
+            'name': item['product__name'] or 'Product',
+            'code': item['product__barcode'] or f"SKU-{item['product__id']}",
+            'orders': int(item['total_qty'] or 0),
+        }
+        for item in top_items if item['product__id']
+    ]
+    if not top_products:
+        top_products = [
+            {'id': p.id, 'name': p.name, 'code': p.barcode or f"SKU-{p.id}", 'orders': int(p.stock_qty)}
+            for p in Product.objects.all()[:4]
+        ]
+
     return JsonResponse({
         'status': 'success',
         'today_sales': float(today_sales),
         'today_purchases': float(today_purchases),
+        'total_revenue': float(total_all_revenue),
+        'month_sales': float(month_sales),
+        'total_orders': total_sales_count,
+        'total_customers': total_customers_count,
         'total_products': total_products,
         'low_stock_count': low_stock_qs.count(),
         'low_stock_products': low_stock_products,
@@ -105,10 +133,12 @@ def dashboard_api(request):
         'gst_credit': float(gst_credit),
         'gross_profit': float(gross_profit),
         'recent_sales': recent_sales,
+        'top_products': top_products,
         'sales_trend': sales_trend,
         'purchases_trend': purchases_trend,
         'days_labels': days,
     })
+
 
 
 @owner_required
