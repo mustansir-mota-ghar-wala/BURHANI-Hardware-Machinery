@@ -1,43 +1,62 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.conf import settings
-from .models import Category, Product, Cart, Order, Order_Item
+from .models import Category, Product, Cart, Order, Order_Item, UserProfile
 import json
-import time
+
 
 class TestRegistration(TestCase):
     def setUp(self):
         self.client = Client()
-        self.register_url = reverse('register')
-
-    def test_register_page_loads(self):
-        response = self.client.get(self.register_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'register.html')
+        self.register_url = reverse('api_register')
 
     def test_register_short_phone_fails(self):
-        response = self.client.post(self.register_url, {
-            'first_name': 'Test',
-            'username': '12345',  # less than 10 digits
-            'password': 'StrongPass123!'
-        })
-        self.assertEqual(response.status_code, 302)  # redirect
-        # Phone validation should fail
+        response = self.client.post(
+            self.register_url,
+            data=json.dumps({
+                'first_name': 'Test',
+                'username': '12345',  # less than 10 digits
+                'password': 'StrongPass123!'
+            }),
+            content_type='application/json'
+        )
+        data = response.json()
+        self.assertEqual(data.get('status'), 'error')
+        self.assertIn('10 digits', data.get('message', ''))
 
     def test_register_mismatched_otp_fails(self):
-        # Set a session OTP
         session = self.client.session
         session['verification_otp'] = '123456'
         session.save()
-        
-        response = self.client.post(self.register_url, {
-            'first_name': 'Test',
-            'username': '9876543210',
-            'password': 'StrongPass123!',
-            'otp': '000001'  # wrong OTP and not master OTP
-        })
-        self.assertEqual(response.status_code, 302)
+
+        response = self.client.post(
+            self.register_url,
+            data=json.dumps({
+                'first_name': 'Test',
+                'username': '9876543210',
+                'password': 'StrongPass123!',
+                'otp': '000001'  # wrong OTP and not master OTP 000000
+            }),
+            content_type='application/json'
+        )
+        data = response.json()
+        self.assertEqual(data.get('status'), 'error')
+        self.assertIn('Invalid OTP', data.get('message', ''))
+
+    def test_register_success(self):
+        response = self.client.post(
+            self.register_url,
+            data=json.dumps({
+                'first_name': 'NewUser',
+                'username': '9876543210',
+                'password': 'StrongPassword123!',
+                'otp': '000000'  # master OTP for testing
+            }),
+            content_type='application/json'
+        )
+        data = response.json()
+        self.assertEqual(data.get('status'), 'success')
+        self.assertTrue(User.objects.filter(username='9876543210').exists())
 
 
 class TestLogin(TestCase):
@@ -48,33 +67,44 @@ class TestLogin(TestCase):
             password='StrongPass123!',
             first_name='Test'
         )
-
-    def test_login_page_loads(self):
-        response = self.client.get(reverse('login'))
-        self.assertEqual(response.status_code, 200)
+        self.login_url = reverse('api_login')
 
     def test_login_success(self):
-        response = self.client.post(reverse('login'), {
-            'username': '9876543210',
-            'password': 'StrongPass123!'
-        })
-        self.assertEqual(response.status_code, 302)
-        # Should redirect to home
-        self.assertRedirects(response, '/')
+        response = self.client.post(
+            self.login_url,
+            data=json.dumps({
+                'username': '9876543210',
+                'password': 'StrongPass123!'
+            }),
+            content_type='application/json'
+        )
+        data = response.json()
+        self.assertEqual(data.get('status'), 'success')
+        self.assertEqual(data.get('username'), '9876543210')
 
     def test_login_failure_wrong_password(self):
-        response = self.client.post(reverse('login'), {
-            'username': '9876543210',
-            'password': 'WrongPass!'
-        })
-        self.assertEqual(response.status_code, 200)  # stays on login page
+        response = self.client.post(
+            self.login_url,
+            data=json.dumps({
+                'username': '9876543210',
+                'password': 'WrongPass!'
+            }),
+            content_type='application/json'
+        )
+        data = response.json()
+        self.assertEqual(data.get('status'), 'error')
 
     def test_login_nonexistent_user(self):
-        response = self.client.post(reverse('login'), {
-            'username': '1111111111',
-            'password': 'SomePass123'
-        })
-        self.assertEqual(response.status_code, 302)  # redirect to register
+        response = self.client.post(
+            self.login_url,
+            data=json.dumps({
+                'username': '1111111111',
+                'password': 'SomePass123'
+            }),
+            content_type='application/json'
+        )
+        data = response.json()
+        self.assertEqual(data.get('status'), 'error')
 
 
 class TestHomePage(TestCase):
@@ -90,22 +120,29 @@ class TestHomePage(TestCase):
         )
 
     def test_home_page_loads(self):
-        response = self.client.get(reverse('home'))
+        response = self.client.get(reverse('api_home'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Test Drill Machine')
+        data = response.json()
+        self.assertIn('categories', data)
+        self.assertIn('products', data)
+        product_names = [p['name'] for p in data['products']]
+        self.assertIn('Test Drill Machine', product_names)
 
     def test_home_page_search(self):
-        response = self.client.get(reverse('home') + '?q=drill')
+        response = self.client.get(reverse('api_home') + '?q=drill')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Test Drill Machine')
+        data = response.json()
+        product_names = [p['name'] for p in data['products']]
+        self.assertIn('Test Drill Machine', product_names)
 
     def test_home_page_search_no_results(self):
-        response = self.client.get(reverse('home') + '?q=nonexistenttool')
+        response = self.client.get(reverse('api_home') + '?q=nonexistenttool')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'No results found')
+        data = response.json()
+        self.assertEqual(len(data['products']), 0)
 
 
-class TestCartAndCheckout(TestCase):
+class TestCart(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(
@@ -123,51 +160,47 @@ class TestCartAndCheckout(TestCase):
         self.client.login(username='9876543210', password='StrongPass123!')
 
     def test_add_to_cart(self):
-        response = self.client.get(reverse('add_to_cart', args=[self.product.id]))
-        self.assertEqual(response.status_code, 302)
+        response = self.client.post(reverse('api_add_to_cart', args=[self.product.id]))
+        self.assertEqual(response.status_code, 200)
         cart_item = Cart.objects.filter(user=self.user, product=self.product).first()
         self.assertIsNotNone(cart_item)
         self.assertEqual(cart_item.product_quantity, 1)
 
     def test_add_to_cart_increases_quantity(self):
-        # Add same product twice
-        self.client.get(reverse('add_to_cart', args=[self.product.id]))
-        self.client.get(reverse('add_to_cart', args=[self.product.id]))
+        self.client.post(reverse('api_add_to_cart', args=[self.product.id]))
+        self.client.post(reverse('api_add_to_cart', args=[self.product.id]))
         cart_item = Cart.objects.get(user=self.user, product=self.product)
         self.assertEqual(cart_item.product_quantity, 2)
-        # Server-side: price should be price * quantity
         self.assertEqual(cart_item.product_total, self.product.price * 2)
 
-    def test_cart_page_shows_items(self):
-        self.client.get(reverse('add_to_cart', args=[self.product.id]))
-        response = self.client.get(reverse('cart'))
+    def test_cart_api_shows_items(self):
+        self.client.post(reverse('api_add_to_cart', args=[self.product.id]))
+        response = self.client.get(reverse('api_cart'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Welding Machine 200A')
+        data = response.json()
+        self.assertEqual(len(data['cart']), 1)
+        self.assertEqual(data['cart'][0]['product']['name'], 'Welding Machine 200A')
 
     def test_remove_from_cart(self):
-        self.client.get(reverse('add_to_cart', args=[self.product.id]))
+        self.client.post(reverse('api_add_to_cart', args=[self.product.id]))
         cart_item = Cart.objects.get(user=self.user, product=self.product)
-        response = self.client.get(reverse('remove_from_cart', args=[cart_item.id]))
-        self.assertEqual(response.status_code, 302)
+        response = self.client.post(reverse('api_remove_from_cart', args=[cart_item.id]))
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(Cart.objects.filter(user=self.user).count(), 0)
 
     def test_decrease_product_quantity(self):
-        self.client.get(reverse('add_to_cart', args=[self.product.id]))
-        self.client.get(reverse('add_to_cart', args=[self.product.id]))
-        response = self.client.get(reverse('decrease_product', args=[self.product.id]))
-        self.assertEqual(response.status_code, 302)
+        self.client.post(reverse('api_add_to_cart', args=[self.product.id]))
+        self.client.post(reverse('api_add_to_cart', args=[self.product.id]))
+        response = self.client.post(reverse('api_decrease_product', args=[self.product.id]))
+        self.assertEqual(response.status_code, 200)
         cart_item = Cart.objects.get(user=self.user, product=self.product)
         self.assertEqual(cart_item.product_quantity, 1)
 
     def test_decrease_to_zero_removes_item(self):
-        self.client.get(reverse('add_to_cart', args=[self.product.id]))
-        self.client.get(reverse('decrease_product', args=[self.product.id]))
+        self.client.post(reverse('api_add_to_cart', args=[self.product.id]))
+        response = self.client.post(reverse('api_decrease_product', args=[self.product.id]))
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(Cart.objects.filter(user=self.user).count(), 0)
-
-    def test_checkout_with_empty_cart_redirects(self):
-        response = self.client.get(reverse('checkout'))
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('cart'))
 
 
 class TestOrderModel(TestCase):
@@ -266,54 +299,58 @@ class TestProductDetails(TestCase):
             price=3500
         )
 
-    def test_product_detail_page(self):
-        response = self.client.get(reverse('product_detail', args=[self.product.id]))
+    def test_product_detail_api(self):
+        response = self.client.get(reverse('api_product_detail', args=[self.product.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Angle Grinder')
-        self.assertContains(response, '₹3,500')
+        data = response.json()
+        self.assertEqual(data['product']['name'], 'Angle Grinder')
+        self.assertEqual(data['product']['price'], '3500.00')
 
-    def test_product_listing_page(self):
-        response = self.client.get(reverse('product', args=[self.category.id]))
+    def test_product_listing_api(self):
+        response = self.client.get(reverse('api_product_list', args=[self.category.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Angle Grinder')
+        data = response.json()
+        self.assertEqual(len(data['products']), 1)
+        self.assertEqual(data['products'][0]['name'], 'Angle Grinder')
 
     def test_404_for_invalid_product(self):
-        response = self.client.get(reverse('product_detail', args=[9999]))
+        response = self.client.get(reverse('api_product_detail', args=[9999]))
         self.assertEqual(response.status_code, 404)
 
 
-class TestCartPriceSecurity(TestCase):
-    """Test that cart prices are correctly recalculated server-side at checkout"""
-    
+class TestBusinessApi(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user(
-            username='9876543210',
-            password='StrongPass123!'
+        self.admin_user = User.objects.create_superuser(
+            username='admin',
+            password='AdminPassword123!',
+            first_name='Admin'
         )
-        self.category = Category.objects.create(name='Tools')
+        self.category = Category.objects.create(name='Machinery')
         self.product = Product.objects.create(
             category=self.category,
-            name='Test Product',
-            description='Test',
-            price=1000
-        )
-        self.client.login(username='9876543210', password='StrongPass123!')
-        
-        # Manually add cart item with manipulated price
-        self.cart_item = Cart.objects.create(
-            user=self.user,
-            product=self.product,
-            product_quantity=2,
-            product_total=50  # Manipulated: should be 2000 (1000 * 2)
+            name='Concrete Mixer',
+            price=45000,
+            purchase_price=38000,
+            stock_qty=5
         )
 
-    def test_checkout_recalculates_price(self):
-        """Checkout should override manipulated cart prices"""
-        response = self.client.get(reverse('checkout'))
+    def test_dashboard_unauthenticated_forbidden(self):
+        response = self.client.get('/api/business/dashboard/')
+        self.assertIn(response.status_code, [401, 403])
+
+    def test_dashboard_admin_access(self):
+        self.client.login(username='admin', password='AdminPassword123!')
+        response = self.client.get('/api/business/dashboard/')
         self.assertEqual(response.status_code, 200)
-        # The grand_total should be 2000 (2 * 1000), not 50
-        self.assertContains(response, '₹2,000')
-        # The cart item in DB should be corrected
-        self.cart_item.refresh_from_db()
-        self.assertEqual(self.cart_item.product_total, 2000)
+        data = response.json()
+        self.assertIn('today_sales', data)
+        self.assertIn('sales_trend', data)
+
+    def test_business_products_api(self):
+        self.client.login(username='admin', password='AdminPassword123!')
+        response = self.client.get('/api/business/products/')
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn('products', data)
+        self.assertTrue(any(p['name'] == 'Concrete Mixer' for p in data['products']))

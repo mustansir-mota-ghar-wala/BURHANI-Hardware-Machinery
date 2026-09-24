@@ -12,7 +12,13 @@ export function AuthProvider({ children }) {
     try {
       const data = await apiGet('/api/react/user/');
       if (data.is_authenticated) {
-        setUser({ username: data.username, first_name: data.first_name });
+        setUser({
+          username: data.username,
+          first_name: data.first_name,
+          is_staff: data.is_staff,
+          is_superuser: data.is_superuser,
+          is_owner: data.is_owner,
+        });
         setCartCount(data.cart_count);
       } else {
         setUser(false);

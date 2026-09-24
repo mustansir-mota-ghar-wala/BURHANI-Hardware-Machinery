@@ -7,7 +7,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from BurhaniApp.views import (
     # ── Legacy views still needed for payment callbacks ──
     place_order, payment_callback, send_otp, verify_otp,
-    save_address, cancel_order,
+    save_address,
     chat_api, visual_search_api, transcribe_audio_api, product_quick_view_api,
     robots_txt, sitemap_xml,
 
@@ -31,10 +31,7 @@ urlpatterns = [
     path('sitemap.xml', sitemap_xml, name='sitemap_xml'),
 
     # ── Google / Social Auth ──
-    path('accounts/', include('allauth.urls')),
-<<<<<<< HEAD
-    path('business/', include('BusinessApp.urls')),
-=======
+    path('api/business/', include('BusinessApp.urls')),
 
     # ── Old backend views still needed (payment flow, OTP, etc.) ──
     path('api/chat/', chat_api, name='chat_api'),
@@ -62,16 +59,12 @@ urlpatterns = [
     path('api/react/save-address/', save_address, name='api_save_address'),
     path('api/react/send-otp/', send_otp, name='api_send_otp'),
     path('api/react/verify-otp/', verify_otp, name='api_verify_otp'),
-    path('api/react/cancel-order/<int:id>/', cancel_order, name='api_cancel_order_legacy'),
->>>>>>> 5f4e404b498b6ae481ae0ee129b014963a303982
+    path('api/react/cancel-order/<int:id>/', api_cancel_order, name='api_cancel_order_legacy'),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-<<<<<<< HEAD
-urlpatterns += staticfiles_urlpatterns()
-=======
 from django.views.static import serve
 
 # ── Serve React built assets (/assets/index-xxx.js, /assets/index-xxx.css) ──
@@ -88,4 +81,4 @@ urlpatterns += staticfiles_urlpatterns()
 urlpatterns += [
     re_path(r'^(?!admin|api).*$', react_spa, name='react_spa'),
 ]
->>>>>>> 5f4e404b498b6ae481ae0ee129b014963a303982
+
