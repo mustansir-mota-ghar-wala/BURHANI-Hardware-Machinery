@@ -15,6 +15,19 @@ from .decorators import owner_required
 from .utils import calculate_gst_extraction, update_weighted_average_cost
 
 
+def get_transparent_image_url(image_field):
+    """Deliver transparent product cutouts via Cloudinary AI background removal."""
+    if not image_field:
+        return None
+    try:
+        url = image_field.url
+    except Exception:
+        return None
+    if url and 'res.cloudinary.com' in url and '/image/upload/' in url and '/e_background_removal/' not in url:
+        return url.replace('/image/upload/', '/image/upload/e_background_removal/')
+    return url
+
+
 @owner_required
 def dashboard_api(request):
     today = timezone.localtime(timezone.now()).date()
@@ -185,7 +198,7 @@ def products_api(request):
                 'is_spare_part': p.is_spare_part,
                 'is_machinery': p.is_machinery,
                 'is_power_tools': p.is_power_tools,
-                'image_url': p.image.url if p.image else None,
+                'image_url': get_transparent_image_url(p.image),
             }
             for p in products_qs
         ]
@@ -267,7 +280,7 @@ def product_detail_api(request, id):
                 'is_spare_part': product.is_spare_part,
                 'is_machinery': product.is_machinery,
                 'is_power_tools': product.is_power_tools,
-                'image_url': product.image.url if product.image else None,
+                'image_url': get_transparent_image_url(product.image),
             }
         })
 

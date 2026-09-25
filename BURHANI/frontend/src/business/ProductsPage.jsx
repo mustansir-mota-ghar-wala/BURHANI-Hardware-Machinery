@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { fetchProducts, fetchCategories, saveProduct, deleteProduct } from './businessApi';
+import { getCleanProductImage } from '../utils/imageUrl';
 
 export default function ProductsPage() {
   const [searchParams] = useSearchParams();
@@ -306,7 +307,7 @@ export default function ProductsPage() {
                     <td>
                       <div className="d-flex align-items-center gap-2">
                         {p.image_url ? (
-                          <img src={p.image_url} alt="" className="rounded-2 object-fit-contain border" style={{ width: '38px', height: '38px' }} />
+                          <img src={getCleanProductImage(p.image_url)} alt="" className="rounded-2 object-fit-contain border bg-light" style={{ width: '38px', height: '38px' }} />
                         ) : (
                           <div className="rounded-2 bg-light border d-flex align-items-center justify-content-center text-muted" style={{ width: '38px', height: '38px' }}>
                             <i className="bi bi-box small"></i>

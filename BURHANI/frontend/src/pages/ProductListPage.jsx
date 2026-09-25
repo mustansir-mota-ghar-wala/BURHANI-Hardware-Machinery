@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { apiGet, apiPost } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import { getCleanProductImage } from '../utils/imageUrl';
 
 export default function ProductListPage({ setToasts }) {
   const { id } = useParams();
@@ -60,7 +61,7 @@ export default function ProductListPage({ setToasts }) {
               <Link to={`/item/${product.id}`} className="prod-card touch-feedback d-block text-decoration-none text-dark position-relative">
                 <div className="prod-img d-block">
                   <img
-                    src={product.image || 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=800&auto=format&fit=crop'}
+                    src={getCleanProductImage(product.image) || 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=800&auto=format&fit=crop'}
                     alt={product.name}
                   />
                 </div>

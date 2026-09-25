@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiGet, apiPost } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import { getCleanProductImage } from '../utils/imageUrl';
 
 export default function CartPage({ setToasts }) {
   const [data, setData] = useState({ cart: [], grand_total: '0' });
@@ -84,7 +85,7 @@ export default function CartPage({ setToasts }) {
                       }}
                     >
                       <img
-                        src={item.product.image || '/static/images/cat_hardware.jpg'}
+                        src={getCleanProductImage(item.product.image) || '/static/images/cat_hardware.jpg'}
                         alt={item.product.name}
                         style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '6px' }}
                       />

@@ -24,6 +24,19 @@ from PIL import Image
 from io import BytesIO
 
 
+def get_transparent_image_url(image_field):
+    """Deliver transparent product cutouts via Cloudinary AI background removal."""
+    if not image_field:
+        return None
+    try:
+        url = image_field.url
+    except Exception:
+        return None
+    if url and 'res.cloudinary.com' in url and '/image/upload/' in url and '/e_background_removal/' not in url:
+        return url.replace('/image/upload/', '/image/upload/e_background_removal/')
+    return url
+
+
 def robots_txt(request):
     content = f"""User-agent: *
 Allow: /
@@ -452,7 +465,7 @@ CRITICAL: {lang_instruction}"""
             if matching_products.exists():
                 products_html += "<div class='d-flex flex-column gap-2 mt-2 custom-scrollbar' style='max-height: 280px; overflow-y: auto; padding-right: 4px;'>"
                 for prod in matching_products:
-                    img_url = prod.image.url if prod.image else "https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=150&auto=format&fit=crop"
+                    img_url = get_transparent_image_url(prod.image) or "https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=150&auto=format&fit=crop"
                     prod_url = f"/item/{prod.id}/"
                     products_html += f"""
                     <div class="card bg-white border-0 shadow-sm mb-2" style="border-radius: 12px; overflow: hidden; min-height: 70px;">
@@ -534,7 +547,7 @@ def visual_search_api(request):
                     'id': prod.id,
                     'name': prod.name,
                     'price': prod.price,
-                    'image': prod.image.url if prod.image else None
+                    'image': get_transparent_image_url(prod.image)
                 })
                 
             return JsonResponse({
@@ -594,7 +607,7 @@ def product_quick_view_api(request, id):
                 'name': product.name,
                 'price': product.price,
                 'description': product.description,
-                'image': product.image.url if product.image else None,
+                'image': get_transparent_image_url(product.image),
             }
         })
     except Exception as e:
@@ -633,7 +646,7 @@ def api_home(request):
                 'id': p.id,
                 'name': p.name,
                 'price': str(p.price),
-                'image': p.image.url if p.image else None,
+                'image': get_transparent_image_url(p.image),
                 'category': p.category.name if p.category else '',
             }
             for p in products
@@ -663,7 +676,7 @@ def api_product_list(request, id):
                 'id': p.id,
                 'name': p.name,
                 'price': str(p.price),
-                'image': p.image.url if p.image else None,
+                'image': get_transparent_image_url(p.image),
             }
             for p in products
         ],
@@ -671,9 +684,39 @@ def api_product_list(request, id):
 
 
 def api_product_detail(request, id):
-    """Product detail page."""
+    """Product detail page with smart related and fallback products."""
     prod = get_object_or_404(Product.objects.select_related('category'), id=id)
-    related = Product.objects.select_related('category').filter(category=prod.category).exclude(id=id)
+
+    # 1. Try finding other products in the same category
+    same_category_products = list(
+        Product.objects.select_related('category').filter(category=prod.category).exclude(id=id)[:8]
+    )
+    has_same_category = len(same_category_products) > 0
+
+    if has_same_category:
+        related = same_category_products
+        # If fewer than 4 items, top up with other store products
+        if len(related) < 4:
+            other_products = list(
+                Product.objects.select_related('category')
+                .exclude(id=id)
+                .exclude(category=prod.category)
+                .order_by('-id')[:8 - len(related)]
+            )
+            related.extend(other_products)
+        related_title = f"More in {prod.category.name}" if prod.category else "Related Products"
+    else:
+        # Fallback: Show other products from across the store
+        related = list(
+            Product.objects.select_related('category').exclude(id=id).order_by('-id')[:8]
+        )
+        related_title = "Explore More Machinery & Hardware"
+
+    # 2. Complete store products for the bottom full-width showcase card
+    all_store_products = list(
+        Product.objects.select_related('category').exclude(id=id).order_by('id')[:12]
+    )
+
     categories = Category.objects.all().order_by('name')
     additional_images = prod.images.all()
 
@@ -683,19 +726,31 @@ def api_product_detail(request, id):
             'name': prod.name,
             'price': str(prod.price),
             'description': prod.description,
-            'image': prod.image.url if prod.image else None,
+            'image': get_transparent_image_url(prod.image),
             'category': {'id': prod.category.id, 'name': prod.category.name} if prod.category else None,
-            'additional_images': [img.image.url for img in additional_images if img.image],
+            'additional_images': [get_transparent_image_url(img.image) for img in additional_images if img.image],
         },
         'related_products': [
             {
                 'id': p.id,
                 'name': p.name,
                 'price': str(p.price),
-                'image': p.image.url if p.image else None,
+                'image': get_transparent_image_url(p.image),
+                'category': p.category.name if p.category else '',
             }
             for p in related
         ],
+        'more_products': [
+            {
+                'id': p.id,
+                'name': p.name,
+                'price': str(p.price),
+                'image': get_transparent_image_url(p.image),
+                'category': p.category.name if p.category else '',
+            }
+            for p in all_store_products
+        ],
+        'related_title': related_title,
         'categories': [
             {'id': c.id, 'name': c.name}
             for c in categories
@@ -718,7 +773,7 @@ def api_cart(request):
                     'id': item.product.id,
                     'name': item.product.name,
                     'price': str(item.product.price),
-                    'image': item.product.image.url if item.product.image else None,
+                    'image': get_transparent_image_url(item.product.image),
                 },
                 'product_quantity': item.product_quantity,
                 'product_total': str(item.product_total),
@@ -885,7 +940,7 @@ def api_your_orders(request):
                     'id': item.product.id,
                     'name': item.product.name,
                     'price': str(item.product.price),
-                    'image': item.product.image.url if item.product.image else None,
+                    'image': get_transparent_image_url(item.product.image),
                 },
                 'product_quantity': item.product_quantity,
                 'product_total': str(item.product_total),
@@ -997,7 +1052,7 @@ def api_checkout(request):
                     'id': item.product.id,
                     'name': item.product.name,
                     'price': str(item.product.price),
-                    'image': item.product.image.url if item.product.image else None,
+                    'image': get_transparent_image_url(item.product.image),
                 },
                 'product_quantity': item.product_quantity,
                 'product_total': str(item.product_total),
