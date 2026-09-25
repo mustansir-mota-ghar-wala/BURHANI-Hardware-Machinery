@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { apiGet, apiPost } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import { getCleanProductImage } from '../utils/imageUrl';
 
 const CATEGORY_HERO_ITEMS = [
   {
@@ -514,7 +515,7 @@ export default function HomePage({ setToasts }) {
                   {/* Product Image */}
                   <div className="card-image-stage">
                     <img
-                      src={p.image || '/static/images/cat_hardware.jpg'}
+                      src={getCleanProductImage(p.image) || '/static/images/cat_hardware.jpg'}
                       alt={p.name}
                       className="product-feature-img"
                       loading="lazy"

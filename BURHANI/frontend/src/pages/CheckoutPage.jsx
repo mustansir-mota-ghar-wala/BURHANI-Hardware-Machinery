@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiGet, apiPost } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import { getCleanProductImage } from '../utils/imageUrl';
 
 export default function CheckoutPage({ setToasts }) {
   const [data, setData] = useState(null);
@@ -192,9 +193,9 @@ export default function CheckoutPage({ setToasts }) {
               <h5 className="fw-bold mb-3"><i className="bi bi-bag-check-fill text-warning me-2"></i>Order Summary</h5>
               {data.cart?.map(item => (
                 <div key={item.id} className="d-flex align-items-center gap-3 py-2 border-bottom">
-                  <img src={item.product.image || 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=100'}
+                  <img src={getCleanProductImage(item.product.image) || 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=100'}
                     alt={item.product.name}
-                    style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '8px' }} />
+                    style={{ width: '50px', height: '50px', objectFit: 'contain', borderRadius: '8px' }} />
                   <div className="flex-grow-1">
                     <div className="fw-bold" style={{ fontSize: '0.85rem' }}>{item.product.name}</div>
                     <div className="text-muted small">Qty: {item.product_quantity}</div>
