@@ -118,36 +118,63 @@ def payment_callback(request):
             order.save()
 
             user_cart = Cart.objects.filter(user=order.user)
-            sale = Sale.objects.create(
-                customer=None,
-                total_amount=order.bill,
-                paid_amount=order.bill,
-                balance_amount=0,
-                payment_mode='online',
-                created_by=order.user,
-                order=order
-            )
+            
+            # Create ERP Sale record if possible
+            sale = None
+            try:
+                sale = Sale.objects.create(
+                    customer=None,
+                    total_amount=order.bill,
+                    paid_amount=order.bill,
+                    balance_amount=0,
+                    payment_mode='online',
+                    created_by=order.user,
+                    order=order
+                )
+            except Exception as se:
+                print("Sale creation warning:", se)
+
             for item in user_cart:
-                Order_Item.objects.create(
+                # 1. Order Item
+                Order_Item.objects.get_or_create(
                     order=order,
                     product=item.product,
-                    product_quantity=item.product_quantity,
-                    product_total=item.product_total
+                    defaults={
+                        'product_quantity': item.product_quantity,
+                        'product_total': item.product_total
+                    }
                 )
-                SaleItem.objects.create(
-                    sale=sale,
-                    product=item.product,
-                    quantity=item.product_quantity,
-                    price=item.product.price,
-                    gst_percent=item.product.gst_percent,
-                    total=item.product_total
-                )
-                # REAL WORLD ERP: Deduct stock when website order is paid
+
+                # 2. ERP Sale Item with exact model fields
+                if sale:
+                    try:
+                        price_incl = Decimal(str(item.product.price))
+                        gst_pct = Decimal(str(item.product.gst_percent or 18))
+                        taxable = (Decimal(str(item.product_total)) / (Decimal('1') + (gst_pct / Decimal('100')))).quantize(Decimal('0.01'))
+                        gst_amt = Decimal(str(item.product_total)) - taxable
+                        cgst = (gst_amt / Decimal('2')).quantize(Decimal('0.01'))
+                        sgst = gst_amt - cgst
+                        SaleItem.objects.create(
+                            sale=sale,
+                            product=item.product,
+                            quantity=item.product_quantity,
+                            price_incl_gst=price_incl,
+                            taxable_value=taxable,
+                            cgst_amount=cgst,
+                            sgst_amount=sgst,
+                            cost_price=item.product.avg_cost or item.product.purchase_price or Decimal('0'),
+                            total=item.product_total
+                        )
+                    except Exception as sie:
+                        print("SaleItem creation warning:", sie)
+
+                # 3. Deduct stock
                 try:
                     item.product.stock_qty -= item.product_quantity
                     item.product.save()
                 except Exception:
                     pass
+
             user_cart.delete()
 
             from django.http import HttpResponseRedirect
@@ -283,25 +310,44 @@ def place_order(request):
                 product_quantity=item.product_quantity,
                 product_total=item.product_total
             )
-        sale = Sale.objects.create(
-            customer=None,
-            total_amount=new_order.bill,
-            paid_amount=0,
-            balance_amount=new_order.bill,
-            payment_mode='cash',
-            created_by=user,
-            order=new_order
-        )
-        for item in user_cart:
-            SaleItem.objects.create(
-                sale=sale,
-                product=item.product,
-                quantity=item.product_quantity,
-                price=item.product.price,
-                gst_percent=item.product.gst_percent,
-                total=item.product_total
+        sale = None
+        try:
+            sale = Sale.objects.create(
+                customer=None,
+                total_amount=new_order.bill,
+                paid_amount=0,
+                balance_amount=new_order.bill,
+                payment_mode='cash',
+                created_by=user,
+                order=new_order
             )
-            # REAL WORLD ERP: Deduct stock when COD order is placed
+        except Exception as se:
+            print("Sale creation warning:", se)
+
+        for item in user_cart:
+            if sale:
+                try:
+                    price_incl = Decimal(str(item.product.price))
+                    gst_pct = Decimal(str(item.product.gst_percent or 18))
+                    taxable = (Decimal(str(item.product_total)) / (Decimal('1') + (gst_pct / Decimal('100')))).quantize(Decimal('0.01'))
+                    gst_amt = Decimal(str(item.product_total)) - taxable
+                    cgst = (gst_amt / Decimal('2')).quantize(Decimal('0.01'))
+                    sgst = gst_amt - cgst
+                    SaleItem.objects.create(
+                        sale=sale,
+                        product=item.product,
+                        quantity=item.product_quantity,
+                        price_incl_gst=price_incl,
+                        taxable_value=taxable,
+                        cgst_amount=cgst,
+                        sgst_amount=sgst,
+                        cost_price=item.product.avg_cost or item.product.purchase_price or Decimal('0'),
+                        total=item.product_total
+                    )
+                except Exception as sie:
+                    print("SaleItem creation warning:", sie)
+
+            # Deduct stock
             try:
                 item.product.stock_qty -= item.product_quantity
                 item.product.save()
