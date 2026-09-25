@@ -76,13 +76,13 @@ export default function DashboardPage() {
 
   const topProductsList = (data.top_products && data.top_products.length > 0)
     ? data.top_products.slice(0, 4).map((p, idx) => ({
-        id: p.id,
-        name: p.name,
-        code: p.code || `${8800 + p.id}`,
-        orders: p.orders > 0 ? p.orders : defaultTopProducts[idx]?.orders || 433,
-        emoji: ['🔮', '🌿', '📦', '🔋'][idx % 4],
-        color: ['#A855F7', '#0F172A', '#D97706', '#059669'][idx % 4],
-      }))
+      id: p.id,
+      name: p.name,
+      code: p.code || `${8800 + p.id}`,
+      orders: p.orders > 0 ? p.orders : defaultTopProducts[idx]?.orders || 433,
+      emoji: ['🔮', '🌿', '📦', '🔋'][idx % 4],
+      color: ['#A855F7', '#0F172A', '#D97706', '#059669'][idx % 4],
+    }))
     : defaultTopProducts;
 
   // Metric values

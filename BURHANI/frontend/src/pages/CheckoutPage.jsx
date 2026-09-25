@@ -345,7 +345,6 @@ export default function CheckoutPage({ setToasts }) {
     );
   }
 
-  const cleanPhoneLength = recipientPhone.replace(/\D/g, '').length;
   const detectedPin = address.match(/\b\d{6}\b/)?.[0];
 
   return (

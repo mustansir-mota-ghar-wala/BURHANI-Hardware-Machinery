@@ -113,6 +113,7 @@ export default function PartiesPage() {
         setDetailParty(res);
       }
     } catch (err) {
+      console.error(err);
       alert('Failed to load party details');
     } finally {
       setLoadingDetail(false);
