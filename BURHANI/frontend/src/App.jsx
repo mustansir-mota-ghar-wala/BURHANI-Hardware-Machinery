@@ -30,10 +30,9 @@ function AppInner() {
   const [toasts, setToasts] = useState([]);
   const location = useLocation();
 
-  // Pages that manage their own standalone layout
-  const isAuthPage = ['/login', '/register'].includes(location.pathname);
+  // Business pages manage their own standalone dashboard layout
   const isBusinessPage = location.pathname.startsWith('/business');
-  const isCustomLayout = isAuthPage || isBusinessPage;
+  const isCustomLayout = isBusinessPage;
 
   return (
     <div className={!isCustomLayout ? 'scenic-page-root' : ''} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

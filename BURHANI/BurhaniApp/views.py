@@ -973,7 +973,7 @@ def api_your_orders(request):
     """Return user orders as JSON."""
     orders = Order.objects.filter(
         user=request.user,
-        payment_status__in=['Paid', 'Pending (COD)', 'Refunded', 'Cancelled']
+        payment_status__in=['Paid', 'Pending (COD)', 'Refunded', 'Cancelled', 'Pending']
     ).prefetch_related('order_item_set__product').order_by('-created_at')
 
     orders_data = []
@@ -993,11 +993,16 @@ def api_your_orders(request):
             })
         orders_data.append({
             'id': order.id,
-            'created_at': order.created_at.strftime('%b %d, %Y'),
+            'created_at': order.created_at.strftime('%b %d, %Y') if order.created_at else 'Recent',
+            'created_at_iso': order.created_at.isoformat() if order.created_at else '',
+            'created_at_time': order.created_at.strftime('%I:%M %p') if order.created_at else '',
             'bill': str(order.bill),
-            'address': order.address,
+            'address': order.address or 'Standard Delivery',
             'payment_status': order.payment_status,
-            'delivery_status': order.delivery_status,
+            'delivery_status': order.delivery_status or 'Placed',
+            'tracking_id': f"BUR-{order.id:05d}-EXP",
+            'carrier': "Burhani Express Cargo & Logistics",
+            'razorpay_payment_id': order.razorpay_payment_id or '',
             'items': items,
         })
 
