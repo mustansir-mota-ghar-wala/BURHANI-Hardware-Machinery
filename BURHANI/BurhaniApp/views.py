@@ -1042,9 +1042,19 @@ def api_checkout(request):
     )
     last_order = Order.objects.filter(user=user).exclude(address='').order_by('-id').first()
     last_address = last_order.address if last_order else ''
+    
+    # Retrieve up to 5 unique past addresses for multiple address management
+    raw_past = list(Order.objects.filter(user=user).exclude(address='').order_by('-id').values_list('address', flat=True)[:10])
+    saved_addresses = []
+    seen = set()
+    for a in raw_past:
+        if a and a.strip() and a.strip() not in seen:
+            seen.add(a.strip())
+            saved_addresses.append(a.strip())
 
     return JsonResponse({
         'status': 'success',
+        'saved_addresses': saved_addresses,
         'cart': [
             {
                 'id': item.id,

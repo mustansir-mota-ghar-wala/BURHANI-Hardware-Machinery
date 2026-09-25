@@ -7,138 +7,256 @@ import { getCleanProductImage } from '../utils/imageUrl';
 export default function CartPage({ setToasts }) {
   const [data, setData] = useState({ cart: [], grand_total: '0' });
   const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState(null);
   const { user, setCartCount } = useAuth();
   const navigate = useNavigate();
 
   const fetchCart = async () => {
-    const d = await apiGet('/api/react/cart/');
-    setData(d);
-    setCartCount(d.cart?.length || 0);
-    setLoading(false);
+    try {
+      const d = await apiGet('/api/react/cart/');
+      setData(d);
+      setCartCount(d.cart?.length || 0);
+    } catch (err) {
+      console.error('Failed to fetch cart:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    if (!user && user !== null) { navigate('/login'); return; }
-    if (user) fetchCart();
+    if (!user && user !== null) {
+      navigate('/login');
+      return;
+    }
+    if (user) {
+      fetchCart();
+    }
   }, [user]);
 
-  const removeItem = async (cartItemId) => {
-    await apiPost(`/api/react/cart/remove/${cartItemId}/`);
-    fetchCart();
-    setToasts((t) => [...t, { tag: 'success', text: 'Item removed from cart.' }]);
+  const removeItem = async (cartItemId, e) => {
+    if (e) e.stopPropagation();
+    setUpdatingId(cartItemId);
+    try {
+      await apiPost(`/api/react/cart/remove/${cartItemId}/`);
+      await fetchCart();
+      if (setToasts) {
+        setToasts((t) => [...t, { tag: 'success', text: 'Item removed from cart.' }]);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
-  const increase = async (productId) => {
-    await apiPost(`/api/react/cart/add/${productId}/`);
-    fetchCart();
+  const increase = async (productId, itemId, e) => {
+    if (e) e.stopPropagation();
+    setUpdatingId(itemId);
+    try {
+      await apiPost(`/api/react/cart/add/${productId}/`);
+      await fetchCart();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
-  const decrease = async (productId) => {
-    await apiPost(`/api/react/cart/decrease/${productId}/`);
-    fetchCart();
+  const decrease = async (productId, itemId, e) => {
+    if (e) e.stopPropagation();
+    setUpdatingId(itemId);
+    try {
+      await apiPost(`/api/react/cart/decrease/${productId}/`);
+      await fetchCart();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUpdatingId(null);
+    }
   };
+
+  const itemCount = data.cart?.reduce((acc, it) => acc + (it.product_quantity || 1), 0) || 0;
 
   return (
     <div className="scenic-app-wrapper">
-      <div className="glass-canvas-container">
-        {/* Header */}
-        <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-white">
+      <div className="glass-canvas-container cart-compact-container">
+        {/* Compact Breadcrumb Header */}
+        <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2 pb-2 border-bottom border-white-50">
           <div>
-            <span className="text-success fw-bold small text-uppercase letter-spacing-1">Burhani Store Checkout</span>
-            <h2 className="section-title m-0">Your Shopping Cart</h2>
+            <div className="d-flex align-items-center gap-2">
+              <span className="badge rounded-pill bg-success-subtle text-success px-2 py-0-5 small fw-semibold" style={{ fontSize: '0.72rem' }}>
+                <i className="bi bi-shield-check me-1"></i>BURHANI SECURE CART
+              </span>
+              <span className="text-muted small" style={{ fontSize: '0.78rem' }}>&bull; Industrial Tools</span>
+            </div>
+            <div className="d-flex align-items-center gap-2 mt-0.5">
+              <h3 className="section-title m-0" style={{ fontSize: '1.45rem' }}>Your Shopping Cart</h3>
+              {data.cart?.length > 0 && (
+                <span className="badge rounded-pill bg-light text-dark border px-2.5 py-1 small fw-semibold">
+                  {itemCount} {itemCount === 1 ? 'item' : 'items'}
+                </span>
+              )}
+            </div>
           </div>
-          <Link to="/" className="section-view-all d-flex align-items-center gap-1">
-            <i className="bi bi-arrow-left"></i> Continue Shopping
+
+          <Link to="/" className="detail-back-btn text-decoration-none py-1.5 px-3">
+            <i className="bi bi-arrow-left"></i>
+            <span>Continue Shopping</span>
           </Link>
         </div>
 
+        {/* Free Shipping Alert Pill Banner (Compact Single Line) */}
+        {data.cart?.length > 0 && (
+          <div
+            className="py-2 px-3 mb-3 rounded-3 d-flex align-items-center justify-content-between flex-wrap gap-2"
+            style={{
+              background: 'linear-gradient(135deg, rgba(209, 250, 229, 0.8) 0%, rgba(236, 253, 245, 0.9) 100%)',
+              border: '1px solid rgba(167, 243, 208, 0.9)',
+              boxShadow: '0 2px 8px rgba(5, 150, 105, 0.05)',
+            }}
+          >
+            <div className="d-flex align-items-center gap-2">
+              <div
+                style={{
+                  width: '26px',
+                  height: '26px',
+                  borderRadius: '50%',
+                  background: '#059669',
+                  color: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '0.82rem',
+                }}
+              >
+                <i className="bi bi-truck"></i>
+              </div>
+              <div>
+                <strong className="text-success-emphasis me-2" style={{ fontSize: '0.86rem' }}>
+                  Complimentary Doorstep Shipping Unlocked!
+                </strong>
+                <span className="text-muted small" style={{ fontSize: '0.8rem' }}>Standard safe delivery &amp; insurance included at ₹0.</span>
+              </div>
+            </div>
+
+            <div className="d-none d-md-flex align-items-center gap-1.5 text-success fw-semibold" style={{ fontSize: '0.78rem' }}>
+              <i className="bi bi-patch-check-fill"></i>
+              <span>GST Input Credit Eligible</span>
+            </div>
+          </div>
+        )}
+
         {loading ? (
-          <div className="text-center py-5">
-            <div className="spinner-border text-success" role="status"></div>
-            <p className="mt-2 text-muted">Loading your cart...</p>
+          <div className="text-center py-4">
+            <div className="spinner-border text-success" role="status" style={{ width: '2.4rem', height: '2.4rem' }}></div>
+            <p className="mt-2 text-muted fw-medium small">Loading your shopping cart...</p>
           </div>
         ) : data.cart?.length > 0 ? (
-          <div className="row g-4">
-            {/* Cart Items List */}
+          <div className="row g-3">
+            {/* Cart Items List (Left Column) */}
             <div className="col-lg-8">
-              <div className="d-flex flex-column gap-3">
+              <div className="d-flex flex-column gap-2">
                 {data.cart.map((item) => (
                   <div
                     key={item.id}
-                    className="product-minimal-card flex-row align-items-center p-3 gap-3"
+                    className="cart-modern-item-card d-flex align-items-center gap-3 flex-wrap flex-sm-nowrap"
                     style={{ cursor: 'pointer' }}
                     onClick={() => navigate(`/item/${item.product.id}`)}
                   >
-                    {/* Thumbnail */}
-                    <div
-                      className="flex-shrink-0"
-                      style={{
-                        width: '84px',
-                        height: '84px',
-                        borderRadius: '16px',
-                        background: '#ffffff',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        overflow: 'hidden',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.04)',
-                      }}
-                    >
+                    {/* Transparent Cutout Thumbnail Stage (Compact) */}
+                    <div className="cart-thumbnail-stage">
                       <img
                         src={getCleanProductImage(item.product.image) || '/static/images/cat_hardware.jpg'}
                         alt={item.product.name}
-                        style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '6px' }}
+                        className="cart-thumbnail-img"
                       />
                     </div>
 
-                    {/* Details */}
+                    {/* Product Details (Compact) */}
                     <div className="flex-grow-1 min-w-0">
+                      <div className="d-flex align-items-center gap-1.5 mb-0.5">
+                        <span className="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-1.5 py-0 fw-semibold" style={{ fontSize: '0.68rem' }}>
+                          <i className="bi bi-check2 me-0.5"></i>In Stock
+                        </span>
+                        <span className="text-muted" style={{ fontSize: '0.74rem' }}>&bull; Genuine Burhani Quality</span>
+                      </div>
+
                       <h4
-                        className="fw-bold mb-1 text-truncate"
-                        style={{ fontSize: '0.95rem', color: '#0f172a', fontFamily: "'Inter', sans-serif" }}
+                        className="fw-bold mb-0.5 text-truncate"
+                        style={{
+                          fontSize: '0.94rem',
+                          color: '#0f172a',
+                          fontFamily: "'Inter', sans-serif",
+                          letterSpacing: '-0.2px',
+                        }}
                       >
                         {item.product.name}
                       </h4>
-                      <div className="text-muted small mb-2">Price per unit: ₹{item.product.price}</div>
-                      <div className="fw-bold fs-6 text-dark">₹{item.product_total}</div>
+
+                      <div className="text-muted" style={{ fontSize: '0.8rem' }}>
+                        Unit Price: <span className="fw-semibold text-dark">₹{item.product.price}</span>
+                      </div>
+
+                      <div className="fw-bold text-success d-sm-none mt-1" style={{ fontSize: '0.88rem' }}>
+                        Subtotal: ₹{item.product_total}
+                      </div>
                     </div>
 
-                    {/* Quantity & Delete Actions */}
+                    {/* Quantity Pill, Total & Remove Action (Compact) */}
                     <div
-                      className="d-flex flex-column align-items-end gap-2 flex-shrink-0"
+                      className="d-flex flex-column align-items-end justify-content-between gap-2 flex-shrink-0 ms-auto"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-link text-danger p-0 border-0"
-                        onClick={() => removeItem(item.id)}
-                        title="Remove item"
-                      >
-                        <i className="bi bi-trash3 fs-6"></i>
-                      </button>
+                      <div className="d-flex align-items-center gap-2">
+                        <div className="text-end d-none d-sm-block">
+                          <div className="text-muted" style={{ fontSize: '0.72rem' }}>Line Total</div>
+                          <div className="fw-bold text-dark" style={{ fontSize: '1.05rem', letterSpacing: '-0.3px', lineHeight: '1.2' }}>
+                            ₹{item.product_total}
+                          </div>
+                        </div>
 
-                      {/* Qty Pill */}
-                      <div
-                        className="d-flex align-items-center"
-                        style={{
-                          background: '#f1f5f9',
-                          borderRadius: '50px',
-                          padding: '2px 4px',
-                          border: '1px solid rgba(0,0,0,0.06)',
-                        }}
-                      >
+                        {/* Trash Button */}
                         <button
                           type="button"
-                          className="btn btn-sm btn-link p-1 text-dark border-0"
-                          onClick={() => decrease(item.product.id)}
+                          className="cart-remove-btn"
+                          onClick={(e) => removeItem(item.id, e)}
+                          title="Remove item from cart"
+                          disabled={updatingId === item.id}
                         >
-                          <i className="bi bi-dash"></i>
+                          <i className="bi bi-trash3"></i>
                         </button>
-                        <span className="fw-bold px-2 small">{item.product_quantity}</span>
+                      </div>
+
+                      {/* Interactive Quantity Stepper (Compact) */}
+                      <div className="cart-qty-pill">
                         <button
                           type="button"
-                          className="btn btn-sm btn-link p-1 text-dark border-0"
-                          onClick={() => increase(item.product.id)}
+                          className="cart-qty-btn"
+                          onClick={(e) => decrease(item.product.id, item.id, e)}
+                          disabled={updatingId === item.id}
+                          title={item.product_quantity === 1 ? 'Remove from cart' : 'Decrease quantity'}
+                        >
+                          {item.product_quantity === 1 ? (
+                            <i className="bi bi-trash text-danger" style={{ fontSize: '0.7rem' }}></i>
+                          ) : (
+                            <i className="bi bi-dash"></i>
+                          )}
+                        </button>
+
+                        <span className="cart-qty-val">
+                          {updatingId === item.id ? (
+                            <span className="spinner-border spinner-border-sm text-secondary" style={{ width: '10px', height: '10px' }}></span>
+                          ) : (
+                            item.product_quantity
+                          )}
+                        </span>
+
+                        <button
+                          type="button"
+                          className="cart-qty-btn"
+                          onClick={(e) => increase(item.product.id, item.id, e)}
+                          disabled={updatingId === item.id}
+                          title="Increase quantity"
                         >
                           <i className="bi bi-plus"></i>
                         </button>
@@ -147,99 +265,149 @@ export default function CartPage({ setToasts }) {
                   </div>
                 ))}
               </div>
-            </div>
 
-            {/* Order Summary Glass Card */}
-            <div className="col-lg-4">
+              {/* Secure guarantee banner (Compact Micro Bar) */}
               <div
-                className="p-4"
+                className="mt-2.5 py-1.5 px-3 rounded-3 d-flex align-items-center justify-content-around flex-wrap gap-2 text-center"
                 style={{
-                  background: 'rgba(255, 255, 255, 0.92)',
-                  borderRadius: '24px',
-                  border: '1px solid rgba(255, 255, 255, 0.85)',
-                  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)',
+                  background: 'rgba(255, 255, 255, 0.65)',
+                  border: '1px dashed rgba(203, 213, 225, 0.8)',
+                  fontSize: '0.78rem',
                 }}
               >
-                <h4 className="fw-bold mb-3 fs-6" style={{ color: '#0f172a' }}>
-                  Order Summary
-                </h4>
+                <div className="d-flex align-items-center gap-1.5 text-muted">
+                  <i className="bi bi-box-seam text-success"></i>
+                  <span>Tamper-Proof Packaging</span>
+                </div>
+                <div className="d-flex align-items-center gap-1.5 text-muted">
+                  <i className="bi bi-shield-check text-success"></i>
+                  <span>100% Genuine Tested</span>
+                </div>
+                <div className="d-flex align-items-center gap-1.5 text-muted">
+                  <i className="bi bi-arrow-repeat text-success"></i>
+                  <span>Replacement Guarantee</span>
+                </div>
+              </div>
+            </div>
 
-                <div className="d-flex justify-content-between mb-2 small text-muted">
-                  <span>Subtotal ({data.cart.length} items)</span>
+            {/* Order Summary (Right Column - Compact) */}
+            <div className="col-lg-4">
+              <div className="order-summary-glass-card position-sticky" style={{ top: '80px' }}>
+                <div className="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom">
+                  <h4 className="fw-bold m-0" style={{ color: '#0f172a', fontSize: '1rem' }}>
+                    <i className="bi bi-bag-check me-1.5 text-success"></i>Order Summary
+                  </h4>
+                  <span className="badge rounded-pill bg-light text-muted border px-2 py-0.5" style={{ fontSize: '0.72rem' }}>
+                    {data.cart.length} unique {data.cart.length === 1 ? 'item' : 'items'}
+                  </span>
+                </div>
+
+                <div className="d-flex justify-content-between mb-1.5 small text-muted">
+                  <span>Items Subtotal</span>
                   <span className="fw-bold text-dark">₹{data.grand_total}</span>
                 </div>
 
-                <div className="d-flex justify-content-between mb-2 small text-muted">
-                  <span>Standard Delivery</span>
+                <div className="d-flex justify-content-between mb-1.5 small text-muted">
+                  <span>Doorstep Freight Delivery</span>
+                  <span className="text-success fw-bold">FREE</span>
+                </div>
+
+                <div className="d-flex justify-content-between mb-1.5 small text-muted">
+                  <span>Protective Transit Insurance</span>
                   <span className="text-success fw-bold">FREE</span>
                 </div>
 
                 <div className="d-flex justify-content-between mb-2 small text-muted">
-                  <span>GST (Included)</span>
-                  <span className="text-dark">18%</span>
+                  <span>Applicable GST (18%)</span>
+                  <span className="text-secondary fw-semibold">Included in Price</span>
                 </div>
 
-                <hr className="my-3 opacity-25" />
+                <hr className="my-2 opacity-25" />
 
-                <div className="d-flex justify-content-between align-items-center mb-4">
-                  <span className="fw-bold text-dark">Grand Total</span>
-                  <span className="fs-4 fw-bolder text-success">₹{data.grand_total}</span>
+                <div className="d-flex justify-content-between align-items-baseline mb-3">
+                  <div>
+                    <span className="fw-bold text-dark d-block" style={{ fontSize: '0.92rem' }}>Grand Total</span>
+                    <span className="text-muted" style={{ fontSize: '0.72rem' }}>Inclusive of all taxes &amp; fees</span>
+                  </div>
+                  <div className="text-end">
+                    <span className="fw-bolder text-success fs-4" style={{ letterSpacing: '-0.4px' }}>
+                      ₹{data.grand_total}
+                    </span>
+                  </div>
                 </div>
 
                 <Link
                   to="/checkout"
-                  className="btn btn-success w-100 py-3 fw-bold rounded-pill text-uppercase shadow-sm"
-                  style={{
-                    letterSpacing: '0.5px',
-                    fontSize: '0.9rem',
-                    background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                    border: 'none',
-                  }}
+                  className="btn-emerald-gradient"
                 >
-                  Proceed to Checkout <i className="bi bi-arrow-right ms-1"></i>
+                  <span>Proceed to Checkout</span>
+                  <i className="bi bi-arrow-right ms-1.5"></i>
                 </Link>
 
-                <div className="mt-3 text-center small text-muted d-flex justify-content-center gap-2">
-                  <i className="bi bi-shield-check text-success"></i>
-                  <span>Secure Razorpay / COD Options</span>
+                {/* Compact Trust Badges */}
+                <div className="cart-trust-badge-row">
+                  <div className="cart-trust-badge-item">
+                    <i className="bi bi-shield-lock-fill"></i>
+                    <span>256-Bit SSL Encrypted Razorpay &amp; COD Payment</span>
+                  </div>
+                  <div className="cart-trust-badge-item">
+                    <i className="bi bi-receipt-cutoff"></i>
+                    <span>GST Tax Invoice provided for Business Input Credit</span>
+                  </div>
+                  <div className="cart-trust-badge-item">
+                    <i className="bi bi-headset"></i>
+                    <span>Dedicated Technical &amp; Spare Parts Support</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         ) : (
-          <div className="text-center py-5">
+          /* Empty Cart State */
+          <div className="text-center py-4">
             <div
               style={{
-                maxWidth: '420px',
-                margin: '0 auto',
-                background: 'rgba(255,255,255,0.85)',
-                borderRadius: '28px',
-                padding: '40px 24px',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.04)',
+                maxWidth: '440px',
+                margin: '10px auto',
+                background: 'rgba(255, 255, 255, 0.9)',
+                borderRadius: '26px',
+                padding: '36px 28px',
+                boxShadow: '0 16px 36px rgba(15, 23, 42, 0.05)',
+                border: '1.5px solid rgba(255, 255, 255, 0.95)',
               }}
             >
               <div
                 style={{
-                  width: '64px',
-                  height: '64px',
+                  width: '68px',
+                  height: '68px',
                   borderRadius: '50%',
-                  background: '#f0fdf4',
-                  color: '#16a34a',
+                  background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
+                  color: '#059669',
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '1.8rem',
+                  fontSize: '2rem',
                   marginBottom: '16px',
+                  boxShadow: '0 6px 16px rgba(5, 150, 105, 0.12)',
                 }}
               >
-                <i className="bi bi-bag-x"></i>
+                <i className="bi bi-cart-x"></i>
               </div>
-              <h4 className="fw-bold text-dark mb-2">Your cart is empty</h4>
-              <p className="text-muted small mb-4">
-                Explore our catalog for industrial power tools, machinery, and authentic spare parts.
+
+              <h4 className="fw-bold text-dark mb-1.5" style={{ fontFamily: "'Playfair Display', serif" }}>
+                Your Cart is Empty
+              </h4>
+              <p className="text-muted small mb-3" style={{ lineHeight: '1.5', fontSize: '0.84rem' }}>
+                You haven't added any machinery, industrial power tools, or authentic spare parts yet. Explore our verified catalog to equip your project with top-tier hardware.
               </p>
-              <Link to="/" className="btn btn-success rounded-pill px-4 py-2 fw-semibold">
-                Explore Products
+
+              <Link
+                to="/"
+                className="btn-emerald-gradient"
+                style={{ width: 'auto', padding: '10px 26px', fontSize: '0.88rem' }}
+              >
+                <i className="bi bi-grid me-1.5"></i>
+                Explore Hardware Catalog
               </Link>
             </div>
           </div>

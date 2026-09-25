@@ -7394,4 +7394,591 @@ footer.glass-footer-wrapper {
   padding: 16px 24px !important;
 }
 
+/* ══════════════════════════════════════════════════════════════════════════════
+   BURHANI CART & CHECKOUT PAGE MODERN STYLING (Emerald / Glassmorphic)
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   BURHANI CART & CHECKOUT PAGE MODERN STYLING (Compact Height & Emerald Glass)
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Compact Container Overrides for Cart & Checkout (Removes 80vh artificial bloat) */
+.cart-compact-container,
+.checkout-compact-container {
+  min-height: auto !important;
+  padding: 22px 26px 26px !important;
+  margin: 12px auto 32px !important;
+}
+
+@media (max-width: 768px) {
+  .cart-compact-container,
+  .checkout-compact-container {
+    padding: 16px 14px 20px !important;
+    margin: 8px auto 40px !important;
+  }
+}
+
+/* Cart Item Modern Card (Compact Height) */
+.cart-modern-item-card {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  border-radius: 18px;
+  box-shadow: 0 6px 18px -3px rgba(15, 23, 42, 0.04);
+  padding: 12px 18px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+}
+
+.cart-modern-item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -4px rgba(15, 23, 42, 0.07);
+  border-color: rgba(5, 150, 105, 0.3);
+}
+
+/* Thumbnail Stage (Compact 70x70) */
+.cart-thumbnail-stage {
+  width: 70px;
+  height: 70px;
+  border-radius: 14px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  padding: 6px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.cart-modern-item-card:hover .cart-thumbnail-stage {
+  transform: scale(1.04);
+}
+
+.cart-thumbnail-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+/* Quantity Pill (Compact) */
+.cart-qty-pill {
+  display: inline-flex;
+  align-items: center;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 50px;
+  padding: 2px 4px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.cart-qty-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: #ffffff;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: all 0.15s ease;
+}
+
+.cart-qty-btn:hover:not(:disabled) {
+  background: #059669;
+  color: #ffffff;
+  transform: scale(1.08);
+}
+
+.cart-qty-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.cart-qty-val {
+  min-width: 28px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #0f172a;
+}
+
+/* Delete Button (Compact) */
+.cart-remove-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: #f8fafc;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cart-remove-btn:hover {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+  transform: scale(1.05);
+}
+
+/* Order Summary Glass Card (Compact Height) */
+.order-summary-glass-card {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  border-radius: 22px;
+  box-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.07);
+  padding: 20px 22px;
+}
+
+/* Emerald Gradient Buttons (Compact) */
+.btn-emerald-gradient {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: #ffffff !important;
+  font-weight: 700;
+  border: none;
+  border-radius: 40px;
+  padding: 11px 22px;
+  font-size: 0.92rem;
+  letter-spacing: 0.2px;
+  box-shadow: 0 8px 20px -3px rgba(5, 150, 105, 0.35);
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  width: 100%;
+}
+
+.btn-emerald-gradient:hover:not(:disabled) {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -3px rgba(5, 150, 105, 0.45);
+  color: #ffffff !important;
+}
+
+.btn-emerald-gradient:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Micro Trust Card (Compact) */
+.cart-trust-badge-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.cart-trust-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: #475569;
+}
+
+.cart-trust-badge-item i {
+  color: #059669;
+  font-size: 0.95rem;
+}
+
+/* Checkout Progress Stepper (Compact) */
+.checkout-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.checkout-step-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 40px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  transition: all 0.2s ease;
+}
+
+.checkout-step-item.active {
+  background: #ecfdf5;
+  color: #059669;
+  border-color: #a7f3d0;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.1);
+}
+
+.checkout-step-item.completed {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.checkout-step-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.checkout-step-item.active .checkout-step-circle {
+  background: #059669;
+  color: #ffffff;
+}
+
+.checkout-step-item.completed .checkout-step-circle {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.checkout-step-divider {
+  width: 16px;
+  height: 2px;
+  background: #cbd5e1;
+}
+
+/* Modern Form Inputs for Checkout (Compact Panels) */
+.checkout-glass-panel {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(255, 255, 255, 0.92);
+  border-radius: 20px;
+  box-shadow: 0 10px 26px -6px rgba(15, 23, 42, 0.05);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+
+.checkout-panel-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkout-input-wrapper {
+  margin-bottom: 10px;
+}
+
+.checkout-input-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.checkout-input-modern {
+  border-radius: 12px !important;
+  border: 1.5px solid #cbd5e1 !important;
+  padding: 8px 12px !important;
+  font-size: 0.88rem !important;
+  background: #ffffff !important;
+  transition: all 0.2s ease !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+}
+
+.checkout-input-modern:focus {
+  border-color: #059669 !important;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15) !important;
+  outline: none !important;
+}
+
+/* Payment Method Cards (Compact 11px padding) */
+.payment-selection-card {
+  border-radius: 14px;
+  border: 2px solid #e2e8f0;
+  background: #ffffff;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.payment-selection-card:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.payment-selection-card.selected {
+  border-color: #059669;
+  background: #f0fdf4;
+  box-shadow: 0 4px 14px -2px rgba(5, 150, 105, 0.12);
+}
+
+.payment-icon-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.payment-selection-card.selected .payment-icon-badge {
+  background: #d1fae5;
+  color: #059669;
+}
+
+/* Radio Circle (Compact) */
+.payment-radio-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.payment-selection-card.selected .payment-radio-circle {
+  border-color: #059669;
+}
+
+.payment-radio-inner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #059669;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.2s ease;
+}
+
+.payment-selection-card.selected .payment-radio-inner {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Checkout Compact Item Row (Compact) */
+.checkout-item-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 9px;
+  border-radius: 10px;
+  background: #f8fafc;
+  margin-bottom: 5px;
+  border: 1px solid #f1f5f9;
+}
+
+.checkout-item-preview-thumb {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  padding: 2px;
+  flex-shrink: 0;
+}
+
+.checkout-item-preview-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ── Unified Single-Card Checkout Enhancements ── */
+.checkout-single-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(255, 255, 255, 0.92);
+  border-radius: 20px;
+  box-shadow: 0 10px 26px -6px rgba(15, 23, 42, 0.05);
+  padding: 16px 20px;
+}
+
+.checkout-saved-address-chip {
+  background: #f0fdf4;
+  border: 1.5px solid #a7f3d0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.checkout-saved-address-chip:hover {
+  background: #ecfdf5;
+  border-color: #6ee7b7;
+}
+
+.checkout-payment-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 576px) {
+  .checkout-payment-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.payment-selection-card.compact {
+  padding: 8px 12px;
+  border-radius: 12px;
+  gap: 10px;
+}
+
+.payment-selection-card.compact .payment-icon-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  font-size: 1rem;
+}
+
+/* ── Multiple Address Management Styles ── */
+.checkout-address-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.checkout-address-card-item {
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px 12px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  text-align: left;
+}
+
+.checkout-address-card-item:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.checkout-address-card-item.selected {
+  border-color: #059669;
+  background: #f0fdf4;
+  box-shadow: 0 4px 12px -2px rgba(5, 150, 105, 0.15);
+}
+
+.address-tag-pill-btn {
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.address-tag-pill-btn.active {
+  background: #059669;
+  border-color: #059669;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2);
+}
+
+/* ── Space Utilization: Payment Sub-Area & Delivery Instructions ── */
+.checkout-delivery-note-wrapper {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-top: 10px;
+}
+
+.payment-upi-strip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+}
+
+.payment-upi-badge {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #334155;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.checkout-dispatch-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 7px 12px;
+  margin-top: 8px;
+  background: linear-gradient(135deg, rgba(236, 253, 245, 0.7) 0%, rgba(209, 250, 229, 0.6) 100%);
+  border: 1px solid rgba(167, 243, 208, 0.9);
+  border-radius: 10px;
+  font-size: 0.74rem;
+}
+
+
+
+
 
