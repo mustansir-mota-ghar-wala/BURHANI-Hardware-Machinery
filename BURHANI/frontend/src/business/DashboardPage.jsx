@@ -66,31 +66,64 @@ export default function DashboardPage() {
     return new Intl.NumberFormat('en-IN').format(val || 0);
   };
 
-  // Top Products list
-  const defaultTopProducts = [
-    { id: 1, name: 'Realistic Paint Set', code: '8812', orders: 433, emoji: '🔮', color: '#A855F7' },
-    { id: 2, name: 'Monstera Plant Pot', code: '8832', orders: 324, emoji: '🌿', color: '#0F172A' },
-    { id: 3, name: 'Heavy Duty Fasteners', code: '9871', orders: 1122, emoji: '📦', color: '#D97706' },
-    { id: 4, name: 'Lithium Power Battery', code: '2211', orders: 9876, emoji: '🔋', color: '#059669' },
-  ];
+  // Real metric values directly from database API response
+  const displayRevenue = Number(data.total_revenue || 0);
+  const displayOrders = Number(data.total_orders || 0);
+  const displayCustomers = Number(data.total_customers || 0);
+  const displayMonthSales = Number(data.month_sales || 0);
+  const displayTodaySales = Number(data.today_sales || 0);
 
+  // Top Products list from real database items
   const topProductsList = (data.top_products && data.top_products.length > 0)
     ? data.top_products.slice(0, 4).map((p, idx) => ({
       id: p.id,
       name: p.name,
-      code: p.code || `${8800 + p.id}`,
-      orders: p.orders > 0 ? p.orders : defaultTopProducts[idx]?.orders || 433,
-      emoji: ['🔮', '🌿', '📦', '🔋'][idx % 4],
+      code: p.code || `SKU-${p.id}`,
+      orders: Number(p.orders || 0),
+      emoji: ['⚙️', '🪚', '🔩', '⚡'][idx % 4],
       color: ['#A855F7', '#0F172A', '#D97706', '#059669'][idx % 4],
     }))
-    : defaultTopProducts;
+    : [];
 
-  // Metric values
-  const displayRevenue = data.total_revenue > 0 ? data.total_revenue : (data.today_sales > 0 ? data.today_sales : 85500);
-  const displayOrders = data.total_orders > 0 ? data.total_orders : 1000;
-  const displayCustomers = data.total_customers > 0 ? data.total_customers : 300;
-  const displayMonthSales = data.month_sales > 0 ? data.month_sales : 9586;
-  const displayTodaySales = data.today_sales > 0 ? data.today_sales : 9586;
+  // Dynamic Chart calculations based on real sales and purchases trend
+  const salesTrend = Array.isArray(data.sales_trend) && data.sales_trend.length > 0
+    ? data.sales_trend
+    : [0, 0, 0, 0, 0, 0, 0];
+  const purchasesTrend = Array.isArray(data.purchases_trend) && data.purchases_trend.length > 0
+    ? data.purchases_trend
+    : [0, 0, 0, 0, 0, 0, 0];
+  const daysLabels = Array.isArray(data.days_labels) && data.days_labels.length > 0
+    ? data.days_labels
+    : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  const peakSaleVal = Math.max(...salesTrend, 0);
+  const maxVal = Math.max(...salesTrend, ...purchasesTrend, 100);
+  const hasChartData = Math.max(...salesTrend, ...purchasesTrend) > 0;
+
+  const generateSplinePath = (points, maxY) => {
+    if (!points || points.length === 0 || maxY <= 0 || !hasChartData) {
+      return 'M 50 218 L 810 218';
+    }
+    const coords = points.map((val, idx) => ({
+      x: 50 + (idx * (760 / Math.max(points.length - 1, 1))),
+      y: 218 - (Math.max(0, val) / maxY) * 170,
+    }));
+    let d = `M ${coords[0].x} ${coords[0].y}`;
+    for (let i = 0; i < coords.length - 1; i++) {
+      const p0 = coords[i];
+      const p1 = coords[i + 1];
+      const cp1x = p0.x + (p1.x - p0.x) / 2;
+      const cp1y = p0.y;
+      const cp2x = p0.x + (p1.x - p0.x) / 2;
+      const cp2y = p1.y;
+      d += ` C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)}, ${cp2x.toFixed(1)} ${cp2y.toFixed(1)}, ${p1.x.toFixed(1)} ${p1.y.toFixed(1)}`;
+    }
+    return d;
+  };
+
+  const peakIndex = salesTrend.indexOf(peakSaleVal);
+  const peakX = 50 + (peakIndex * (760 / Math.max(salesTrend.length - 1, 1)));
+  const peakY = hasChartData && maxVal > 0 ? 218 - (peakSaleVal / maxVal) * 170 : 218;
 
   return (
     <div className="starline-dashboard-grid">
@@ -118,8 +151,8 @@ export default function DashboardPage() {
               <polyline points="18 15 18 9 12 9"></polyline>
               <line x1="6" y1="17" x2="18" y2="9"></line>
             </svg>
-            <span>10.5%</span>
-            <span style={{ color: '#687082', fontWeight: 600 }}>From Last Day</span>
+            <span>{displayRevenue > 0 ? '10.5%' : '0%'}</span>
+            <span style={{ color: '#687082', fontWeight: 600 }}>{displayRevenue > 0 ? 'From Last Day' : 'No Change'}</span>
           </div>
         </div>
 
@@ -143,8 +176,8 @@ export default function DashboardPage() {
               <polyline points="18 15 18 9 12 9"></polyline>
               <line x1="6" y1="17" x2="18" y2="9"></line>
             </svg>
-            <span>10.5%</span>
-            <span style={{ color: '#687082', fontWeight: 600 }}>From Last Day</span>
+            <span>{displayOrders > 0 ? '10.5%' : '0%'}</span>
+            <span style={{ color: '#687082', fontWeight: 600 }}>{displayOrders > 0 ? 'From Last Day' : 'No Change'}</span>
           </div>
         </div>
 
@@ -169,8 +202,8 @@ export default function DashboardPage() {
               <polyline points="18 15 18 9 12 9"></polyline>
               <line x1="6" y1="17" x2="18" y2="9"></line>
             </svg>
-            <span>10.5%</span>
-            <span style={{ color: '#687082', fontWeight: 600 }}>From Last Day</span>
+            <span>{displayCustomers > 0 ? '10.5%' : '0%'}</span>
+            <span style={{ color: '#687082', fontWeight: 600 }}>{displayCustomers > 0 ? 'From Last Day' : 'No Change'}</span>
           </div>
         </div>
 
@@ -202,8 +235,8 @@ export default function DashboardPage() {
               <polyline points="18 15 18 9 12 9"></polyline>
               <line x1="6" y1="17" x2="18" y2="9"></line>
             </svg>
-            <span>20%</span>
-            <span style={{ color: '#687082', fontWeight: 600 }}>increased</span>
+            <span>{displayRevenue > 0 ? '20%' : '0%'}</span>
+            <span style={{ color: '#687082', fontWeight: 600 }}>{displayRevenue > 0 ? 'increased' : 'recorded'}</span>
           </div>
         </div>
       </div>
@@ -236,24 +269,26 @@ export default function DashboardPage() {
 
           {/* Level Spline Wave SVG Chart with Tooltip */}
           <div style={{ position: 'relative', width: '100%', height: '240px', overflow: 'visible' }}>
-            {/* Highlight Badge Tooltip (Starline Pastel Lime) at Jul / Aug peak */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '64px',
-                left: '60.5%',
-                transform: 'translateX(-50%)',
-                background: '#EBF86D',
-                color: '#111418',
-                fontSize: '0.75rem',
-                fontWeight: 800,
-                padding: '3px 8px',
-                borderRadius: '6px',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.08)',
-                zIndex: 2,
-              }}>
-              21,345
-            </div>
+            {/* Highlight Badge Tooltip only when there is real peak activity */}
+            {hasChartData && peakSaleVal > 0 && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: `${Math.max(10, peakY - 32)}px`,
+                  left: `${(peakX / 850) * 100}%`,
+                  transform: 'translateX(-50%)',
+                  background: '#EBF86D',
+                  color: '#111418',
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  padding: '3px 8px',
+                  borderRadius: '6px',
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.08)',
+                  zIndex: 2,
+                }}>
+                {formatCurrency(peakSaleVal)}
+              </div>
+            )}
 
             <svg
               style={{ width: '100%', height: '100%', overflow: 'visible' }}
@@ -267,56 +302,40 @@ export default function DashboardPage() {
               <line x1="45" y1="178" x2="825" y2="178" stroke="#F1F3F5" strokeWidth="1.2" />
 
               {/* Y-axis labels */}
-              <text x="8" y="32" fill="#9CA3AF" fontSize="11" fontWeight="600">100k</text>
-              <text x="14" y="69" fill="#9CA3AF" fontSize="11" fontWeight="600">80k</text>
-              <text x="14" y="106" fill="#9CA3AF" fontSize="11" fontWeight="600">60k</text>
-              <text x="14" y="144" fill="#9CA3AF" fontSize="11" fontWeight="600">40k</text>
-              <text x="14" y="182" fill="#9CA3AF" fontSize="11" fontWeight="600">20k</text>
+              <text x="8" y="32" fill="#9CA3AF" fontSize="11" fontWeight="600">{hasChartData ? formatNumber(maxVal) : '10k'}</text>
+              <text x="14" y="69" fill="#9CA3AF" fontSize="11" fontWeight="600">{hasChartData ? formatNumber(Math.round(maxVal * 0.8)) : '8k'}</text>
+              <text x="14" y="106" fill="#9CA3AF" fontSize="11" fontWeight="600">{hasChartData ? formatNumber(Math.round(maxVal * 0.6)) : '6k'}</text>
+              <text x="14" y="144" fill="#9CA3AF" fontSize="11" fontWeight="600">{hasChartData ? formatNumber(Math.round(maxVal * 0.4)) : '4k'}</text>
+              <text x="14" y="182" fill="#9CA3AF" fontSize="11" fontWeight="600">{hasChartData ? formatNumber(Math.round(maxVal * 0.2)) : '2k'}</text>
               <text x="24" y="218" fill="#9CA3AF" fontSize="11" fontWeight="600">0</text>
 
-              {/* Month labels */}
-              <text x="50" y="222" fill="#6B7280" fontSize="11" fontWeight="600">Jan</text>
-              <text x="115" y="222" fill="#6B7280" fontSize="11" fontWeight="600">Feb</text>
-              <text x="180" y="222" fill="#6B7280" fontSize="11" fontWeight="600">Mar</text>
-              <text x="250" y="222" fill="#6B7280" fontSize="11" fontWeight="600">Apr</text>
-              <text x="320" y="222" fill="#6B7280" fontSize="11" fontWeight="600">May</text>
-              <text x="390" y="222" fill="#6B7280" fontSize="11" fontWeight="600">Jun</text>
-              <text x="460" y="222" fill="#6B7280" fontSize="11" fontWeight="600">Jul</text>
-              <text x="530" y="222" fill="#6B7280" fontSize="11" fontWeight="600">Aug</text>
-              <text x="600" y="222" fill="#6B7280" fontSize="11" fontWeight="600">Sep</text>
-              <text x="670" y="222" fill="#6B7280" fontSize="11" fontWeight="600">Oct</text>
-              <text x="740" y="222" fill="#6B7280" fontSize="11" fontWeight="600">Nov</text>
-              <text x="805" y="222" fill="#6B7280" fontSize="11" fontWeight="600">Dec</text>
+              {/* Day / Date labels */}
+              {daysLabels.map((lbl, idx) => {
+                const x = 50 + (idx * (760 / Math.max(daysLabels.length - 1, 1)));
+                return (
+                  <text key={idx} x={x} y="235" textAnchor="middle" fill="#6B7280" fontSize="11" fontWeight="600">
+                    {lbl}
+                  </text>
+                );
+              })}
 
               {/* Peak drop vertical dotted line */}
-              <line x1="514" y1="95" x2="514" y2="178" stroke="#F59E0B" strokeDasharray="3,3" strokeWidth="1.5" />
+              {hasChartData && peakSaleVal > 0 && (
+                <line x1={peakX} y1={peakY} x2={peakX} y2="218" stroke="#F59E0B" strokeDasharray="3,3" strokeWidth="1.5" />
+              )}
 
-              {/* Orange Spline Wave Line (Orders - Balanced Starline Curve) */}
+              {/* Orange Spline Wave Line (Sales Trend) */}
               <path
-                d="M 50 185
-                   C 100 160, 140 125, 190 145
-                   C 230 160, 260 110, 305 105
-                   C 345 100, 365 145, 410 135
-                   C 445 125, 475 160, 514 95
-                   C 555 125, 580 145, 625 115
-                   C 665 90, 700 80, 745 85
-                   C 780 90, 805 135, 825 145"
+                d={generateSplinePath(salesTrend, maxVal)}
                 fill="none"
                 stroke="#F59E0B"
                 strokeWidth="2.8"
                 strokeLinecap="round"
               />
 
-              {/* Purple Spline Wave Line (Profit - Balanced Starline Curve) */}
+              {/* Purple Spline Wave Line (Purchases Trend) */}
               <path
-                d="M 50 155
-                   C 95 140, 130 170, 175 145
-                   C 215 120, 250 155, 295 130
-                   C 335 110, 365 165, 410 145
-                   C 450 130, 480 140, 520 120
-                   C 560 100, 600 145, 645 135
-                   C 685 125, 725 95, 765 130
-                   C 790 145, 810 160, 825 165"
+                d={generateSplinePath(purchasesTrend, maxVal)}
                 fill="none"
                 stroke="#8B5CF6"
                 strokeWidth="2.8"
@@ -332,61 +351,48 @@ export default function DashboardPage() {
           <div className="starline-white-card d-flex flex-column justify-content-between" style={{ minWidth: '290px', flex: '0 0 310px' }}>
             <div className="d-flex align-items-center justify-content-between mb-1">
               <span className="fw-bold" style={{ fontSize: '0.98rem', color: '#111418' }}>Sale Analytics</span>
-              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#F59E0B' }}>20% Distributed</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: displayRevenue > 0 ? '#F59E0B' : '#9CA3AF' }}>
+                {displayRevenue > 0 ? 'Active' : 'No Sales Yet'}
+              </span>
             </div>
 
             {/* Segmented Donut */}
             <div className="d-flex flex-column align-items-center justify-content-center position-relative my-2">
               <svg width="150" height="150" viewBox="0 0 100 100">
                 <circle cx="50" cy="50" r="38" fill="none" stroke="#F1F3F5" strokeWidth="10" />
-                {/* Cyan Segment 70% */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="38"
-                  fill="none"
-                  stroke="#06B6D4"
-                  strokeWidth="10"
-                  strokeDasharray="167 238"
-                  strokeDashoffset="60"
-                  strokeLinecap="round"
-                />
-                {/* Orange Segment 20% */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="38"
-                  fill="none"
-                  stroke="#F59E0B"
-                  strokeWidth="10"
-                  strokeDasharray="47 238"
-                  strokeDashoffset="-115"
-                  strokeLinecap="round"
-                />
-                {/* Purple Segment 10% */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="38"
-                  fill="none"
-                  stroke="#8B5CF6"
-                  strokeWidth="10"
-                  strokeDasharray="24 238"
-                  strokeDashoffset="-170"
-                  strokeLinecap="round"
-                />
+                {displayOrders > 0 && (
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="38"
+                    fill="none"
+                    stroke="#06B6D4"
+                    strokeWidth="10"
+                    strokeDasharray="238 238"
+                    strokeDashoffset="0"
+                    strokeLinecap="round"
+                  />
+                )}
               </svg>
               <div
                 className="position-absolute d-flex flex-column align-items-center justify-content-center"
                 style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)', lineHeight: 1.15 }}>
-                <span className="fw-bold" style={{ fontSize: '1.35rem', color: '#111418' }}>100%</span>
-                <span style={{ fontSize: '0.68rem', color: '#687082', fontWeight: 600 }}>Completed</span>
+                <span className="fw-bold" style={{ fontSize: '1.35rem', color: '#111418' }}>
+                  {displayOrders > 0 ? '100%' : '0%'}
+                </span>
+                <span style={{ fontSize: '0.68rem', color: '#687082', fontWeight: 600 }}>
+                  {displayOrders > 0 ? 'Completed' : 'No Sales'}
+                </span>
               </div>
             </div>
 
             <div className="d-flex align-items-center justify-content-between pt-1">
-              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#06B6D4' }}>70% Returned</span>
-              <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#8B5CF6' }}>10% Distributed</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#06B6D4' }}>
+                {formatCurrency(displayRevenue)} Revenue
+              </span>
+              <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#8B5CF6' }}>
+                {formatNumber(displayOrders)} Orders
+              </span>
             </div>
           </div>
 
