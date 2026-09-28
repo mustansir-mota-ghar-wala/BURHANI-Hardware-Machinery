@@ -72,11 +72,12 @@ else:
 
 from django.views.static import serve
 
-# ── Serve React built assets (/assets/index-xxx.js, /assets/index-xxx.css) ──
+# ── Serve React built assets (/assets/index-xxx.js, /assets/index-xxx.css, /assets/entrance-video.mp4) ──
 # Vite builds to frontend/dist/assets/ and the HTML references /assets/...
 REACT_DIST = os.path.join(settings.BASE_DIR, 'frontend', 'dist')
 urlpatterns += [
     re_path(r'^assets/(?P<path>.*)$', serve, {'document_root': os.path.join(REACT_DIST, 'assets')}),
+    re_path(r'^entrance-video\.mp4$', serve, {'document_root': REACT_DIST, 'path': 'entrance-video.mp4'}),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

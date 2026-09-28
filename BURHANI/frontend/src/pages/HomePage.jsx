@@ -680,10 +680,16 @@ export default function HomePage({ setToasts }) {
                       onPlay={(e) => { e.target.playbackRate = 1.43; }}
                       onTimeUpdate={handleHeroVideoTimeUpdate}
                       onEnded={handleHeroVideoEnded}
+                      onError={() => {
+                        console.warn('Video playback error, falling back to docked mode');
+                        setMorphStage('docked');
+                        setShowDeck(true);
+                      }}
                     >
-                      <source src="/media/entrance-video.mp4" type="video/mp4" />
-                      <source src="/media/burhani%20enterance%20video/final%20video%20for%20website 2.mp4" type="video/mp4" />
+                      <source src="/assets/entrance-video.mp4" type="video/mp4" />
+                      <source src="/static/entrance-video.mp4" type="video/mp4" />
                       <source src="/entrance-video.mp4" type="video/mp4" />
+                      <source src="/media/entrance-video.mp4" type="video/mp4" />
                     </video>
                   </div>,
                   document.body
@@ -714,10 +720,15 @@ export default function HomePage({ setToasts }) {
                       }}
                       onTimeUpdate={handleHeroVideoTimeUpdate}
                       onEnded={() => setShowDeck(true)}
+                      onError={() => {
+                        console.warn('Docked video error, revealing deck');
+                        setShowDeck(true);
+                      }}
                     >
-                      <source src="/media/entrance-video.mp4" type="video/mp4" />
-                      <source src="/media/burhani%20enterance%20video/final%20video%20for%20website 2.mp4" type="video/mp4" />
+                      <source src="/assets/entrance-video.mp4" type="video/mp4" />
+                      <source src="/static/entrance-video.mp4" type="video/mp4" />
                       <source src="/entrance-video.mp4" type="video/mp4" />
+                      <source src="/media/entrance-video.mp4" type="video/mp4" />
                     </video>
 
                     <div className="hero-video-glass-badge top-left">
