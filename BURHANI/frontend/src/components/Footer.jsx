@@ -46,6 +46,28 @@ export default function Footer() {
               <li><Link to="/your_orders">My Orders</Link></li>
               <li><Link to="/cart">Cart</Link></li>
               <li>
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent('burhani:replay-intro'))}
+                  className="footer-link-btn"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    color: 'inherit',
+                    font: 'inherit',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}
+                  title="Replay website entrance video"
+                >
+                  <i className="bi bi-play-circle-fill text-warning"></i>
+                  <span>Watch Intro</span>
+                </button>
+              </li>
+              <li>
                 <Link to="/business" className="footer-erp-link">
                   <i className="bi bi-speedometer2 me-1"></i>Business ERP
                 </Link>

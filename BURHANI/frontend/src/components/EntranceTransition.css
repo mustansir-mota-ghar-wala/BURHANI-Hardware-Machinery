@@ -1,0 +1,586 @@
+/* ========================================================
+   BURHANI HARDWARE & MACHINERY - CINEMATIC ENTRANCE VIDEO
+   ======================================================== */
+
+.burhani-entrance-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999999;
+  background-color: #06080d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0px) brightness(1);
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.05s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.85s ease;
+  user-select: none;
+  cursor: pointer;
+}
+
+/* Fading out transition when video ends or is skipped */
+.burhani-entrance-overlay.is-exiting {
+  opacity: 0 !important;
+  transform: scale(1.05) !important;
+  filter: blur(10px) brightness(0.7) !important;
+  pointer-events: none !important;
+}
+
+/* The full viewport video element */
+.burhani-entrance-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+/* Cinematic film vignette overlay */
+.burhani-entrance-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at center,
+      transparent 45%,
+      rgba(6, 8, 13, 0.4) 75%,
+      rgba(6, 8, 13, 0.88) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(6, 8, 13, 0.75) 0%,
+      transparent 18%,
+      transparent 82%,
+      rgba(6, 8, 13, 0.85) 100%
+    );
+}
+
+/* Top bar with branding & actions */
+.burhani-entrance-topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.burhani-entrance-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1.15rem;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 9999px;
+  color: #f8fafc;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.burhani-entrance-brand-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d97736;
+  box-shadow: 0 0 10px #d97736;
+  animation: burhani-dot-pulse 2s infinite ease-in-out;
+}
+
+@keyframes burhani-dot-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.burhani-entrance-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Glassmorphic buttons */
+.burhani-entrance-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.52rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.burhani-entrance-btn.sound-btn {
+  background: rgba(15, 23, 42, 0.65);
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.burhani-entrance-btn.sound-btn:hover {
+  background: rgba(30, 41, 59, 0.85);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.burhani-entrance-btn.skip-btn {
+  background: linear-gradient(135deg, rgba(217, 119, 54, 0.9), rgba(194, 94, 38, 0.95));
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 20px rgba(217, 119, 54, 0.45);
+}
+
+.burhani-entrance-btn.skip-btn:hover {
+  background: linear-gradient(135deg, rgba(235, 135, 70, 0.95), rgba(217, 119, 54, 1));
+  box-shadow: 0 6px 26px rgba(217, 119, 54, 0.65);
+  transform: translateY(-2px);
+}
+
+/* Bottom Progress Line */
+.burhani-entrance-progressbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  z-index: 20;
+}
+
+.burhani-entrance-progressfill {
+  height: 100%;
+  background: linear-gradient(90deg, #d97736, #f59e0b);
+  box-shadow: 0 0 10px rgba(217, 119, 54, 0.8);
+  transition: width 0.1s linear;
+}
+
+/* Bottom subtle interaction hint */
+.burhani-entrance-hint {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.74rem;
+  letter-spacing: 0.05em;
+  background: rgba(10, 15, 25, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.35rem 1rem;
+  border-radius: 9999px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
+  z-index: 20;
+}
+
+@media (max-width: 768px) {
+  .burhani-entrance-topbar {
+    padding: 1rem 1.25rem;
+  }
+  .burhani-entrance-brand {
+    font-size: 0.72rem;
+    padding: 0.4rem 0.8rem;
+  }
+  .burhani-entrance-btn {
+    padding: 0.42rem 0.95rem;
+    font-size: 0.76rem;
+  }
+  .burhani-entrance-hint {
+    display: none;
+  }
+}
+
+/* Hero Section "Watch Film" Button Styling */
+.hero-action-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-video-play-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(217, 119, 54, 0.22);
+  border: 1px solid rgba(217, 119, 54, 0.5);
+  color: #ffffff;
+  padding: 7px 18px;
+  border-radius: 50px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(217, 119, 54, 0.2);
+  line-height: normal;
+  outline: none;
+}
+
+.hero-video-play-btn:hover {
+  background: linear-gradient(135deg, #d97736, #c25e26);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(217, 119, 54, 0.45);
+}
+
+.hero-video-play-btn i {
+  font-size: 1rem;
+  color: #fbbf24;
+}
+
+/* ========================================================
+   EMBEDDED HERO SHOWCASE VIDEO (ORGANIC PART OF WEBSITE)
+   ======================================================== */
+.hero-embedded-video-wrapper {
+  position: relative;
+  width: 480px;
+  height: 270px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 0 1.5px rgba(255, 255, 255, 0.2);
+  background: #06090e;
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.hero-embedded-video-wrapper.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+  position: relative;
+}
+
+.hero-embedded-video-wrapper.hidden {
+  opacity: 0;
+  transform: scale(0.93);
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.hero-embedded-video-elem {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Glass badges on top of embedded video */
+.hero-video-glass-badge {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(7, 28, 20, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50px;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  z-index: 5;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  line-height: normal;
+}
+
+.hero-video-glass-badge.top-left {
+  top: 12px;
+  left: 12px;
+}
+
+.hero-video-glass-badge.bottom-right {
+  bottom: 12px;
+  right: 12px;
+  cursor: pointer;
+  border-color: rgba(217, 119, 54, 0.6);
+  background: linear-gradient(135deg, rgba(217, 119, 54, 0.9), rgba(194, 94, 38, 0.95));
+  transition: all 0.22s ease;
+  outline: none;
+}
+
+.hero-video-glass-badge.bottom-right:hover {
+  background: linear-gradient(135deg, rgba(235, 135, 70, 1), rgba(217, 119, 54, 1));
+  box-shadow: 0 4px 18px rgba(217, 119, 54, 0.6);
+  transform: translateX(2px);
+}
+
+.badge-pulse-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+  animation: pulse-dot-emerald 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-dot-emerald {
+  0%, 100% { opacity: 0.5; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.25); }
+}
+
+/* 3D Category Deck Smooth Transitions */
+.hero-deck-container {
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-deck-container.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+  position: relative;
+}
+
+.hero-deck-container.hidden {
+  opacity: 0;
+  transform: scale(0.93);
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Left Content Store Experience Tag */
+.hero-pill-tag.store-experience-tag {
+  background: rgba(217, 119, 54, 0.25);
+  border-color: rgba(217, 119, 54, 0.6);
+  color: #fed7aa;
+}
+
+.live-pulse-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d97736;
+  box-shadow: 0 0 10px #d97736;
+  margin-right: 6px;
+  animation: pulse-dot-emerald 1.8s infinite ease-in-out;
+}
+
+/* Tour Progress Bar on Left Content */
+.hero-embedded-progress-track {
+  width: 100%;
+  max-width: 320px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  margin-top: 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-embedded-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #d97736);
+  border-radius: 4px;
+  transition: width 0.15s linear;
+}
+
+.hero-progress-label {
+  display: block;
+  font-size: 0.73rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin-top: 6px;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+@media (max-width: 1100px) {
+  .hero-embedded-video-wrapper {
+    width: 420px;
+    height: 236px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-embedded-video-wrapper {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    margin-top: 18px;
+  }
+}
+
+/* ========================================================
+   OPTION 2: APPLE-STYLE FLUID MORPHING SHOWCASE
+   ======================================================== */
+.hero-morph-video-wrapper {
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2);
+  background: #06090e;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 1. Fullscreen Expanded Mode */
+.hero-morph-video-wrapper.state-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0px !important;
+  z-index: 999999 !important;
+  transition: all 0.95s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: none !important;
+}
+
+/* 2. In-flight Morphing to Hero Card */
+.hero-morph-video-wrapper.state-morphing {
+  position: fixed !important;
+  z-index: 999999 !important;
+  border-radius: 20px !important;
+  transition: all 0.95s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.6), 0 0 0 1.5px rgba(255, 255, 255, 0.3) !important;
+  pointer-events: none !important;
+}
+
+/* 3. Fully Docked in Hero Card */
+.hero-morph-video-wrapper.state-docked {
+  position: relative !important;
+  width: 480px !important;
+  height: 270px !important;
+  border-radius: 20px !important;
+  z-index: 10 !important;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5), 0 0 0 1.5px rgba(255, 255, 255, 0.2) !important;
+}
+
+.hero-morph-video-wrapper.state-docked.active {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  pointer-events: auto !important;
+}
+
+.hero-morph-video-wrapper.state-docked.hidden {
+  opacity: 0 !important;
+  transform: scale(0.93) !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+/* The Target Slot in the Hero Banner */
+.hero-target-placeholder {
+  width: 480px;
+  height: 270px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 1100px) {
+  .hero-morph-video-wrapper.state-docked,
+  .hero-target-placeholder {
+    width: 420px !important;
+    height: 236px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-morph-video-wrapper.state-docked,
+  .hero-target-placeholder {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+  }
+}
+
+/* Fullscreen Topbar & Actions during Fullscreen mode */
+.hero-morph-topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1.6rem 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 25;
+  opacity: 1;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: auto;
+}
+
+.hero-morph-topbar.fade-out {
+  opacity: 0;
+  transform: translateY(-12px);
+  pointer-events: none;
+}
+
+.hero-morph-bottom-pill {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: rgba(7, 28, 20, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 8px 22px;
+  border-radius: 50px;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  z-index: 25;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  cursor: pointer;
+}
+
+.hero-morph-bottom-pill:hover {
+  background: rgba(13, 56, 41, 0.9);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -2px);
+}
+
+.hero-morph-bottom-pill.fade-out {
+  opacity: 0;
+  transform: translate(-50%, 15px);
+  pointer-events: none;
+}
+
+
+
