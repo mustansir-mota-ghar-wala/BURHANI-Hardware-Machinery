@@ -514,12 +514,23 @@
 }
 
 @media (max-width: 768px) {
-  .hero-morph-video-wrapper.state-docked,
+  .hero-morph-video-wrapper.state-docked {
+    width: 100% !important;
+    max-width: 360px !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+    margin: 0 auto !important;
+  }
+
   .hero-target-placeholder {
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
-    aspect-ratio: 16 / 9 !important;
+    min-height: 260px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto !important;
   }
 }
 
