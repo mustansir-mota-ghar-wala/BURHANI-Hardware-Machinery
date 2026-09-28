@@ -3705,10 +3705,77 @@ footer {
 
 @media (max-width: 768px) {
   .reference-hero-banner {
-    padding: 24px 20px;
-    min-height: auto;
-    flex-direction: column;
-    align-items: flex-start;
+    padding: 24px 16px 28px !important;
+    min-height: auto !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .hero-banner-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+  }
+
+  .hero-pill-tag {
+    margin: 0 auto 10px !important;
+  }
+
+  .hero-banner-heading {
+    text-align: center !important;
+    font-size: 1.55rem !important;
+    line-height: 1.25 !important;
+    margin: 0 0 10px !important;
+  }
+
+  .hero-banner-subtext {
+    text-align: center !important;
+    font-size: 0.88rem !important;
+    line-height: 1.45 !important;
+    margin: 0 auto 16px !important;
+    max-width: 440px !important;
+  }
+
+  .hero-action-row {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin: 0 auto 14px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .hero-explore-cat-btn {
+    padding: 8px 16px !important;
+    font-size: 0.8rem !important;
+    max-width: 195px !important;
+    justify-content: center !important;
+  }
+
+  .hero-explore-cat-btn span {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .hero-video-play-btn {
+    padding: 8px 16px !important;
+    font-size: 0.8rem !important;
+    white-space: nowrap !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  .hero-dots-row {
+    justify-content: center !important;
+    margin: 0 auto !important;
   }
 }
 
@@ -3843,7 +3910,12 @@ footer {
 
 @media (max-width: 768px) {
   .hero-showcase-visual {
-    margin-right: 0;
+    margin-right: 0 !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 16px auto 0 !important;
   }
 }
 
@@ -3869,9 +3941,14 @@ footer {
 
 @media (max-width: 768px) {
   .hero-deck-container {
-    margin-top: 18px;
-    width: 100%;
-    padding: 0 10px;
+    margin: 0 auto !important;
+    width: 100% !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 250px !important;
+    position: relative !important;
   }
 }
 
@@ -4055,45 +4132,67 @@ footer {
 
 @media (max-width: 768px) {
   .hero-deck-cards-stage {
-    width: 205px;
-    height: 245px;
+    width: 185px !important;
+    height: 240px !important;
+    margin: 0 auto !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .hero-deck-card {
-    width: 205px;
-    height: 245px;
-    border-radius: 18px;
+    width: 185px !important;
+    height: 240px !important;
+    border-radius: 18px !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+  }
+
+  .hero-deck-card.active-card {
+    transform: translateX(0) scale(1) rotate(0deg) !important;
+    z-index: 5 !important;
   }
 
   .hero-deck-card.layer-left {
-    transform: translateX(-55px) scale(0.9) rotate(-3deg);
-    opacity: 0.85;
+    transform: translateX(-46px) scale(0.9) rotate(-3deg) !important;
+    opacity: 0.88 !important;
+    z-index: 3 !important;
   }
 
   .hero-deck-card.layer-right {
-    transform: translateX(55px) scale(0.9) rotate(3deg);
-    opacity: 0.85;
+    transform: translateX(46px) scale(0.9) rotate(3deg) !important;
+    opacity: 0.88 !important;
+    z-index: 3 !important;
   }
 
   .hero-deck-card.layer-far-left,
   .hero-deck-card.layer-far-right {
-    display: none;
+    display: none !important;
+  }
+
+  .hero-deck-arrow {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 0.95rem !important;
+    z-index: 20 !important;
   }
 
   .hero-deck-arrow.left {
-    left: -6px;
+    left: calc(50% - 124px) !important;
   }
 
   .hero-deck-arrow.right {
-    right: -6px;
+    right: calc(50% - 124px) !important;
   }
 
   .deck-card-image-full img {
-    padding: 12px 12px 48px;
+    padding: 10px 10px 44px !important;
   }
 
   .deck-card-name-text {
-    font-size: 0.82rem;
+    font-size: 0.8rem !important;
   }
 }
 
