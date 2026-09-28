@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { apiGet, apiPost } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { getCleanProductImage } from '../utils/imageUrl';
+import '../components/EntranceTransition.css';
 
 const CATEGORY_HERO_ITEMS = [
   {
@@ -215,14 +217,241 @@ export default function HomePage({ setToasts }) {
   // Active category synced with the front center card
   const activeCategory = heroDeckItems[deckIndex] || heroDeckItems[0];
 
-  // Auto-switch hero deck every 4 seconds (resets timer upon user interaction)
+  // ── Option 2: Apple-style Morphing Video Hero ──
+  const [morphStage, setMorphStage] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('intro') === 'true' || params.get('video') === 'true') {
+      sessionStorage.removeItem('burhani_morph_intro_seen');
+      return 'fullscreen';
+    }
+    if (sessionStorage.getItem('burhani_morph_intro_seen')) return 'docked';
+    return 'fullscreen';
+  });
+
+  const [showDeck, setShowDeck] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('intro') === 'true' || params.get('video') === 'true') return false;
+    return !!sessionStorage.getItem('burhani_morph_intro_seen');
+  });
+
+  const [isHeroVideoMuted, setIsHeroVideoMuted] = useState(true);
+  const [heroVideoProgress, setHeroVideoProgress] = useState(0);
+  const heroVideoRef = useRef(null);
+  const heroTargetRef = useRef(null);
+  const [targetRect, setTargetRect] = useState(null);
+  const savedVideoTimeRef = useRef(0);
+
+  // Measure destination bounding rect of the hero card slot
+  const updateTargetRect = () => {
+    if (heroTargetRef.current) {
+      const r = heroTargetRef.current.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) {
+        setTargetRect({
+          top: r.top,
+          left: r.left,
+          width: r.width,
+          height: r.height,
+        });
+      }
+    }
+  };
+
   useEffect(() => {
-    if (heroDeckItems.length === 0) return;
+    updateTargetRect();
+    const handleBeforeUnload = () => {
+      sessionStorage.removeItem('burhani_morph_intro_seen');
+    };
+    window.addEventListener('resize', updateTargetRect);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('resize', updateTargetRect);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
+  // Play or pause video based on showDeck
+  useEffect(() => {
+    if (heroVideoRef.current) {
+      if (!showDeck) {
+        heroVideoRef.current.muted = isHeroVideoMuted;
+        heroVideoRef.current.playbackRate = 1.43;
+        if (savedVideoTimeRef.current > 0) {
+          heroVideoRef.current.currentTime = savedVideoTimeRef.current;
+          savedVideoTimeRef.current = 0;
+        } else {
+          heroVideoRef.current.currentTime = 0;
+        }
+        heroVideoRef.current.play().catch(() => {});
+      } else {
+        heroVideoRef.current.pause();
+      }
+    }
+  }, [showDeck, isHeroVideoMuted, morphStage]);
+
+  const handleStartStoreTour = () => {
+    savedVideoTimeRef.current = 0;
+    setHeroVideoProgress(0);
+    setShowDeck(false);
+    setMorphStage('docked');
+    if (heroVideoRef.current) {
+      heroVideoRef.current.currentTime = 0;
+      heroVideoRef.current.playbackRate = 1.43;
+      heroVideoRef.current.play().catch(() => {});
+    }
+  };
+
+  // Fullscreen duration: exactly 3 seconds, then start morphing
+  useEffect(() => {
+    if (morphStage === 'fullscreen') {
+      const timer = setTimeout(() => {
+        startMorphing();
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [morphStage]);
+
+  // Start morphing from fullscreen to docked hero slot
+  const startMorphing = () => {
+    if (morphStage !== 'fullscreen') return;
+
+    if (heroVideoRef.current) {
+      savedVideoTimeRef.current = heroVideoRef.current.currentTime;
+    }
+
+    if (heroTargetRef.current) {
+      const r = heroTargetRef.current.getBoundingClientRect();
+      if (r.width > 0) {
+        setTargetRect({ top: r.top, left: r.left, width: r.width, height: r.height });
+      }
+    }
+
+    setMorphStage('morphing');
+    sessionStorage.setItem('burhani_morph_intro_seen', 'true');
+
+    // After 950ms animation, settle into docked state
+    setTimeout(() => {
+      if (heroVideoRef.current) {
+        savedVideoTimeRef.current = heroVideoRef.current.currentTime;
+      }
+      setMorphStage('docked');
+    }, 950);
+  };
+
+  // User interactions during fullscreen to trigger morph (scroll, swipe, keypress)
+  useEffect(() => {
+    if (morphStage !== 'fullscreen') return;
+
+    const handleWheel = (e) => {
+      if (e.deltaY > 15) startMorphing();
+    };
+
+    let touchStartY = 0;
+    const handleTouchStart = (e) => {
+      touchStartY = e.touches[0].clientY;
+    };
+    const handleTouchMove = (e) => {
+      if (touchStartY - e.touches[0].clientY > 25) startMorphing();
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'Escape' || e.key === 'Enter') {
+        startMorphing();
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: true });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [morphStage, targetRect]);
+
+  const handleHeroVideoTimeUpdate = () => {
+    if (heroVideoRef.current && heroVideoRef.current.duration) {
+      const cur = heroVideoRef.current.currentTime;
+      const dur = heroVideoRef.current.duration;
+      if (dur > 0) {
+        setHeroVideoProgress((cur / dur) * 100);
+      }
+    }
+  };
+
+  const handleHeroVideoEnded = () => {
+    if (morphStage === 'fullscreen') {
+      startMorphing();
+    }
+    // After docking and video finishing, smoothly reveal 3D category cards
+    setTimeout(() => {
+      setShowDeck(true);
+    }, 500);
+  };
+
+  const toggleHeroVideoMute = (e) => {
+    if (e) e.stopPropagation();
+    if (heroVideoRef.current) {
+      const next = !heroVideoRef.current.muted;
+      heroVideoRef.current.muted = next;
+      setIsHeroVideoMuted(next);
+    }
+  };
+
+  // Global listener to replay video on-demand
+  useEffect(() => {
+    const handleReplay = () => {
+      handleStartStoreTour();
+      const banner = document.querySelector('.reference-hero-banner');
+      if (banner) banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+    window.addEventListener('burhani:replay-intro', handleReplay);
+    return () => window.removeEventListener('burhani:replay-intro', handleReplay);
+  }, []);
+
+  // Auto-switch hero deck every 4 seconds (pauses while video is active)
+  useEffect(() => {
+    if (heroDeckItems.length === 0 || !showDeck) return;
     const interval = setInterval(() => {
       setDeckIndex((prev) => (prev + 1) % heroDeckItems.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, [heroDeckItems.length, deckIndex]);
+  }, [heroDeckItems.length, deckIndex, showDeck]);
+
+  const getMorphContainerStyle = () => {
+    if (morphStage === 'fullscreen') {
+      return {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        borderRadius: '0px',
+        zIndex: 9999999,
+        transition: 'all 0.95s cubic-bezier(0.16, 1, 0.3, 1)',
+      };
+    }
+    if (morphStage === 'morphing') {
+      const top = targetRect ? `${targetRect.top}px` : '180px';
+      const left = targetRect ? `${targetRect.left}px` : 'calc(50% + 80px)';
+      const width = targetRect ? `${targetRect.width}px` : '480px';
+      const height = targetRect ? `${targetRect.height}px` : '270px';
+      return {
+        position: 'fixed',
+        top,
+        left,
+        width,
+        height,
+        borderRadius: '20px',
+        zIndex: 9999999,
+        transition: 'all 0.95s cubic-bezier(0.16, 1, 0.3, 1)',
+      };
+    }
+    return {};
+  };
 
   const handlePrevDeck = (e) => {
     if (e) {
@@ -322,87 +551,225 @@ export default function HomePage({ setToasts }) {
           </div>
         )}
 
-        {/* ── Top Hero Banner (Categories 3D Card Deck + Dynamic Left Description) ── */}
+        {/* ── Top Hero Banner (Option 2: Apple-style Morphing Video Showcase + 3D Deck) ── */}
         {!query && (
-          <section className="reference-hero-banner" aria-label="Featured Hardware Categories">
-            <div className="hero-banner-content" key={activeCategory.id || deckIndex}>
-              <div className="hero-pill-tag">
-                <i className="bi bi-tag-fill me-1"></i>
-                {activeCategory.tag}
-              </div>
-              <h1 className="hero-banner-heading">
-                {activeCategory.heading}
-              </h1>
-              <p className="hero-banner-subtext">
-                {activeCategory.description}
-              </p>
+          <section className="reference-hero-banner" aria-label="Featured Hardware Showcase">
+            {/* Dynamic Left Content */}
+            <div className="hero-banner-content" key={!showDeck ? 'video-mode' : (activeCategory.id || deckIndex)}>
+              {!showDeck ? (
+                <>
+                  <div className="hero-pill-tag store-experience-tag">
+                    <span className="live-pulse-dot"></span>
+                    Burhani Store Experience • Bhawani Mandi
+                  </div>
+                  <h1 className="hero-banner-heading">
+                    Step Inside Burhani Hardware &amp; Machinery
+                  </h1>
+                  <p className="hero-banner-subtext">
+                    Take a live look inside our physical showroom at Balaji Chauraha. Explore heavy-duty industrial machinery, precision power tools, chainsaws &amp; authentic spare parts.
+                  </p>
 
-              <div className="hero-action-row mb-3">
-                <button
-                  type="button"
-                  className="hero-explore-cat-btn"
-                  onClick={() => {
-                    setSelectedCatId(activeCategory.catFilter || activeCategory.name);
-                    const el = document.querySelector('.products-minimal-grid') || document.querySelector('.category-strip-section');
-                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }}
-                  title={`Browse ${activeCategory.name} products`}
-                >
-                  <span>Explore {activeCategory.name}</span>
-                  <i className="bi bi-arrow-right"></i>
-                </button>
-              </div>
+                  <div className="hero-action-row mb-3">
+                    <button
+                      type="button"
+                      className="hero-explore-cat-btn"
+                      onClick={() => setShowDeck(true)}
+                      title="View interactive category 3D showcase"
+                    >
+                      <span>Explore Categories</span>
+                      <i className="bi bi-arrow-right"></i>
+                    </button>
 
-              {/* Carousel indicator dots synced with 4-second deck */}
-              <div className="hero-dots-row">
-                {heroDeckItems.map((cat, i) => (
-                  <span
-                    key={cat.id || i}
-                    className={`hero-dot ${deckIndex === i ? 'active' : ''}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setDeckIndex(i);
-                    }}
-                    title={`View ${cat.name}`}
-                    style={{ cursor: 'pointer' }}
-                  ></span>
-                ))}
-              </div>
+                    <button
+                      type="button"
+                      className="hero-video-play-btn sound-toggle"
+                      onClick={toggleHeroVideoMute}
+                      title={isHeroVideoMuted ? "Unmute audio" : "Mute audio"}
+                    >
+                      <i className={`bi ${isHeroVideoMuted ? 'bi-volume-mute-fill' : 'bi-volume-up-fill'} text-warning`}></i>
+                      <span>{isHeroVideoMuted ? 'Unmute' : 'Sound On'}</span>
+                    </button>
+                  </div>
+
+                  {/* Video Progress Line */}
+                  <div className="hero-embedded-progress-track">
+                    <div className="hero-embedded-progress-bar" style={{ width: `${heroVideoProgress}%` }}></div>
+                  </div>
+                  <span className="hero-progress-label">Showroom walkthrough • {Math.round(heroVideoProgress)}%</span>
+                </>
+              ) : (
+                <>
+                  <div className="hero-pill-tag">
+                    <i className="bi bi-tag-fill me-1"></i>
+                    {activeCategory.tag}
+                  </div>
+                  <h1 className="hero-banner-heading">
+                    {activeCategory.heading}
+                  </h1>
+                  <p className="hero-banner-subtext">
+                    {activeCategory.description}
+                  </p>
+
+                  <div className="hero-action-row mb-3">
+                    <button
+                      type="button"
+                      className="hero-explore-cat-btn"
+                      onClick={() => {
+                        setSelectedCatId(activeCategory.catFilter || activeCategory.name);
+                        const el = document.querySelector('.products-minimal-grid') || document.querySelector('.category-strip-section');
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }}
+                      title={`Browse ${activeCategory.name} products`}
+                    >
+                      <span>Explore {activeCategory.name}</span>
+                      <i className="bi bi-arrow-right"></i>
+                    </button>
+
+                    <button
+                      type="button"
+                      className="hero-video-play-btn"
+                      onClick={handleStartStoreTour}
+                      title="Watch showroom entrance film"
+                    >
+                      <i className="bi bi-play-circle-fill text-warning"></i>
+                      <span>Store Tour</span>
+                    </button>
+                  </div>
+
+                  {/* Carousel indicator dots synced with 4-second deck */}
+                  <div className="hero-dots-row">
+                    {heroDeckItems.map((cat, i) => (
+                      <span
+                        key={cat.id || i}
+                        className={`hero-dot ${deckIndex === i ? 'active' : ''}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setDeckIndex(i);
+                        }}
+                        title={`View ${cat.name}`}
+                        style={{ cursor: 'pointer' }}
+                      ></span>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
 
-            {/* Glowing Hero Showcase - Interactive 3D Card Deck UI */}
+            {/* Right Showcase Visual: Option 2 Apple Morphing Video & 3D Card Deck */}
             <div className="hero-showcase-visual">
               <div className="hero-glow-backdrop"></div>
-              
-              <div className="hero-deck-container">
-                <button
-                  type="button"
-                  className="hero-deck-arrow left"
-                  onClick={handlePrevDeck}
-                  title="Previous Product"
-                  aria-label="Previous Product"
-                >
-                  <i className="bi bi-chevron-left"></i>
-                </button>
 
-                <div className="hero-deck-cards-stage">
-                  {renderDeckCard(farLeftItem, 'layer-far-left')}
-                  {renderDeckCard(leftItem, 'layer-left')}
-                  {renderDeckCard(farRightItem, 'layer-far-right')}
-                  {renderDeckCard(rightItem, 'layer-right')}
-                  {renderDeckCard(centerItem, 'active-card', true)}
+              {/* Target Slot Placeholder inside Hero */}
+              <div ref={heroTargetRef} className="hero-target-placeholder">
+                {/* 1. Fullscreen / Morphing Portal to document.body (Free of stacking contexts) */}
+                {typeof document !== 'undefined' && (morphStage === 'fullscreen' || morphStage === 'morphing') && createPortal(
+                  <div
+                    className={`hero-morph-video-wrapper state-${morphStage}`}
+                    style={getMorphContainerStyle()}
+                    onClick={toggleHeroVideoMute}
+                  >
+                    <video
+                      ref={heroVideoRef}
+                      className="hero-embedded-video-elem"
+                      autoPlay
+                      playsInline
+                      muted={isHeroVideoMuted}
+                      preload="auto"
+                      onLoadedMetadata={(e) => { e.target.playbackRate = 1.43; }}
+                      onPlay={(e) => { e.target.playbackRate = 1.43; }}
+                      onTimeUpdate={handleHeroVideoTimeUpdate}
+                      onEnded={handleHeroVideoEnded}
+                    >
+                      <source src="/media/entrance-video.mp4" type="video/mp4" />
+                      <source src="/media/burhani%20enterance%20video/final%20video%20for%20website 2.mp4" type="video/mp4" />
+                      <source src="/entrance-video.mp4" type="video/mp4" />
+                    </video>
+                  </div>,
+                  document.body
+                )}
+
+                {/* 2. Docked Video inside Hero (after morph animation completes or on replay) */}
+                {morphStage === 'docked' && (
+                  <div
+                    className={`hero-morph-video-wrapper state-docked ${!showDeck ? 'active' : 'hidden'}`}
+                    onClick={toggleHeroVideoMute}
+                  >
+                    <video
+                      ref={heroVideoRef}
+                      className="hero-embedded-video-elem"
+                      autoPlay
+                      playsInline
+                      muted={isHeroVideoMuted}
+                      preload="auto"
+                      onLoadedMetadata={(e) => {
+                        e.target.playbackRate = 1.43;
+                        if (savedVideoTimeRef.current > 0) {
+                          e.target.currentTime = savedVideoTimeRef.current;
+                          savedVideoTimeRef.current = 0;
+                        }
+                      }}
+                      onPlay={(e) => {
+                        e.target.playbackRate = 1.43;
+                      }}
+                      onTimeUpdate={handleHeroVideoTimeUpdate}
+                      onEnded={() => setShowDeck(true)}
+                    >
+                      <source src="/media/entrance-video.mp4" type="video/mp4" />
+                      <source src="/media/burhani%20enterance%20video/final%20video%20for%20website 2.mp4" type="video/mp4" />
+                      <source src="/entrance-video.mp4" type="video/mp4" />
+                    </video>
+
+                    <div className="hero-video-glass-badge top-left">
+                      <span className="badge-pulse-indicator"></span>
+                      <span>SHOWROOM TOUR</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="hero-video-glass-badge bottom-right"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowDeck(true);
+                      }}
+                      title="View product categories"
+                    >
+                      <span>Categories</span>
+                      <i className="bi bi-chevron-right"></i>
+                    </button>
+                  </div>
+                )}
+
+                {/* 3D Category Card Deck UI (Revealed once showDeck is true) */}
+                <div className={`hero-deck-container ${showDeck ? 'active' : 'hidden'}`}>
+                  <button
+                    type="button"
+                    className="hero-deck-arrow left"
+                    onClick={handlePrevDeck}
+                    title="Previous Product"
+                    aria-label="Previous Product"
+                  >
+                    <i className="bi bi-chevron-left"></i>
+                  </button>
+
+                  <div className="hero-deck-cards-stage">
+                    {renderDeckCard(farLeftItem, 'layer-far-left')}
+                    {renderDeckCard(leftItem, 'layer-left')}
+                    {renderDeckCard(farRightItem, 'layer-far-right')}
+                    {renderDeckCard(rightItem, 'layer-right')}
+                    {renderDeckCard(centerItem, 'active-card', true)}
+                  </div>
+
+                  <button
+                    type="button"
+                    className="hero-deck-arrow right"
+                    onClick={handleNextDeck}
+                    title="Next Product"
+                    aria-label="Next Product"
+                  >
+                    <i className="bi bi-chevron-right"></i>
+                  </button>
                 </div>
-
-                <button
-                  type="button"
-                  className="hero-deck-arrow right"
-                  onClick={handleNextDeck}
-                  title="Next Product"
-                  aria-label="Next Product"
-                >
-                  <i className="bi bi-chevron-right"></i>
-                </button>
               </div>
             </div>
           </section>
