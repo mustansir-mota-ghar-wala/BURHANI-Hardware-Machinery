@@ -514,23 +514,47 @@
 }
 
 @media (max-width: 768px) {
+  .hero-target-placeholder {
+    width: 100% !important;
+    max-width: 360px !important;
+    height: auto !important;
+    min-height: 240px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto !important;
+    position: relative !important;
+  }
+
   .hero-morph-video-wrapper.state-docked {
     width: 100% !important;
     max-width: 360px !important;
     height: auto !important;
     aspect-ratio: 16 / 9 !important;
     margin: 0 auto !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
   }
 
-  .hero-target-placeholder {
+  .hero-morph-video-wrapper.state-docked.active {
+    display: block !important;
+    position: relative !important;
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    pointer-events: auto !important;
     width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    min-height: 260px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    margin: 0 auto !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 0 1.5px rgba(255, 255, 255, 0.25) !important;
+  }
+
+  .hero-morph-video-wrapper.state-docked.hidden {
+    display: none !important;
+    position: absolute !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
   }
 }
 

@@ -3950,6 +3950,18 @@ footer {
     min-height: 250px !important;
     position: relative !important;
   }
+
+  .hero-deck-container.hidden {
+    display: none !important;
+    position: absolute !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
 }
 
 .hero-deck-arrow {
@@ -4248,22 +4260,86 @@ footer {
   display: none;
 }
 
-@media (max-width: 640px) {
-  .category-inline-row {
-    gap: 10px;
+@media (max-width: 768px) {
+  .category-strip-section {
+    margin-bottom: 20px !important;
   }
 
+  /* In mobile UI: make entire row scrollable so "Browse by Categories" slides together with category cards */
+  .category-inline-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    flex-wrap: nowrap !important;
+    padding: 4px 2px 14px !important;
+  }
+
+  .category-inline-row::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  /* "Browse by Categories" slides as the first card in the row */
   .category-strip-label-inline {
-    padding-right: 10px;
-    gap: 8px;
+    flex: 0 0 auto !important;
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 108px !important;
+    height: 98px !important;
+    padding: 10px 8px !important;
+    border-right: none !important;
+    border-radius: 22px !important;
+    background: linear-gradient(145deg, #071c14 0%, #0c3325 100%) !important;
+    border: 1.5px solid rgba(16, 185, 129, 0.45) !important;
+    box-shadow: 0 4px 14px rgba(7, 28, 20, 0.28) !important;
+    gap: 6px !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    user-select: none !important;
+  }
+
+  .category-strip-label-inline:active {
+    transform: scale(0.96) !important;
   }
 
   .category-strip-label-inline i {
-    font-size: 1.3rem;
+    font-size: 1.45rem !important;
+    color: #10b981 !important;
+    margin: 0 !important;
   }
 
   .category-strip-label-text {
-    font-size: 0.85rem;
+    font-size: 0.74rem !important;
+    font-weight: 750 !important;
+    color: #ffffff !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+    text-align: center !important;
+    letter-spacing: -0.1px !important;
+  }
+
+  .category-scroll-strip {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    overflow-x: visible !important;
+    padding: 0 !important;
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+  }
+
+  .squircle-cat-card {
+    width: 110px !important;
+    height: 98px !important;
+    border-radius: 20px !important;
+    flex-shrink: 0 !important;
   }
 }
 

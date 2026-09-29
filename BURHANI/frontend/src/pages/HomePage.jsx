@@ -236,7 +236,8 @@ export default function HomePage({ setToasts }) {
 
   const [isHeroVideoMuted, setIsHeroVideoMuted] = useState(true);
   const [heroVideoProgress, setHeroVideoProgress] = useState(0);
-  const heroVideoRef = useRef(null);
+  const fullscreenVideoRef = useRef(null);
+  const dockedVideoRef = useRef(null);
   const heroTargetRef = useRef(null);
   const [targetRect, setTargetRect] = useState(null);
   const savedVideoTimeRef = useRef(0);
@@ -269,21 +270,40 @@ export default function HomePage({ setToasts }) {
     };
   }, []);
 
-  // Play or pause video based on showDeck
+  // Guarantee mobile DOM attributes for reliable autoplay (iOS Safari & Android Chrome)
   useEffect(() => {
-    if (heroVideoRef.current) {
-      if (!showDeck) {
-        heroVideoRef.current.muted = isHeroVideoMuted;
-        heroVideoRef.current.playbackRate = 1.43;
+    const v1 = fullscreenVideoRef.current;
+    const v2 = dockedVideoRef.current;
+    if (v1) {
+      v1.defaultMuted = true;
+      v1.muted = isHeroVideoMuted;
+      v1.playsInline = true;
+      v1.setAttribute('playsinline', '');
+      v1.setAttribute('webkit-playsinline', '');
+    }
+    if (v2) {
+      v2.defaultMuted = true;
+      v2.muted = isHeroVideoMuted;
+      v2.playsInline = true;
+      v2.setAttribute('playsinline', '');
+      v2.setAttribute('webkit-playsinline', '');
+    }
+  }, [isHeroVideoMuted, morphStage, showDeck]);
+
+  // Play or pause docked video based on showDeck
+  useEffect(() => {
+    if (dockedVideoRef.current) {
+      if (!showDeck && morphStage === 'docked') {
+        dockedVideoRef.current.defaultMuted = true;
+        dockedVideoRef.current.muted = isHeroVideoMuted;
+        dockedVideoRef.current.playbackRate = 1.43;
         if (savedVideoTimeRef.current > 0) {
-          heroVideoRef.current.currentTime = savedVideoTimeRef.current;
+          dockedVideoRef.current.currentTime = savedVideoTimeRef.current;
           savedVideoTimeRef.current = 0;
-        } else {
-          heroVideoRef.current.currentTime = 0;
         }
-        heroVideoRef.current.play().catch(() => {});
+        dockedVideoRef.current.play().catch(() => {});
       } else {
-        heroVideoRef.current.pause();
+        dockedVideoRef.current.pause();
       }
     }
   }, [showDeck, isHeroVideoMuted, morphStage]);
@@ -293,19 +313,21 @@ export default function HomePage({ setToasts }) {
     setHeroVideoProgress(0);
     setShowDeck(false);
     setMorphStage('docked');
-    if (heroVideoRef.current) {
-      heroVideoRef.current.currentTime = 0;
-      heroVideoRef.current.playbackRate = 1.43;
-      heroVideoRef.current.play().catch(() => {});
+    if (dockedVideoRef.current) {
+      dockedVideoRef.current.currentTime = 0;
+      dockedVideoRef.current.playbackRate = 1.43;
+      dockedVideoRef.current.defaultMuted = true;
+      dockedVideoRef.current.muted = isHeroVideoMuted;
+      dockedVideoRef.current.play().catch(() => {});
     }
   };
 
-  // Fullscreen duration: exactly 3 seconds, then start morphing
+  // Fullscreen duration: 5.5s to let mobile connections buffer and display the showroom film
   useEffect(() => {
     if (morphStage === 'fullscreen') {
       const timer = setTimeout(() => {
         startMorphing();
-      }, 3000);
+      }, 5500);
       return () => clearTimeout(timer);
     }
   }, [morphStage]);
@@ -314,13 +336,13 @@ export default function HomePage({ setToasts }) {
   const startMorphing = () => {
     if (morphStage !== 'fullscreen') return;
 
-    if (heroVideoRef.current) {
-      savedVideoTimeRef.current = heroVideoRef.current.currentTime;
+    if (fullscreenVideoRef.current) {
+      savedVideoTimeRef.current = fullscreenVideoRef.current.currentTime;
     }
 
     if (heroTargetRef.current) {
       const r = heroTargetRef.current.getBoundingClientRect();
-      if (r.width > 0) {
+      if (r.width > 0 && r.height > 0) {
         setTargetRect({ top: r.top, left: r.left, width: r.width, height: r.height });
       }
     }
@@ -330,9 +352,6 @@ export default function HomePage({ setToasts }) {
 
     // After 950ms animation, settle into docked state
     setTimeout(() => {
-      if (heroVideoRef.current) {
-        savedVideoTimeRef.current = heroVideoRef.current.currentTime;
-      }
       setMorphStage('docked');
     }, 950);
   };
@@ -350,7 +369,7 @@ export default function HomePage({ setToasts }) {
       touchStartY = e.touches[0].clientY;
     };
     const handleTouchMove = (e) => {
-      if (touchStartY - e.touches[0].clientY > 25) startMorphing();
+      if (touchStartY - e.touches[0].clientY > 65) startMorphing();
     };
 
     const handleKeyDown = (e) => {
@@ -373,9 +392,10 @@ export default function HomePage({ setToasts }) {
   }, [morphStage, targetRect]);
 
   const handleHeroVideoTimeUpdate = () => {
-    if (heroVideoRef.current && heroVideoRef.current.duration) {
-      const cur = heroVideoRef.current.currentTime;
-      const dur = heroVideoRef.current.duration;
+    const vid = morphStage === 'fullscreen' || morphStage === 'morphing' ? fullscreenVideoRef.current : dockedVideoRef.current;
+    if (vid && vid.duration) {
+      const cur = vid.currentTime;
+      const dur = vid.duration;
       if (dur > 0) {
         setHeroVideoProgress((cur / dur) * 100);
       }
@@ -394,10 +414,13 @@ export default function HomePage({ setToasts }) {
 
   const toggleHeroVideoMute = (e) => {
     if (e) e.stopPropagation();
-    if (heroVideoRef.current) {
-      const next = !heroVideoRef.current.muted;
-      heroVideoRef.current.muted = next;
-      setIsHeroVideoMuted(next);
+    const next = !isHeroVideoMuted;
+    setIsHeroVideoMuted(next);
+    if (fullscreenVideoRef.current) {
+      fullscreenVideoRef.current.muted = next;
+    }
+    if (dockedVideoRef.current) {
+      dockedVideoRef.current.muted = next;
     }
   };
 
@@ -422,6 +445,8 @@ export default function HomePage({ setToasts }) {
   }, [heroDeckItems.length, deckIndex, showDeck]);
 
   const getMorphContainerStyle = () => {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+
     if (morphStage === 'fullscreen') {
       return {
         position: 'fixed',
@@ -435,6 +460,26 @@ export default function HomePage({ setToasts }) {
       };
     }
     if (morphStage === 'morphing') {
+      if (isMobile) {
+        // Mobile layout: smooth landing right into mobile hero slot
+        const top = targetRect ? `${targetRect.top}px` : '320px';
+        const left = targetRect ? `${targetRect.left}px` : '16px';
+        const width = targetRect ? `${targetRect.width}px` : 'calc(100vw - 32px)';
+        const height = targetRect ? `${targetRect.height}px` : '210px';
+        return {
+          position: 'fixed',
+          top,
+          left,
+          width,
+          height,
+          maxWidth: '360px',
+          borderRadius: '18px',
+          zIndex: 9999999,
+          transition: 'all 0.95s cubic-bezier(0.16, 1, 0.3, 1)',
+        };
+      }
+
+      // Laptop / Desktop (100% unchanged)
       const top = targetRect ? `${targetRect.top}px` : '180px';
       const left = targetRect ? `${targetRect.left}px` : 'calc(50% + 80px)';
       const width = targetRect ? `${targetRect.width}px` : '480px';
@@ -670,27 +715,79 @@ export default function HomePage({ setToasts }) {
                     onClick={toggleHeroVideoMute}
                   >
                     <video
-                      ref={heroVideoRef}
+                      ref={fullscreenVideoRef}
                       className="hero-embedded-video-elem"
+                      src="/entrance-video.mp4"
                       autoPlay
                       playsInline
                       muted={isHeroVideoMuted}
                       preload="auto"
-                      onLoadedMetadata={(e) => { e.target.playbackRate = 1.43; }}
+                      onLoadedMetadata={(e) => {
+                        e.target.playbackRate = 1.43;
+                        e.target.defaultMuted = true;
+                        e.target.muted = isHeroVideoMuted;
+                      }}
                       onPlay={(e) => { e.target.playbackRate = 1.43; }}
                       onTimeUpdate={handleHeroVideoTimeUpdate}
                       onEnded={handleHeroVideoEnded}
                       onError={() => {
-                        console.warn('Video playback error, falling back to docked mode');
+                        console.warn('Fullscreen video playback error, morphing into docked');
                         setMorphStage('docked');
-                        setShowDeck(true);
                       }}
                     >
-                      <source src="/assets/entrance-video.mp4" type="video/mp4" />
-                      <source src="/static/entrance-video.mp4" type="video/mp4" />
                       <source src="/entrance-video.mp4" type="video/mp4" />
+                      <source src="/static/entrance-video.mp4" type="video/mp4" />
+                      <source src="/assets/entrance-video.mp4" type="video/mp4" />
                       <source src="/media/entrance-video.mp4" type="video/mp4" />
                     </video>
+
+                    {/* Fullscreen Overlay Controls (Topbar & Brand & Skip button) */}
+                    {morphStage === 'fullscreen' && (
+                      <>
+                        <div className="hero-morph-topbar">
+                          <div className="burhani-entrance-brand">
+                            <span className="burhani-entrance-brand-dot"></span>
+                            <span>BURHANI HARDWARE</span>
+                          </div>
+
+                          <div className="burhani-entrance-actions">
+                            <button
+                              type="button"
+                              className="burhani-entrance-btn sound-btn"
+                              onClick={toggleHeroVideoMute}
+                              aria-label={isHeroVideoMuted ? 'Unmute video audio' : 'Mute video audio'}
+                            >
+                              <i className={`bi ${isHeroVideoMuted ? 'bi-volume-mute-fill' : 'bi-volume-up-fill'}`}></i>
+                              <span>{isHeroVideoMuted ? 'Unmute' : 'Sound On'}</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              className="burhani-entrance-btn skip-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                startMorphing();
+                              }}
+                              aria-label="Enter store"
+                            >
+                              <span>Enter</span>
+                              <i className="bi bi-arrow-right"></i>
+                            </button>
+                          </div>
+                        </div>
+
+                        <div
+                          className="hero-morph-bottom-pill"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            startMorphing();
+                          }}
+                        >
+                          <span>Showroom Tour • Tap to Enter</span>
+                          <i className="bi bi-chevron-down"></i>
+                        </div>
+                      </>
+                    )}
                   </div>,
                   document.body
                 )}
@@ -702,14 +799,17 @@ export default function HomePage({ setToasts }) {
                     onClick={toggleHeroVideoMute}
                   >
                     <video
-                      ref={heroVideoRef}
+                      ref={dockedVideoRef}
                       className="hero-embedded-video-elem"
+                      src="/entrance-video.mp4"
                       autoPlay
                       playsInline
                       muted={isHeroVideoMuted}
                       preload="auto"
                       onLoadedMetadata={(e) => {
                         e.target.playbackRate = 1.43;
+                        e.target.defaultMuted = true;
+                        e.target.muted = isHeroVideoMuted;
                         if (savedVideoTimeRef.current > 0) {
                           e.target.currentTime = savedVideoTimeRef.current;
                           savedVideoTimeRef.current = 0;
@@ -721,13 +821,12 @@ export default function HomePage({ setToasts }) {
                       onTimeUpdate={handleHeroVideoTimeUpdate}
                       onEnded={() => setShowDeck(true)}
                       onError={() => {
-                        console.warn('Docked video error, revealing deck');
-                        setShowDeck(true);
+                        console.warn('Docked video playback note');
                       }}
                     >
-                      <source src="/assets/entrance-video.mp4" type="video/mp4" />
-                      <source src="/static/entrance-video.mp4" type="video/mp4" />
                       <source src="/entrance-video.mp4" type="video/mp4" />
+                      <source src="/static/entrance-video.mp4" type="video/mp4" />
+                      <source src="/assets/entrance-video.mp4" type="video/mp4" />
                       <source src="/media/entrance-video.mp4" type="video/mp4" />
                     </video>
 
@@ -789,7 +888,11 @@ export default function HomePage({ setToasts }) {
         {/* ── Horizontal Squircle Category Strip (Browse by Categories in Same Row) ── */}
         <section className="category-strip-section" aria-label="Browse by Categories">
           <div className="category-inline-row">
-            <div className="category-strip-label-inline">
+            <div
+              className="category-strip-label-inline"
+              onClick={() => setSelectedCatId(null)}
+              title="Browse all categories"
+            >
               <i className="bi bi-grid-3x3-gap-fill text-success"></i>
               <span className="category-strip-label-text">
                 Browse by<br className="d-none d-md-inline" /> Categories
