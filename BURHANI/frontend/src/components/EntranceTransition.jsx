@@ -127,14 +127,15 @@ export default function EntranceTransition() {
         preload="auto"
         onTimeUpdate={handleTimeUpdate}
         onEnded={dismissIntro}
+        src="/entrance-video.mp4"
         onError={() => {
           // If playback error occurs, dismiss cleanly so website is accessible
           dismissIntro();
         }}
       >
-        <source src="/media/entrance-video.mp4" type="video/mp4" />
-        <source src="/media/burhani%20enterance%20video/final%20video%20for%20website.mp4" type="video/mp4" />
         <source src="/entrance-video.mp4" type="video/mp4" />
+        <source src="/static/entrance-video.mp4" type="video/mp4" />
+        <source src="/media/entrance-video.mp4" type="video/mp4" />
       </video>
 
       {/* Cinematic Vignette */}

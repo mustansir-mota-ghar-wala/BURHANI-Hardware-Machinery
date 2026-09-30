@@ -139,6 +139,28 @@ export default function FloatingDock() {
     setChatLoading(false);
   };
 
+  const triggerQuickQuery = async (queryText) => {
+    if (!queryText || chatLoading) return;
+    setMessages((prev) => [...prev, { role: 'user', text: queryText }]);
+    setChatInput('');
+    setChatLoading(true);
+
+    try {
+      const data = await apiPost('/api/chat/', { message: queryText, language });
+      if (data.status === 'success') {
+        setMessages((prev) => [
+          ...prev,
+          { role: 'bot', text: data.reply, productsHtml: data.products_html }
+        ]);
+      } else {
+        setMessages((prev) => [...prev, { role: 'bot', text: 'Sorry, unable to answer right now.' }]);
+      }
+    } catch {
+      setMessages((prev) => [...prev, { role: 'bot', text: 'Network error. Please try again.' }]);
+    }
+    setChatLoading(false);
+  };
+
   return (
     <>
       {/* ── Left Floating Expanding Dock (Desktop) ── */}
@@ -427,7 +449,7 @@ export default function FloatingDock() {
         </div>
       )}
 
-      {/* ── AI Assistant Glass Modal (Triggered directly from Left Dock) ── */}
+      {/* ── AI Assistant Luxury Glass Modal (Triggered directly from Left Dock) ── */}
       {aiChatOpen && (
         <div className="ai-chat-dock-panel" onClick={(e) => e.stopPropagation()}>
           <div className="ai-chat-header d-flex justify-content-between align-items-center">
@@ -436,8 +458,11 @@ export default function FloatingDock() {
                 <i className="bi bi-stars"></i>
               </div>
               <div>
-                <div className="fw-bold text-dark small" style={{ lineHeight: 1.2 }}>Burhani AI Assistant</div>
-                <div className="text-muted" style={{ fontSize: '0.68rem' }}>Hardware &amp; Machinery Specialist</div>
+                <div className="ai-chat-title">Burhani AI Assistant</div>
+                <div className="ai-chat-status">
+                  <span className="ai-status-pulse"></span>
+                  <span>Online • Machinery Specialist</span>
+                </div>
               </div>
             </div>
 
@@ -448,6 +473,7 @@ export default function FloatingDock() {
                   type="button"
                   className={language === 'english' ? 'active' : ''}
                   onClick={() => setLanguage('english')}
+                  title="Switch to English"
                 >
                   EN
                 </button>
@@ -455,6 +481,7 @@ export default function FloatingDock() {
                   type="button"
                   className={language === 'hindi' ? 'active' : ''}
                   onClick={() => setLanguage('hindi')}
+                  title="हिंदी में बात करें"
                 >
                   हिं
                 </button>
@@ -462,10 +489,13 @@ export default function FloatingDock() {
 
               <button
                 type="button"
-                className="btn-close"
+                className="ai-chat-close-btn"
                 onClick={() => setAiChatOpen(false)}
-                aria-label="Close"
-              ></button>
+                aria-label="Close Assistant"
+                title="Close"
+              >
+                <i className="bi bi-x-lg"></i>
+              </button>
             </div>
           </div>
 
@@ -482,9 +512,14 @@ export default function FloatingDock() {
                     dangerouslySetInnerHTML={{ __html: msg.productsHtml }}
                     onClick={(e) => {
                       const link = e.target.closest('a');
+                      const card = e.target.closest('.ai-hardware-card, .card');
                       if (link && link.getAttribute('href')) {
                         e.preventDefault();
                         navigate(link.getAttribute('href'));
+                        setAiChatOpen(false);
+                      } else if (card && card.dataset && card.dataset.productId) {
+                        e.preventDefault();
+                        navigate(`/item/${card.dataset.productId}/`);
                         setAiChatOpen(false);
                       }
                     }}
@@ -494,13 +529,36 @@ export default function FloatingDock() {
             ))}
             {chatLoading && (
               <div className="ai-bubble-row bot">
-                <div className="ai-bubble bot">
-                  <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                  Analyzing catalog...
+                <div className="ai-bubble bot ai-loading-bubble">
+                  <div className="ai-typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  <span className="ai-typing-text">Burhani AI is checking catalog...</span>
                 </div>
               </div>
             )}
             <div ref={messagesEndRef}></div>
+          </div>
+
+          {/* Quick Suggestion Chips */}
+          <div className="ai-quick-chips">
+            {[
+              { label: '⚡ Welding Machine', query: 'Show me welding machines' },
+              { label: '🌲 Chainsaws', query: 'Do you have chainsaws?' },
+              { label: '🔨 Drill Machines', query: 'Show drill machines' },
+              { label: '💧 Water Pumps', query: 'Agricultural water pumps' },
+            ].map((chip) => (
+              <button
+                key={chip.label}
+                type="button"
+                className="ai-chip-btn"
+                onClick={() => triggerQuickQuery(chip.query)}
+              >
+                {chip.label}
+              </button>
+            ))}
           </div>
 
           {/* Chat Input */}
