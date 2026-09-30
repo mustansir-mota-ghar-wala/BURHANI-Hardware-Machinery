@@ -1,4 +1,5 @@
 import React from 'react';
+import { printInvoice } from '../utils/printInvoice';
 
 export default function OrderInvoiceModal({ order, user, onClose }) {
   if (!order) return null;
@@ -11,7 +12,7 @@ export default function OrderInvoiceModal({ order, user, onClose }) {
   const sgst = (gstAmount / 2).toFixed(2);
 
   const handlePrint = () => {
-    window.print();
+    printInvoice('printable-invoice', `Tax-Invoice-${invoiceNumber}`);
   };
 
   return (
@@ -92,9 +93,9 @@ export default function OrderInvoiceModal({ order, user, onClose }) {
               </div>
               <div className="text-muted small">
                 <strong>Burhani Hardware &amp; Machinery</strong><br />
-                Station Road, Near Bohra Masjid, Dahod - 389151, Gujarat, India<br />
-                Phone: +91 7742752753 | Email: support@burhanihardware.com<br />
-                <strong>GSTIN:</strong> 24AAACB4891F1Z8 | <strong>UDYAM:</strong> GJ-07-0012948
+                Balaji Chauraha, Station Road, Bhawani Mandi, Jhalawar, Rajasthan - 326502<br />
+                Phone: +91 77427 52753 | Email: support@burhanihardware.com<br />
+                <strong>GSTIN:</strong> 08AAACB4891F1Z8 | <strong>UDYAM:</strong> RJ-17-0012948
               </div>
             </div>
 
@@ -219,7 +220,7 @@ export default function OrderInvoiceModal({ order, user, onClose }) {
                 </div>
               </div>
               <div className="small fw-bold text-dark">Authorized Signatory</div>
-              <div className="text-muted" style={{ fontSize: '10px' }}>Burhani Hardware Dahod</div>
+              <div className="text-muted" style={{ fontSize: '10px' }}>Burhani Hardware Bhawani Mandi</div>
             </div>
           </div>
         </div>
