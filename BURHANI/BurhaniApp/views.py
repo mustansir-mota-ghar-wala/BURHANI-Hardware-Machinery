@@ -473,13 +473,23 @@ You: "Yes, we have high-quality chainsaws available: [SEARCH: chainsaw]"
 
 CRITICAL: {lang_instruction}"""
             
-            chat_completion = client.chat.completions.create(
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_message}
-                ],
-                model="llama-3.3-70b-versatile",
-            )
+            primary_model = getattr(settings, 'GROQ_CHAT_MODEL', 'openai/gpt-oss-120b')
+            try:
+                chat_completion = client.chat.completions.create(
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_message}
+                    ],
+                    model=primary_model,
+                )
+            except Exception:
+                chat_completion = client.chat.completions.create(
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_message}
+                    ],
+                    model="qwen/qwen3.8-27b",
+                )
             
             reply_text = chat_completion.choices[0].message.content
             
@@ -509,20 +519,31 @@ CRITICAL: {lang_instruction}"""
                     matching_products = Product.objects.filter(q_objects).distinct()[:10]
                 
             if matching_products.exists():
-                products_html += "<div class='d-flex flex-column gap-2 mt-2 custom-scrollbar' style='max-height: 280px; overflow-y: auto; padding-right: 4px;'>"
+                products_html += "<div class='ai-products-preview d-flex flex-column gap-2 mt-2 custom-scrollbar' style='max-height: 290px; overflow-y: auto; padding-right: 2px;'>"
                 for prod in matching_products:
                     img_url = get_transparent_image_url(prod.image) or "https://images.unsplash.com/photo-1572981779307-38b8cabb2407?q=80&w=150&auto=format&fit=crop"
-                    prod_url = f"/item/{prod.id}/"
+                    try:
+                        price_num = float(prod.price)
+                        formatted_price = f"{price_num:,.0f}" if price_num.is_integer() else f"{price_num:,.2f}"
+                    except Exception:
+                        formatted_price = str(prod.price)
+                        
                     products_html += f"""
-                    <div class="card bg-white border-0 shadow-sm mb-2" style="border-radius: 12px; overflow: hidden; min-height: 70px;">
-                        <div class="d-flex align-items-center p-2 gap-3">
-                            <img src="{img_url}" alt="{prod.name}" style="width: 50px; height: 50px; min-width: 50px; object-fit: cover; border-radius: 8px; background: #eee;">
-                            <div class="flex-grow-1" style="min-width: 0;">
-                                <h6 class="mb-1 text-dark fw-bold text-truncate" style="font-size: 0.85rem; line-height: 1.2;">{prod.name}</h6>
-                                <div class="text-success fw-bold" style="font-size: 0.8rem;">₹{prod.price}</div>
-                            </div>
-                            <a href="/item/{prod.id}/" class="btn btn-sm text-white flex-shrink-0" style="background: var(--gg-accent); border-radius: 8px; font-size: 0.75rem; padding: 4px 10px;">View</a>
+                    <div class="ai-hardware-card" data-product-id="{prod.id}">
+                        <div class="ai-hardware-thumb">
+                            <img src="{img_url}" alt="{prod.name}" loading="lazy">
                         </div>
+                        <div class="ai-hardware-details flex-grow-1">
+                            <div class="ai-hardware-title" title="{prod.name}">{prod.name}</div>
+                            <div class="ai-hardware-meta d-flex align-items-center gap-2">
+                                <span class="ai-hardware-price">₹{formatted_price}</span>
+                                <span class="ai-hardware-stock-badge"><i class="bi bi-patch-check-fill"></i> In Stock</span>
+                            </div>
+                        </div>
+                        <a href="/item/{prod.id}/" class="ai-hardware-btn" title="View {prod.name}">
+                            <span>View</span>
+                            <i class="bi bi-arrow-right-short"></i>
+                        </a>
                     </div>
                     """
                 products_html += "</div>"
@@ -554,6 +575,7 @@ def visual_search_api(request):
             
             prompt = "Identify the hardware tool, machinery, or equipment in this image. Respond STRICTLY with only a comma-separated list of 2-3 most relevant search keywords (e.g. chainsaw, drill, pump). Do NOT include any conversational text, explanation, or punctuation other than commas."
             
+            vision_model = getattr(settings, 'GROQ_VISION_MODEL', 'qwen/qwen3.8-27b')
             chat_completion = client.chat.completions.create(
                 messages=[
                     {
@@ -569,7 +591,7 @@ def visual_search_api(request):
                         ],
                     }
                 ],
-                model="meta-llama/llama-4-scout-17b-16e-instruct",
+                model=vision_model,
             )
             
             raw_keywords = chat_completion.choices[0].message.content.strip()
