@@ -11,41 +11,41 @@ function getStatusBadge(status) {
   const s = (status || '').toLowerCase();
   if (s.includes('delivered')) {
     return (
-      <span className="badge rounded-pill bg-success-subtle text-success px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1">
+      <span className="order-status-badge badge bg-success-subtle text-success">
         <i className="bi bi-check-circle-fill"></i> Delivered
       </span>
     );
   }
   if (s.includes('cancel') || s.includes('refund')) {
     return (
-      <span className="badge rounded-pill bg-danger-subtle text-danger px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1">
+      <span className="order-status-badge badge bg-danger-subtle text-danger">
         <i className="bi bi-x-circle-fill"></i> Cancelled
       </span>
     );
   }
   if (s.includes('out')) {
     return (
-      <span className="badge rounded-pill bg-info-subtle text-info-emphasis px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1">
+      <span className="order-status-badge badge bg-info-subtle text-info-emphasis">
         <i className="bi bi-bicycle"></i> Out for Delivery
       </span>
     );
   }
   if (s.includes('ship')) {
     return (
-      <span className="badge rounded-pill bg-primary-subtle text-primary px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1">
+      <span className="order-status-badge badge bg-primary-subtle text-primary">
         <i className="bi bi-truck"></i> Shipped &bull; In Transit
       </span>
     );
   }
   if (s.includes('process')) {
     return (
-      <span className="badge rounded-pill bg-warning-subtle text-warning-emphasis px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1">
+      <span className="order-status-badge badge bg-warning-subtle text-warning-emphasis">
         <i className="bi bi-gear-wide-connected"></i> Processing
       </span>
     );
   }
   return (
-    <span className="badge rounded-pill bg-warning-subtle text-warning-emphasis px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1">
+    <span className="order-status-badge badge bg-warning-subtle text-warning-emphasis">
       <i className="bi bi-clock-history"></i> Order Placed
     </span>
   );
@@ -55,15 +55,15 @@ function getStatusBadge(status) {
 function getPaymentBadge(status) {
   const s = (status || '').toLowerCase();
   if (s.includes('paid')) {
-    return <span className="badge bg-success-subtle text-success border border-success-subtle">Paid Online (Razorpay)</span>;
+    return <span className="order-payment-badge badge bg-success-subtle text-success border border-success-subtle">Paid Online (Razorpay)</span>;
   }
   if (s.includes('cod')) {
-    return <span className="badge bg-secondary-subtle text-secondary border border-secondary-subtle">Cash on Delivery (Pending)</span>;
+    return <span className="order-payment-badge badge bg-secondary-subtle text-secondary border border-secondary-subtle">Cash on Delivery (Pending)</span>;
   }
   if (s.includes('cancel') || s.includes('refund')) {
-    return <span className="badge bg-danger-subtle text-danger border border-danger-subtle">Refunded / Cancelled</span>;
+    return <span className="order-payment-badge badge bg-danger-subtle text-danger border border-danger-subtle">Refunded / Cancelled</span>;
   }
-  return <span className="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">{status}</span>;
+  return <span className="order-payment-badge badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">{status}</span>;
 }
 
 // Milestone tracker steps definition
@@ -650,16 +650,15 @@ export default function YourOrdersPage({ setToasts }) {
                       </div>
 
                       {/* Badges & Actions */}
-                      <div className="d-flex flex-column align-items-sm-end gap-2.5">
-                        <div className="d-flex align-items-center gap-2">
+                      <div className="order-badges-actions-col">
+                        <div className="d-flex align-items-center gap-2 flex-wrap">
                           {getStatusBadge(selectedOrder.delivery_status || selectedOrder.payment_status)}
                           {getPaymentBadge(selectedOrder.payment_status)}
                         </div>
                         <div className="d-flex align-items-center gap-2 flex-wrap">
                           <button
                             type="button"
-                            className="btn btn-sm btn-outline-dark rounded-pill px-3 py-1.5 fw-semibold d-flex align-items-center gap-1.5"
-                            style={{ fontSize: '0.82rem' }}
+                            className="btn btn-sm btn-outline-dark order-action-btn"
                             onClick={() => setShowInvoiceModal(true)}
                           >
                             <i className="bi bi-receipt"></i> Tax Invoice
@@ -668,8 +667,7 @@ export default function YourOrdersPage({ setToasts }) {
                           {isSelectedCancellable && (
                             <button
                               type="button"
-                              className="btn btn-sm btn-outline-danger rounded-pill px-3 py-1.5 fw-semibold"
-                              style={{ fontSize: '0.82rem' }}
+                              className="btn btn-sm btn-outline-danger order-action-btn"
                               onClick={() => setShowCancelModal(true)}
                             >
                               Cancel Order
@@ -682,8 +680,7 @@ export default function YourOrdersPage({ setToasts }) {
                             )}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="btn btn-sm btn-success rounded-pill px-3 py-1.5 fw-semibold d-flex align-items-center gap-1.5"
-                            style={{ fontSize: '0.82rem' }}
+                            className="btn btn-sm btn-success order-action-btn"
                           >
                             <i className="bi bi-whatsapp"></i> Help
                           </a>
