@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchGstReport, fetchOutstandingReport } from './businessApi';
+import { printInvoice } from '../utils/printInvoice';
 
 export default function ReportsPage() {
   const [activeTab, setActiveTab] = useState('gst'); // 'gst' or 'outstanding'
@@ -52,10 +53,16 @@ export default function ReportsPage() {
             <i className="bi bi-hourglass-split me-2"></i> Outstanding Balances
           </button>
         </div>
-        <button onClick={() => window.print()} className="btn btn-light fw-bold d-flex align-items-center gap-1.5 shadow-sm px-3 py-2" style={{ borderRadius: '12px' }}>
+        <button
+          onClick={() => printInvoice('printableReport', `Burhani-Hardware-${activeTab === 'gst' ? 'GST-Report' : 'Outstanding-Report'}`)}
+          className="btn btn-light fw-bold d-flex align-items-center gap-1.5 shadow-sm px-3 py-2"
+          style={{ borderRadius: '12px' }}
+        >
           <i className="bi bi-printer"></i> Print Report
         </button>
       </div>
+
+      <div id="printableReport">
 
       {loading ? (
         <div className="text-center py-5">
@@ -296,6 +303,7 @@ export default function ReportsPage() {
           </div>
         </div>
       ) : null}
+      </div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchSales, createSale, fetchSaleDetail, deleteSale, fetchParties, fetchProducts, saveParty } from './businessApi';
+import { printInvoice } from '../utils/printInvoice';
 
 export default function SalesPage() {
   const [sales, setSales] = useState([]);
@@ -526,8 +527,11 @@ export default function SalesPage() {
               <div className="modal-header border-bottom border-light-subtle d-flex justify-content-between align-items-center">
                 <h5 className="modal-title fw-bold">Tax Invoice #{viewInvoice.id}</h5>
                 <div className="d-flex gap-2">
-                  <button onClick={() => window.print()} className="btn btn-sm btn-dark d-flex align-items-center gap-1">
-                    <i className="bi bi-printer"></i> Print
+                  <button
+                    onClick={() => printInvoice('printableInvoice', `Tax-Invoice-${viewInvoice.id}`)}
+                    className="btn btn-sm btn-dark d-flex align-items-center gap-1"
+                  >
+                    <i className="bi bi-printer"></i> Print Invoice
                   </button>
                   <button type="button" className="btn-close" onClick={() => setViewInvoice(null)}></button>
                 </div>

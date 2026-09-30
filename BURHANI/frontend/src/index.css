@@ -9068,31 +9068,131 @@ footer.glass-footer-wrapper {
   object-fit: contain;
 }
 
-/* Print Styles for Invoice Modal */
+/* ══════════════════════════════════════════════════════════════════════════════
+   BURHANI HIGH-PRECISION PRINT SUITE (TAX INVOICES, BILLS & REPORTS)
+   ══════════════════════════════════════════════════════════════════════════════ */
 @media print {
-  body * {
-    visibility: hidden;
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm;
   }
-  .invoice-modal-card,
-  .invoice-modal-card * {
-    visibility: visible;
-  }
-  .invoice-modal-backdrop {
-    position: static !important;
-    background: none !important;
+
+  /* Reset document flow */
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto !important;
+    margin: 0 !important;
     padding: 0 !important;
+    font-size: 13px !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
-  .invoice-modal-card {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100% !important;
+
+  /* Eliminate non-printable chrome & floating widgets */
+  .site-header,
+  .auth-top-bar,
+  .floating-dock-container,
+  .burhani-assistant-widget,
+  .business-sidebar,
+  .business-topbar,
+  .message-container,
+  .no-print,
+  .btn-close,
+  button:not(.allow-print),
+  footer,
+  .site-footer,
+  .modal-backdrop,
+  .offcanvas-backdrop {
+    display: none !important;
+  }
+
+  /* Neutralize wrapper constraints */
+  #root,
+  .app,
+  .scenic-app-wrapper,
+  .glass-canvas-container,
+  .business-layout,
+  .business-content {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    height: auto !important;
     max-width: 100% !important;
+    display: block !important;
+  }
+
+  /* Neutralize modal overlays when printing */
+  .invoice-modal-backdrop,
+  .modal.fade.show.d-block,
+  .modal-dialog,
+  .modal-content {
+    position: static !important;
+    display: block !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     box-shadow: none !important;
     border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    transform: none !important;
   }
-  .no-print {
-    display: none !important;
+
+  .invoice-modal-card {
+    position: static !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+  }
+
+  .invoice-printable-body,
+  #printable-invoice,
+  #printableInvoice,
+  #printableReport {
+    display: block !important;
+    visibility: visible !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    width: 100% !important;
+    background: #ffffff !important;
+  }
+
+  /* Crisp Table Printing */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+    page-break-after: auto !important;
+  }
+
+  th,
+  td {
+    border-color: #cbd5e1 !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  tfoot {
+    display: table-footer-group !important;
   }
 }
 
