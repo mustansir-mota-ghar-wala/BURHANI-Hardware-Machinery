@@ -9034,6 +9034,52 @@ footer.glass-footer-wrapper {
   }
 }
 
+/* Order Command Header Badges & Actions Layout */
+.order-badges-actions-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px !important;
+  align-items: flex-start;
+}
+
+@media (min-width: 576px) {
+  .order-badges-actions-col {
+    align-items: flex-end;
+  }
+}
+
+.order-status-badge,
+.order-payment-badge {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px !important;
+  font-size: 0.78rem !important;
+  font-weight: 700;
+  border-radius: 50px !important;
+  line-height: 1.4 !important;
+  white-space: nowrap;
+  box-sizing: border-box !important;
+}
+
+.order-action-btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px !important;
+  font-size: 0.82rem !important;
+  font-weight: 600;
+  border-radius: 50px !important;
+  line-height: 1.4 !important;
+  white-space: nowrap;
+  box-sizing: border-box !important;
+  transition: all 0.18s ease;
+}
+
+.order-action-btn:hover {
+  transform: translateY(-1px);
+}
+
 /* Order Product Rows */
 .order-product-row {
   background: #f8fafc;
